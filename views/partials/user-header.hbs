@@ -1,0 +1,85 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+  <div class="container">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarTogglerDemo03"
+      aria-controls="navbarTogglerDemo03"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" style="font-weight: 600;" href="#">Z-FASHIONS</a>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Shop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" tabindex="-1">Track-Orders</a>
+        </li>
+
+      </ul>
+      <form class="d-flex me-4">
+        {{#if user}}
+          <a
+            href="/logout"
+            class="text-decoration-none"
+            style="color: rgb(110, 110, 110);"
+          >Welcome {{user.Email}}</a>
+       
+        {{/if}}
+      </form>
+      <form class="d-flex me-4">
+        <input
+          style="border:none; outline: none;"
+          class="me-2"
+          type="search"
+          placeholder="Search"
+          aria-label="Search"
+        />
+        <button class="btn" type="submit"><i
+            class="fi fi-rs-search"
+          ></i></button>
+      </form>
+
+      <form class="d-flex justify-content-end">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link me-4" href="#"><i class="fi fi-rs-heart"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link me-4" href="#" tabindex="-1"><i
+                class="fi fi-rs-shopping-cart"
+              ></i></a>
+          </li>
+
+        </ul>
+      </form>
+
+      <form class="d-flex justify-content-end">
+        {{#if user}}
+          <a
+            href="/logout"
+            class="text-decoration-none"
+            style="color: rgb(110, 110, 110);"
+          ><i class="fi fi-ss-sign-out-alt"></i></a>
+          {{else}}
+          <a
+            href="/login"
+            class="text-decoration-none"
+            style="color: rgb(110, 110, 110);"
+          ><i class="fi fi-ss-sign-in-alt"></i></a>
+
+       
+        {{/if}}
+        
+      </form>
+    </div>
+  </div>
+</nav>

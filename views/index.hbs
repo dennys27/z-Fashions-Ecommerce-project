@@ -1,0 +1,25 @@
+
+<div class="banner">
+
+    <p>NEW TREND </p>
+    <h1>COLLUSION</h1>
+
+</div>
+
+
+<div class="container mt-2">
+    <div class="row">
+        {{#each products}}
+        <div class="col-md-3 mb-2">
+            <div class="card p-4">
+                <img src={{this.image}} class="card-img-top " alt="..." style="width: 200px; height:160px">
+                <div class="card-body">
+                    <h5 class="card-title">{{this.Email}}</h5>
+                    <p class="card-text">{{this.description}}</p>
+                    <a href="#" class="btn btn-primary">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>

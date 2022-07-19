@@ -1,0 +1,20 @@
+<section>
+    <div class="condainer mt-4">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <h2 class="text-center">Update user</h2>
+                <form action="/admin/update-user/{{user._id}}" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>User Name</label>
+                        <input type="text" class="form-control" name="Email" value="{{user.Email}}">
+                        <label>Password</label>
+                        <input type="password" class="form-control" name="Password" value="{{user.Password}}">
+                    </div>
+                    <div class="mx-auto mt-3" style=" width: fit-content;">
+                        <button type="submit" class="btn btn-warning">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,29 @@
+<div class="condainer"
+    style=" height: 700px; background-image:url(https://img.freepik.com/free-vector/hand-painted-watercolor-pastel-sky-background_23-2148902771.jpg?w=2000) ;">
+    <div class="row m-0">
+        <div class="col-md-6 m-auto">
+            <div class="containor mt-5 pl-5">
+                <h2 class="text-center">Admin login</h2>
+                {{#if errout}}
+                <a class="alert alert" style="color: red; text-decoration: none;">
+                    {{errout}}
+                </a>
+                {{/if}}
+                <form action="/admin/view-users" method="POST">
+                    <div class="form-group">
+                        <label>User name</label>
+                        <input type="text" class="form-control" name="Email" placeholder="Enter username">
+
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" name="Password" placeholder="Password">
+                    </div>
+                    <div class="mx-auto mt-3" style=" width: fit-content;">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="row m-0">
+    <div class="col-md-6 m-auto">
+        <div class="containor mt-5 pl-5">
+            <h2 class="text-center">Create Account</h2>
+            <form action="/signup" method="POST">
+             {{#if signerr}}
+                <p class="error text-center" style="color: red;">Username already taken</p>
+            {{/if}}
+                <div class="form-group">
+                    <label>User name</label>
+                    <input type="text" class="form-control" name="Email" placeholder="Enter username">
+
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" class="form-control" name="phone" placeholder="Phone">
+
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="Password" placeholder="Password">
+                </div>
+                
+                 <a href="/login" class="sign sign-info mt-5 " style="width: fit-content; text-decoration: none;">Already have account ?</a>
+                <div class="mx-auto mt-3" style=" width: fit-content;">
+                    <button type="submit" class="btn btn-primary">Signup</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
