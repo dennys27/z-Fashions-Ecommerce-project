@@ -5,6 +5,14 @@ var router = express.Router();
 const userHelpers = require('../helpers/user-helpers')
 var productHelpers = require("../helpers/product-helpers");
 
+var serviceSID = 'VAa0b257654fed1cfb2277d0e0cd8993ca';
+var accountSid = 'AC32a003cd12ae3130f9f3f04d1e3bbef5';
+var authToken = 'f8002a0990a9e403a35adcf3d0ffb163';
+
+const client = require("twilio")(accountSid, authToken, {
+  lazyLoading: true,
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   let user = req.session.user;
@@ -35,6 +43,49 @@ router.get('/login', function (req, res) {
   }
  
 })
+
+
+//otp section
+
+router.get("/otp-login", function (req, res) {
+  if (req.session.loggedIn) {
+    res.redirect("/");
+  } else {
+    res.render("user/otp");
+    req.session.loginErr = false;
+  }
+});
+
+router.post("/otp-verification", function (req, res) {
+  
+  console.log(req.body);
+
+  // client.verify.services(serviceSID).verifications.create({
+  //   to: `+916282831097`,
+  //   channel: "sms",
+  // });
+   
+   // res.redirect("/");
+    res.redirect("/otp-veri");
+   
+  
+});
+
+router.post("/otp-matching", function (req, res) {
+  
+ 
+   // res.redirect("/");
+  //  res.render("user/otp-veri");
+   
+  
+});
+
+
+
+
+
+
+
 router.get('/signup', function (req, res) {
   if (req.session.loggedIn){
     res.redirect('/')
@@ -43,6 +94,10 @@ router.get('/signup', function (req, res) {
     req.session.signErr=false
   }
 })
+
+
+
+
 router.post('/signup', (req, res) => {
  userHelpers.doSignup(req.body).then((response)=>{
   if (response.status){

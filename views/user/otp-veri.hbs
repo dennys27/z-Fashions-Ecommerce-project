@@ -1,0 +1,29 @@
+<div class="row m-0">
+    <div class="col-md-6 m-auto">
+        <div class="containor mt-5 pl-5" >
+            <h2 class="text-center">OTP CONFIRMATION</h2>
+            
+            <form action="/otp-matching" method="POST" >
+            {{#if loginerr}}
+                <p class="error text-center" style="color: red;">Invalid number</p>
+            {{/if}}
+                <div class="form-group">
+                    <label>Enter the otp</label>
+                    <input type="phone" class="form-control" name="number" placeholder="Phone">
+
+                </div>
+               
+                 <a href="/signup" class="sign sign-info mt-5 " style="width: fit-content; text-decoration: none;">Create new account</a>
+                 <br>
+                
+                 
+                <div class="mx-auto mt-3" style=" width: fit-content;">
+                   
+                    <button type="submit" class="btn btn-primary">Verify</button>
+                </div>
+
+                 
+            </form>
+        </div>
+    </div>
+</div>
