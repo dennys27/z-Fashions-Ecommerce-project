@@ -1,29 +1,35 @@
-<div class="row m-0">
+<div class="container-fluid row   justify-content">
     <div class="col-md-6 m-auto">
-        <div class="containor mt-5 pl-5" >
-            <h2 class="text-center">OTP VERIFICATION</h2>
+        <div class="otp-form"> 
+        <div class="container mt-5 pl-5 " >
+            <h2 class="text-center fs-5 fw-bold mt-3">OTP VERIFICATION</h2>
             
-            <form action="/otp-verification" method="POST" >
+            <form action="/otp-verification" method="POST" class="text-center mt-4" >
             {{#if loginerr}}
                 <p class="error text-center" style="color: red;">Invalid number</p>
             {{/if}}
-                <div class="form-group">
-                    <label>Enter your phone number</label>
-                    <input type="text" class="form-control" name="number" placeholder="Phone">
+
+            {{#if invalidph}}
+                <p class="error text-center" style="color: red;">Invalid number</p>
+            {{/if}}
+                <div class="form-group text-center">
+                    <label class="mb-3" style="color: #D3A4D6;">Enter your phone number</label>
+                    <input type="text" class="form-control  " name="number" placeholder="Phone">
 
                 </div>
                
-                 <a href="/signup" class="sign sign-info mt-5 " style="width: fit-content; text-decoration: none;">Create new account</a>
+                 <a href="/signup" class="sign sign-info mt-4" style="width: fit-content; text-decoration: none; color:#D3A4D6;">Create new account</a>
                  <br>
                 
                  
                 <div class="mx-auto mt-3" style=" width: fit-content;">
                    
-                    <button type="submit" class="btn btn-primary">Verify</button>
+                    <button type="submit" class="btn " style="background-color: #D3A4D6; color:white;">Verify</button>
                 </div>
 
                  
             </form>
+        </div>
         </div>
     </div>
 </div>

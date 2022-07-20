@@ -6,6 +6,9 @@
              {{#if signerr}}
                 <p class="error text-center" style="color: red;">Username already taken</p>
             {{/if}}
+             {{#if phoneerr}}
+                <p class="error text-center" style="color: red;">This number is already in use</p>
+            {{/if}}
                 <div class="form-group">
                     <label>User name</label>
                     <input type="text" class="form-control" name="Email" placeholder="Enter username">
@@ -20,6 +23,7 @@
                     <label>Password</label>
                     <input type="password" class="form-control" name="Password" placeholder="Password">
                 </div>
+                
                 
                  <a href="/login" class="sign sign-info mt-5 " style="width: fit-content; text-decoration: none;">Already have account ?</a>
                 <div class="mx-auto mt-3" style=" width: fit-content;">

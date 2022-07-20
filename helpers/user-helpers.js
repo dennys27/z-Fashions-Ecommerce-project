@@ -9,10 +9,21 @@ module.exports = {
         .get()
         .collection(collection.USER_COLLECTION)
         .findOne({ Email: userData.Email });
+      let phone = await db
+        .get()
+        .collection(collection.USER_COLLECTION)
+        .findOne({ phone: userData.phone });
+     
       if (email) {
         console.log("same email");
         response.status = true;
         resolve(response);
+      } else if (phone) {
+       
+           console.log("same phone number");
+           response.phone = true;
+           resolve(response);
+       
       } else {
         userData.Password = await bcrypt.hash(userData.Password, 10);
         db.get()
@@ -51,38 +62,41 @@ module.exports = {
         resolve({ status: false });
       }
     });
-    },
-  
+  },
+
   //user checking
 
-    isExist: (isuser) => {
-        var user = { ...isuser.user };
-       async function nameGetter(user) {
-          
-            let email = await db
-              .get()
-              .collection(collection.USER_COLLECTION)
-               .findOne({ Email: user.Email });
-            var Uemail = {...email};
-           if (Uemail.Email !== user.Email) {
-             isuser.destroy();
-           }
-           
-        }
-        nameGetter(user)
-          
-        // console.log(user);
+  isExist: (isuser) => {
+    var user = { ...isuser.user };
+    async function nameGetter(user) {
+      let email = await db
+        .get()
+        .collection(collection.USER_COLLECTION)
+        .findOne({ Email: user.Email });
+      var Uemail = { ...email };
+      if (Uemail.Email !== user.Email) {
+        isuser.destroy();
+      }
+    }
+    nameGetter(user);
+  },
 
-    //  var s_user = isuser.user;
-  
-    // function checkUser(user, s_user) {
-    //   if (user !== s_user) {
-    //     // isuser.destroy(() => {
-    //     //   console.log("session destroyed");
-    //     // });
-    //   }
-    // }
+  //USER NUMBER CHECKING
 
-    
+  NumberExist: (number) => {
+    return new Promise(async (resolve, reject) => {
+      let loginStatus = false;
+      let response = {};
+      let user = await db
+        .get()
+        .collection(collection.USER_COLLECTION)
+        .findOne({ phone: number });
+      if (user) {
+        resolve(user);
+      } else {
+        console.log("login faild");
+        resolve({ status: false });
+      }
+    });
   },
 };

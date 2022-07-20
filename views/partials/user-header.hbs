@@ -31,7 +31,7 @@
             href="/logout"
             class="text-decoration-none"
             style="color: rgb(110, 110, 110);"
-          >Welcome {{user.Email}}</a>
+          >Welcome  {{#if user.Email }} {{user.Email}} {{else}} {{user}}  {{/if}}</a>
        
         {{/if}}
       </form>
