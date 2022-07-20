@@ -1,17 +1,20 @@
 var express = require('express');
 const session = require('express-session');
+require("dotenv").config();
 const { response } = require('../app');
 var router = express.Router();
 const userHelpers = require('../helpers/user-helpers')
 var productHelpers = require("../helpers/product-helpers");
 
-var serviceSID = 'VAa0b257654fed1cfb2277d0e0cd8993ca';
-var accountSid = 'AC32a003cd12ae3130f9f3f04d1e3bbef5';
-var authToken = 'f8002a0990a9e403a35adcf3d0ffb163';
 
-const client = require("twilio")(accountSid, authToken, {
-  lazyLoading: true,
-});
+
+const client = require("twilio")(
+  process.env.accountSid,
+  process.env.authToken,
+  {
+    lazyLoading: true,
+  }
+);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -57,18 +60,15 @@ router.get("/otp-login", function (req, res) {
 });
 
 router.post("/otp-verification", function (req, res) {
-  
   console.log(req.body);
 
-  // client.verify.services(serviceSID).verifications.create({
+  // client.verify.services(process.env.serviceSID).verifications.create({
   //   to: `+916282831097`,
   //   channel: "sms",
   // });
-   
-   // res.redirect("/");
-    res.redirect("/otp-veri");
-   
-  
+
+  // res.redirect("/");
+  res.redirect("/otp-veri");
 });
 
 router.post("/otp-matching", function (req, res) {
