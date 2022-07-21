@@ -1,9 +1,11 @@
 var express = require('express');
 // const { response } = require('../app');
+ 
 var router = express.Router();
 var productHelpers = require('../helpers/product-helpers')
 let userName = "admin"
 let Pin = "admin123"
+const store = require('../multer/multer')
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -33,6 +35,7 @@ router.get('/add-user', function (req, res) {
     res.redirect('/admin')
   }
 })
+
 router.post('/add-user', (req, res) => {
   productHelpers.doAdd(req.body).then((response) => {
         res.redirect('/admin')
@@ -76,8 +79,42 @@ router.post('/update-user/:id',(req,res)=>{
     res.redirect('/admin')
   })
 })
+
+
+//adding products
+
+router.get("/add-products", (req, res) => {
+     res.render("admin/add-products", { admin: true });
+})
+
+router.post("/add-item", store.array('image', 12), (req, res) => {
+  console.log("im working");
+  const files = req.files;
+   console.log(files);
+   console.log(req.body);
+
+  if (!files) {
+    const err = new Error("please choose the images");
+  }
+  //res.render("admin/add-products", { admin: true });
+  
+  
+  
+});
+
+
+
+
 router.get('/logout',(req,res)=>{
   req.session.users=null
   res.redirect('/admin')
 })
+
+
+
+
+
+
+
+
 module.exports = router;
