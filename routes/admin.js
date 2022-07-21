@@ -3,6 +3,7 @@ var express = require('express');
  
 var router = express.Router();
 var productHelpers = require('../helpers/product-helpers')
+var itemHelpers = require('../helpers/product-management')
 let userName = "admin"
 let Pin = "admin123"
 const store = require('../multer/multer')
@@ -87,16 +88,25 @@ router.get("/add-products", (req, res) => {
      res.render("admin/add-products", { admin: true });
 })
 
-router.post("/add-item", store.array('image', 12), (req, res) => {
+router.post("/add-item", store.array('image', 4), (req, res) => {
   console.log("im working");
   const files = req.files;
-   console.log(files);
+   console.log(files[0].originalname);
    console.log(req.body);
 
   if (!files) {
     const err = new Error("please choose the images");
+    res.redirect("/add-products")
   }
   //res.render("admin/add-products", { admin: true });
+  var filenames = req.files.map(function (file) {
+    return file.filename;
+  });
+
+   req.body.Image = filenames;
+   itemHelpers.addItem(req.body).then((resolve) => {
+     res.redirect("/admin/add-products");
+   });
   
   
   
