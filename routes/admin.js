@@ -91,9 +91,6 @@ router.get("/add-products", (req, res) => {
 router.post("/add-item", store.array('image', 4), (req, res) => {
   console.log("im working");
   const files = req.files;
-   console.log(files[0].originalname);
-   console.log(req.body);
-
   if (!files) {
     const err = new Error("please choose the images");
     res.redirect("/add-products")
@@ -108,9 +105,20 @@ router.post("/add-item", store.array('image', 4), (req, res) => {
      res.redirect("/admin/add-products");
    });
   
-  
-  
 });
+
+
+router.get("/add-categories", (req, res) => {
+  res.render("admin/Add-category", { admin: true });
+})
+
+
+router.post("/add-category", (req, res) => {
+  //let category = req.body;
+  console.log(req.body);
+  itemHelpers.addCategory(req.body)
+  res.redirect("/admin/add-categories");
+})
 
 
 

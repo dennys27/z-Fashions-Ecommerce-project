@@ -41,13 +41,24 @@ module.exports = {
           resolve(user);
         });
     });
-    },
+  },
   //ADD-PRODUCT
   addItem: (userData) => {
     return new Promise(async (resolve, reject) => {
-     
       db.get()
         .collection(collection.PRODUCT_COLLECTIONS)
+        .insertOne(userData)
+        .then((data) => {
+          resolve(data.insertedId);
+        });
+    });
+  },
+
+  //ADD-CATEGORY
+  addCategory: (userData) => {
+    return new Promise(async (resolve, reject) => {
+      db.get()
+        .collection(collection.PRODUCT_CATAGORY)
         .insertOne(userData)
         .then((data) => {
           resolve(data.insertedId);
