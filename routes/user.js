@@ -4,7 +4,7 @@ require("dotenv").config();
 const { response } = require('../app');
 var router = express.Router();
 const userHelpers = require('../helpers/user-helpers')
-var productHelpers = require("../helpers/product-helpers");
+var productHelpers = require("../helpers/product-management");
 
   
 
@@ -31,7 +31,7 @@ router.get('/', function(req, res, next) {
   //   });
   // }
 
-   productHelpers.getAlluser().then((products) => {
+   productHelpers.getAllproducts().then((products) => {
       res.render("index", { products, user });
    });
   

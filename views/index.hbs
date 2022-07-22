@@ -1,13 +1,11 @@
-
 <div class="banner">
 
-    <p>NEW TREND </p>
-    <h1>COLLUSION</h1>
+  <p>NEW TREND </p>
+  <h1>COLLUSION</h1>
 
 </div>
 
-
-<div class="container mt-2">
+<!--<div class="container mt-2">
     <div class="row">
         {{#each products}}
         <div class="col-md-3 mb-2">
@@ -22,4 +20,40 @@
         </div>
         {{/each}}
     </div>
+</div>-->
+
+<div class="container mt-2">
+    <h2 class="fs-5 fw-3">WOMEN'S FASHION</h2>
+  <div class="row mt-5 container">
+    {{#each products}}
+    <div class="col-md-3 mb-2">
+  
+       
+      
+        <a href="/view-product/{{this._id}}">
+        <img
+          src="/{{this.Image.[0]}}"
+          class="card-img-top"
+          alt="..."
+          style="width: 230px; height:280px"
+        />
+        <div class="d-flex" style="width: 100%;"> 
+        <h5 class="fs-6 mt-2">dummy title</h5> 
+         <a class="nav-link me-4" style="float: right;" href="#"><i class="fi fi-rs-heart"></i></a>
+         </div>
+        <div class=" d-flex">
+
+          <p class="card-text">$146.00</p>
+          
+          <a href="#" class="btn text-white " style=" border-radius:0; margin-left:80px; width: 94px; height:30px; font-size:13px;  background-color: #c48ac9;">Add to Cart</a>
+        </div>
+        </a>
+        </div>
+    
+      {{/each}}
+
+
+    </div>
+    </div>
+  </div>
 </div>

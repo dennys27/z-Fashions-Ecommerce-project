@@ -32,6 +32,7 @@ saveUninitialized:true,
   cookie: { maxAge: 200000 }
 }))
 app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/uploads"));
 app.use(express.static(__dirname + "/public/images"));
 app.use((req, res, next) => {
   if (!req.user) {

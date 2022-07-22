@@ -12,16 +12,18 @@ module.exports = {
   //         callback(data)
   //     })
   // },
-  getAlluser: (prodId) => {
+  getAllproducts: (prodId) => {
     return new Promise(async (resolve, reject) => {
-      let user = await db
+      let products = await db
         .get()
         .collection(collection.PRODUCT_COLLECTIONS)
         .find()
         .toArray();
-      resolve(user);
+      resolve(products);
     });
   },
+
+
   deleteProduct: (prodId) => {
     return new Promise((resolve, reject) => {
       db.get()
