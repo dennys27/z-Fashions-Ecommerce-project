@@ -22,6 +22,7 @@ let User_number = "";
 router.get('/', function(req, res, next) {
   let user = req.session.user;
  
+ 
   let U_session = req.session;
    userHelpers.isExist(U_session)
 
@@ -31,20 +32,22 @@ router.get('/', function(req, res, next) {
   //   });
   // }
 
-   productHelpers.getAllproducts().then((products) => {
-      res.render("index", { products, user });
-   });
-  
+  productHelpers.getAllproducts().then((products) => {
+  res.render("index", { products, user });
+  })
 
 });
 
 
 router.get('/login', function (req, res) {
+  let blocked = req.session.blockedUser;
+  console.log(blocked)
   if(req.session.loggedIn){
     res.redirect('/')
   }else{
-    res.render('user/login',{"loginerr":req.session.loginErr})
-    req.session.loginErr=false
+    res.render('user/login',{"loginerr":req.session.loginErr,blocked})
+    req.session.loginErr = false
+    blocked=false
   }
  
 })
@@ -110,8 +113,6 @@ router.post("/otp-matching", function (req, res) {
 
 
 
-
-
 router.get('/signup', function (req, res) {
   if (req.session.loggedIn){
     res.redirect('/')
@@ -122,11 +123,11 @@ router.get('/signup', function (req, res) {
   }
 })
 
-
-
-
 router.post('/signup', (req, res) => {
- userHelpers.doSignup(req.body).then((response)=>{
+  let reqBody = req.body
+  reqBody.block = "false"
+  console.log(reqBody)
+ userHelpers.doSignup(reqBody).then((response)=>{
   if (response.status){
     req.session.signErr=true
     res.redirect('/signup')
@@ -138,9 +139,25 @@ router.post('/signup', (req, res) => {
   }
  })
 })
+
+//view-product
+
+router.get("/view-product/:id", function (req, res) {
+  productHelpers.getProductData(req.params.id)
+    .then((Product) => {
+     res.render("user/product-view", { Product, userHead: true });
+  })
+        
+}); 
+
+
 router.post('/login',(req,res)=>{
-  userHelpers.doLogin(req.body).then((response)=>{
-    if (response.status){
+  userHelpers.doLogin(req.body).then((response) => {
+    if (response.userBlock) {
+      req.session.blockedUser = true;
+       res.redirect("/login");
+    }
+   else if(response.status){
      
       req.session.user=response.user
       req.session.loggedIn=true
@@ -151,6 +168,7 @@ router.post('/login',(req,res)=>{
     }
   })
 })
+
 router.get('/logout',(req,res)=>{
   req.session.loggedIn=null
   req.session.user=null

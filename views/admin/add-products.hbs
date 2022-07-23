@@ -14,11 +14,11 @@
 
   </div>
   <div class="mb-3">
-   <select class="form-select" aria-label="Default select example">
-  <option >Category</option>
-  <option value="1">One</option>
-  <option value="2">Two</option>
-  <option value="3">Three</option>
+   <select name="category" class="form-select" aria-label="Default select example">
+  <option name="category" >Category</option>
+  {{#each cat}}
+  <option name="option"  value="{{this.category}}">{{this.category}}</option>
+  {{/each}}
 </select>
 
   </div>

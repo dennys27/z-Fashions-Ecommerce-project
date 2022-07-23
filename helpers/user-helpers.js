@@ -1,5 +1,6 @@
 var db = require("../config/connection");
 var collection = require("../config/collections");
+var objectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
 module.exports = {
   doSignup: (userData) => {
@@ -13,17 +14,15 @@ module.exports = {
         .get()
         .collection(collection.USER_COLLECTION)
         .findOne({ phone: userData.phone });
-     
+
       if (email) {
         console.log("same email");
         response.status = true;
         resolve(response);
       } else if (phone) {
-       
-           console.log("same phone number");
-           response.phone = true;
-           resolve(response);
-       
+        console.log("same phone number");
+        response.phone = true;
+        resolve(response);
       } else {
         userData.Password = await bcrypt.hash(userData.Password, 10);
         db.get()
@@ -45,6 +44,11 @@ module.exports = {
         .get()
         .collection(collection.USER_COLLECTION)
         .findOne({ Email: userData.Email });
+      console.log(user)
+      if (user.block == true) {
+         resolve({ userBlock: true });
+      }
+      
       if (user) {
         bcrypt.compare(userData.Password, user.Password).then((status) => {
           if (status) {
@@ -97,6 +101,40 @@ module.exports = {
         console.log("login faild");
         resolve({ status: false });
       }
+    });
+  },
+
+  blockUser: (userId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .updateOne(
+          { _id: objectId(userId) },
+          {
+            // Update document
+            $set: { block: true },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+        });
+    });
+  },
+  unBlockUser: (userId) => {
+    console.log(userId);
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .updateOne(
+          { _id: objectId(userId) },
+          {
+            // Update document
+            $set: { block: false },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+        });
     });
   },
 };

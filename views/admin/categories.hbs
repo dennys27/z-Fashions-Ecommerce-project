@@ -1,27 +1,27 @@
 <section>
     <div class="container" >
         <div class="row mt-3 mb-5">
-            <a href="/admin/add-user" class="btn btn-success ms-auto" style="width: fit-content;">Add User</a>
+            <a href="/admin/add-categories" class="btn btn-success ms-auto" style="width: fit-content;">Add Category</a>
         </div>
         <table class="table mt-5" id="usersTable" style="background-color: rgb(212, 231, 239);">
             <thead>
                 <tr>
                     <th scope="col">No</th>
-                    <th scope="col">User name</th>
-                    <th scope="col">Password</th>
+                    <th scope="col">Categories</th>
+                   
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
-                    <th scope="col">block</th>
+                    
                     {{!-- <th scope="col">Price</th>
                     <th scope="col">Image</th> --}}
                 </tr>
             </thead>
             <tbody>
-                {{#each products}}
+                {{#each categories}}
                 <tr>
                     <th scope="row">*</th>
-                    <td>{{this.Email}}</td>
-                    <td>{{this.Password}}</td>
+                    <td>{{this.category}}</td>
+                    
                     {{!-- <td>{{this.description}}</td>
                     <td><img style="width: 50px;height: 50px;" src="{{this.image}}" alt=""></td> --}}
                     <td>
@@ -32,14 +32,7 @@
                             onclick="return confirm('Are you want to delete {{this.Name}} ?')">Delete</a>
 
                     </td>
-                        <td>
-                             {{#if this.block}}
-                        <a href="/admin/Un-Block-user/{{this._id}}" class="btn btn-danger"
-                            onclick="return confirm('Do you want to UnBlock {{this.Name}} ?')">UnBlock</a>
-                           {{else}}
-                       <a href="/admin/Block-user/{{this._id}}" class="btn btn-success w-auto ms-auto">Block</a>
-                       {{/if}}
-                    </td>
+                      
                 </tr>
                 {{/each}}
             </tbody>

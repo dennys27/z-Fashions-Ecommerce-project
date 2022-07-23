@@ -23,6 +23,40 @@ module.exports = {
     });
   },
 
+  getAllcategories: (prodId) => {
+    return new Promise(async (resolve, reject) => {
+      let categories = await db
+        .get()
+        .collection(collection.PRODUCT_CATAGORY)
+        .find()
+        .toArray();
+      resolve(categories);
+    });
+  },
+
+
+  getCategories: (prodId) => {
+    return new Promise(async (resolve, reject) => {
+      let products = await db
+        .get()
+        .collection(collection.PRODUCT_CATAGORY)
+        .find()
+        .toArray();
+      resolve(products);
+    });
+  },
+
+  getProductData: (editProduct) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.PRODUCT_COLLECTIONS)
+        .findOne({ _id:objectId(editProduct) })
+        .then((productData) => {
+          resolve(productData);
+          
+        });
+    });
+  },
 
   deleteProduct: (prodId) => {
     return new Promise((resolve, reject) => {

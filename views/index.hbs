@@ -35,15 +35,50 @@
           src="/{{this.Image.[0]}}"
           class="card-img-top"
           alt="..."
-          style="width: 230px; height:280px"
+          style="width: 230px; height:260px"
         />
         <div class="d-flex" style="width: 100%;"> 
-        <h5 class="fs-6 mt-2">dummy title</h5> 
+        <h5 class="fs-6 mt-2">{{this.name}}</h5> 
          <a class="nav-link me-4" style="float: right;" href="#"><i class="fi fi-rs-heart"></i></a>
          </div>
         <div class=" d-flex">
 
-          <p class="card-text">$146.00</p>
+          <p class="card-text">₹{{this.price}}</p>
+          
+          <a href="#" class="btn text-white " style=" border-radius:0; margin-left:80px; width: 94px; height:30px; font-size:13px;  background-color: #c48ac9;">Add to Cart</a>
+        </div>
+        </a>
+        </div>
+    
+      {{/each}}
+
+
+    </div>
+    </div>
+
+
+    <div class="container mt-2">
+    <h2 class="fs-5 fw-3">MEN'S FASHION</h2>
+  <div class="row mt-5 container">
+    {{#each products}}
+    <div class="col-md-3 mb-2">
+  
+       
+      
+        <a href="/view-product/{{this._id}}">
+        <img
+          src="/{{this.Image.[0]}}"
+          class="card-img-top"
+          alt="..."
+          style="width: 230px; height:280px"
+        />
+        <div class="d-flex" style="width: 100%;"> 
+        <h5 class="fs-6 mt-2">{{this.name}}</h5> 
+         <a class="nav-link me-4" style="float: right;" href="#"><i class="fi fi-rs-heart"></i></a>
+         </div>
+        <div class=" d-flex">
+
+          <p class="card-text">₹{{this.price}}</p>
           
           <a href="#" class="btn text-white " style=" border-radius:0; margin-left:80px; width: 94px; height:30px; font-size:13px;  background-color: #c48ac9;">Add to Cart</a>
         </div>
@@ -57,3 +92,5 @@
     </div>
   </div>
 </div>
+
+

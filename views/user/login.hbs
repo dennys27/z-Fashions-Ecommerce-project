@@ -7,6 +7,9 @@
             {{#if loginerr}}
                 <p class="error text-center" style="color: red;">Invalid username or password</p>
             {{/if}}
+            {{#if blocked}}
+                <p class="error text-center" style="color: red;">Your account is blocked</p>
+            {{/if}}
                 <div class="form-group">
                     <label>User name</label>
                     <input type="text" class="form-control" name="Email" placeholder="Enter username">
