@@ -1,7 +1,14 @@
 <div class="banner">
-
-  <p>NEW TREND </p>
-  <h1>COLLUSION</h1>
+   <div class="q-container">  
+  <h4 class="hq-one">NEW TREND </h4>
+  <h1 class="hq-two">COLLUSION</h1>
+  <p>An exclusive collection of this season's trend</p>
+  <span>
+    <button class="btn  btn-dark">Discover</button>
+    <button class="btn  btn-dark ml-3">Shop Now</button>
+   </span>
+  
+  </div>
 
 </div>
 
@@ -23,14 +30,17 @@
 </div>-->
 
 <div class="container mt-2">
-    <h2 class="fs-5 fw-3">WOMEN'S FASHION</h2>
+  <div class="container-fluid"> 
+    <h2 style="font-weight:800;" class="fs-5 pt-5 d-flex justify-content-center ">WOMEN'S FASHION</h2>
+    <h2 style="font-weight:400;" class="fs-5 pt-3 d-flex justify-content-center ">Shop our new arrivals from established brands</h2>
+    </div>
   <div class="row mt-5 container">
    {{#each products}}
     <div class="col-md-3 mb-2 d-flex justify-content-center container-fluid prod-card m-3">
   
        
       <div>
-        <a href="/view-product/{{this._id}}">
+        <a href="/view-product/{{this._id}}" class="text-decoration-none ">
         <img
           src="/{{this.Image.[0]}}"
           class="card-img-top"
@@ -59,14 +69,17 @@
 
 
     <div class="container mt-2">
-    <h2 class="fs-5 fw-3">MEN'S FASHION</h2>
+     <div class="container-fluid"> 
+    <h2 style="font-weight:800;" class="fs-5 pt-5 d-flex justify-content-center ">MEN'S FASHION</h2>
+    <h2 style="font-weight:400;" class="fs-5 pt-3 d-flex justify-content-center ">Shop our new arrivals from established brands</h2>
+    </div>
   <div class="row mt-5 container">
     {{#each products}}
     <div class="col-md-3 mb-2 d-flex justify-content-center container-fluid prod-card m-3">
   
        
       <div>
-        <a href="/view-product/{{this._id}}">
+        <a href="/view-product/{{this._id}}" class="text-decoration-none">
         <img
           src="/{{this.Image.[0]}}"
           class="card-img-top"

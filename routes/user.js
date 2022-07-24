@@ -67,7 +67,7 @@ router.get("/otp-login", function (req, res) {
 router.post("/otp-verification", function (req, res) {
   userHelpers.NumberExist(req.body.number)
     .then((resp) => {
-      if (resp) {
+      if (!resp.userBlock==true) {
         console.log(resp.Email);
         req.session.user=resp.Email
        const { number } = req.body;

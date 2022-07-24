@@ -3,12 +3,29 @@ body{
     margin: 0;
 }
 .banner{
-    height:600px;
+    height:590px;
     width: 100%;
     margin-top: 50px;
     background-image:url("/images/banner.png");
     background-repeat: no-repeat;
 }
+
+.q-container{
+    margin-top: 280px;
+    margin-right: 100px;
+    float: right;
+}
+
+.hq-one{
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.hq-two{
+ font-size: 70px;
+ font-weight: 800;
+}
+
 .prod-card{
     
  -webkit-border-radius: 17px;
@@ -27,6 +44,10 @@ box-shadow: 5px 5px 38px #bfbfbf, -5px -5px 38px #ffffff;
     margin-left: 140px;
     padding:40px;
 }
+
+
+
+
 
 .usertable{
     padding: 0;

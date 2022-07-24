@@ -45,9 +45,12 @@ module.exports = {
         .collection(collection.USER_COLLECTION)
         .findOne({ Email: userData.Email });
       console.log(user)
-      if (user.block == true) {
-         resolve({ userBlock: true });
+      if (user) {
+         if (user.block == true) {
+           resolve({ userBlock: true });
+         }
       }
+     
       
       if (user) {
         bcrypt.compare(userData.Password, user.Password).then((status) => {
@@ -96,7 +99,15 @@ module.exports = {
         .collection(collection.USER_COLLECTION)
         .findOne({ phone: number });
       if (user) {
-        resolve(user);
+         
+         if (user.block == true) {
+           resolve({ userBlock: true });
+           console.log("login faild");
+           resolve({ status: false });
+         } else {
+            resolve(user);
+         }
+       
       } else {
         console.log("login faild");
         resolve({ status: false });
