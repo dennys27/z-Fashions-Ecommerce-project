@@ -1,0 +1,57 @@
+
+<div class="container d-flex justify-content-center " style="margin-top: 60px;">  
+
+<form class="w-50" action="/admin/product-edit/{{editProduct._id}}" method="POST">
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="exampleInputEmail1"
+      name="name"
+      aria-describedby="emailHelp"
+      placeholder="{{editProduct.name}}"
+    />
+
+  </div>
+  <div class="mb-3">
+   <select name="category" class="form-select" aria-label="Default select example">
+  <option name="category" >{{editProduct.category}}</option>
+  {{#each categories}}
+  <option name="option"  value="{{this.category}}">{{this.category}}</option>
+  {{/each}}
+</select>
+
+  </div>
+  <div class="mb-3">
+    <div class="form-floating">
+  <textarea placeholder="{{editProduct.Description}}"  name="description" class="form-control" id="floatingTextarea"></textarea>
+  <label for="floatingTextarea">Description</label>
+</div>
+
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">price</label>
+    <input
+      type="text"
+      class="form-control"
+      id="exampleInputEmail1"
+        name="price"
+      aria-describedby="emailHelp"
+    />
+
+  </div>
+
+  <!--<div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Images</label>
+   <div class="mb-3">
+ 
+  <input class="form-control" type="file" id="formFile" name="image"  multiple >
+</div>
+
+  </div>-->
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+</div>

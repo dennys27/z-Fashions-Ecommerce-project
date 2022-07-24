@@ -25,17 +25,17 @@
 <div class="container mt-2">
     <h2 class="fs-5 fw-3">WOMEN'S FASHION</h2>
   <div class="row mt-5 container">
-    {{#each products}}
-    <div class="col-md-3 mb-2">
+   {{#each products}}
+    <div class="col-md-3 mb-2 d-flex justify-content-center container-fluid prod-card m-3">
   
        
-      
+      <div>
         <a href="/view-product/{{this._id}}">
         <img
           src="/{{this.Image.[0]}}"
           class="card-img-top"
           alt="..."
-          style="width: 230px; height:260px"
+          style="width: 230px; height:230px"
         />
         <div class="d-flex" style="width: 100%;"> 
         <h5 class="fs-6 mt-2">{{this.name}}</h5> 
@@ -45,9 +45,10 @@
 
           <p class="card-text">₹{{this.price}}</p>
           
-          <a href="#" class="btn text-white " style=" border-radius:0; margin-left:80px; width: 94px; height:30px; font-size:13px;  background-color: #c48ac9;">Add to Cart</a>
+          <a href="#" class="btn text-white " style=" border-radius:5px; margin-left:80px; width: 94px; height:30px; font-size:13px;  background-color: #c48ac9;">Add to Cart</a>
         </div>
         </a>
+        </div>
         </div>
     
       {{/each}}
@@ -61,16 +62,16 @@
     <h2 class="fs-5 fw-3">MEN'S FASHION</h2>
   <div class="row mt-5 container">
     {{#each products}}
-    <div class="col-md-3 mb-2">
+    <div class="col-md-3 mb-2 d-flex justify-content-center container-fluid prod-card m-3">
   
        
-      
+      <div>
         <a href="/view-product/{{this._id}}">
         <img
           src="/{{this.Image.[0]}}"
           class="card-img-top"
           alt="..."
-          style="width: 230px; height:280px"
+          style="width: 230px; height:230px"
         />
         <div class="d-flex" style="width: 100%;"> 
         <h5 class="fs-6 mt-2">{{this.name}}</h5> 
@@ -80,9 +81,10 @@
 
           <p class="card-text">₹{{this.price}}</p>
           
-          <a href="#" class="btn text-white " style=" border-radius:0; margin-left:80px; width: 94px; height:30px; font-size:13px;  background-color: #c48ac9;">Add to Cart</a>
+          <a href="#" class="btn text-white " style=" border-radius:5px; margin-left:80px; width: 94px; height:30px; font-size:13px;  background-color: #c48ac9;">Add to Cart</a>
         </div>
         </a>
+        </div>
         </div>
     
       {{/each}}

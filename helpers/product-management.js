@@ -58,10 +58,31 @@ module.exports = {
     });
   },
 
+  getCategory: (editProduct) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.PRODUCT_CATAGORY)
+        .findOne({ _id: objectId(editProduct) })
+        .then((productData) => {
+          resolve(productData);
+        });
+    });
+  },
+
   deleteProduct: (prodId) => {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_COLLECTIONS)
+        .deleteOne({ _id: objectId(prodId) })
+        .then((response) => {
+          resolve(response);
+        });
+    });
+  },
+  deleteCategory: (prodId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.PRODUCT_CATAGORY)
         .deleteOne({ _id: objectId(prodId) })
         .then((response) => {
           resolve(response);
@@ -98,6 +119,44 @@ module.exports = {
         .insertOne(userData)
         .then((data) => {
           resolve(data.insertedId);
+        });
+    });
+  },
+  updateProduct: (proId, proDetals) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.PRODUCT_COLLECTIONS)
+        .updateOne(
+          { _id: objectId(proId) },
+          {
+            $set: {
+              name: proDetals.name,
+              category: proDetals.category,
+              description: proDetals.description,
+              price: proDetals.price,
+            },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+        });
+    });
+  },
+  updateCategory: (proId, proDetals) => {
+    console.log(proId,proDetals)
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.PRODUCT_CATAGORY)
+        .updateOne(
+          { _id: objectId(proId) },
+          {
+            $set: {
+              category: proDetals.category,
+            },
+          }
+        )
+        .then((response) => {
+          resolve(response);
         });
     });
   },
