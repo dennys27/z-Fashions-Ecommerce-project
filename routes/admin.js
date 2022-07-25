@@ -34,6 +34,20 @@ router.get("/view-users", varifyLogin, (req, res, next) => {
   });
 });
 
+
+
+//admin- user full details
+router.get("/view-user/:id", varifyLogin, (req, res, next) => {
+  productHelpers.getProductDetails(req.params.id).then((user) => {
+    console.log(user);
+      res.render("admin/userprofile", { admin: true, user });
+  })
+  
+  
+});
+
+
+
 router.get("/add-user", varifyLogin, function (req, res) {
   res.render("admin/add-user", { admin: true });
 });

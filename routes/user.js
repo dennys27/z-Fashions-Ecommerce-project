@@ -22,7 +22,7 @@ let User_number = "";
 router.get('/', function(req, res, next) {
   let user = req.session.user;
  
- 
+   //console.log(user)
   let U_session = req.session;
    userHelpers.isExist(U_session)
 
@@ -41,7 +41,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/login', function (req, res) {
   let blocked = req.session.blockedUser;
-  console.log(blocked)
+  //console.log(blocked)
   if(req.session.loggedIn){
     res.redirect('/')
   }else{
@@ -64,11 +64,14 @@ router.get("/otp-login", function (req, res) {
   }
 });
 
+
+
 router.post("/otp-verification", function (req, res) {
   userHelpers.NumberExist(req.body.number)
     .then((resp) => {
+      console.log(resp);
       if (!resp.userBlock==true) {
-        console.log(resp.Email);
+        //console.log(resp.Email);
         req.session.user=resp.Email
        const { number } = req.body;
        User_number = number;
@@ -82,9 +85,9 @@ router.post("/otp-verification", function (req, res) {
     }
     })
 
-
-  
 });
+
+
 
 router.post("/otp-matching", function (req, res) {
   const { otp } = req.body;
@@ -111,8 +114,6 @@ router.post("/otp-matching", function (req, res) {
 
 
 
-
-
 router.get('/signup', function (req, res) {
   if (req.session.loggedIn){
     res.redirect('/')
@@ -126,7 +127,7 @@ router.get('/signup', function (req, res) {
 router.post('/signup', (req, res) => {
   let reqBody = req.body
   reqBody.block = "false"
-  console.log(reqBody)
+  //console.log(reqBody)
  userHelpers.doSignup(reqBody).then((response)=>{
   if (response.status){
     req.session.signErr=true

@@ -36,6 +36,7 @@ module.exports = {
       }
     });
   },
+  
   doLogin: (userData) => {
     return new Promise(async (resolve, reject) => {
       let loginStatus = false;
@@ -98,19 +99,20 @@ module.exports = {
         .get()
         .collection(collection.USER_COLLECTION)
         .findOne({ phone: number });
+       console.log(user);
       if (user) {
          
          if (user.block == true) {
            resolve({ userBlock: true });
            console.log("login faild");
-           resolve({ status: false });
+           //resolve({ status: false });
          } else {
             resolve(user);
          }
        
       } else {
         console.log("login faild");
-        resolve({ status: false });
+        resolve({ userExist: false });
       }
     });
   },

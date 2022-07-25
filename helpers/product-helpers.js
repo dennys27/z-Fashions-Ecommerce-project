@@ -40,7 +40,6 @@ module.exports={
                 resolve(data.insertedId)
             })
 
-
         })
     },
     updateUser:(proId,proDetals)=>{
