@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret:"key",
 resave:false,
 saveUninitialized:true,
-  cookie: { maxAge: 200000 }
+  cookie: { maxAge: 500000 }
 }))
 app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/uploads"));
@@ -38,14 +38,14 @@ app.use(express.static(__dirname + "/public/javascript"));
 app.use((req, res, next) => {
   if (!req.user) {
     res.header("cache-control", "private,no-cache,no-store,must revalidate");
-    res.header("Express", "-2");
+    res.header("Express", "-3");
   }
   next();
 });
 app.use((req, res, next) => {
   if (!req.admin) {
     res.header("cache-control", "private,no-cache,no-store,must revalidate");
-    res.header("Express", "-2");
+    res.header("Express", "-3");
   }
   next();
 });
