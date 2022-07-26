@@ -1,7 +1,7 @@
 
 <div class="container d-flex justify-content-center " style="margin-top: 60px;">  
 
-<form class="w-50" action="/admin/product-edit/{{editProduct._id}}" method="POST">
+<form class="w-50" enctype="multipart/form-data" action="/admin/product-edit/{{editProduct._id}}" method="POST">
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Name</label>
     <input
@@ -42,14 +42,14 @@
 
   </div>
 
-  <!--<div class="mb-3">
+  <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Images</label>
    <div class="mb-3">
  
   <input class="form-control" type="file" id="formFile" name="image"  multiple >
 </div>
 
-  </div>-->
+  </div>
   
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>

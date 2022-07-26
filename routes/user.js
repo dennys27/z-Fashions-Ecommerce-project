@@ -1,7 +1,7 @@
 var express = require('express');
 const session = require('express-session');
 require("dotenv").config();
-const { response } = require('../app');
+//const { response } = requie('../app');
 var router = express.Router();
 const userHelpers = require('../helpers/user-helpers')
 var productHelpers = require("../helpers/product-management");
@@ -22,19 +22,25 @@ let User_number = "";
 router.get('/', function(req, res, next) {
   let user = req.session.user;
  
-   //console.log(user)
   let U_session = req.session;
   
    userHelpers.isExist(U_session)
 
-  // if (userHelpers.isExist(user) === "invalid") {
-  //   req.session.destroy((err) => {
-  //     console.log("error occured during session destruction");
-  //   });
-  // }
-
   productHelpers.getAllproducts().then((products) => {
-  res.render("index", { products, user });
+    let men = []
+    let women = []
+
+    products.map((data) =>{
+      if (data.category == "men") {
+        men.push(data)
+      } else if (data.category == "women") {
+         women.push(data);
+      }
+        
+    })
+
+    res.render("index", { women, men, user });
+    console.log(user);
   })
 
 });
@@ -42,7 +48,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/login', function (req, res) {
   let blocked = req.session.blockedUser;
-  //console.log(blocked)
+
   if(req.session.loggedIn){
     res.redirect('/')
   }else{
@@ -71,20 +77,33 @@ router.post("/otp-verification", function (req, res) {
  
   userHelpers.NumberExist(req.body.number)
     .then((resp) => {
-      console.log(resp);
-      if (!resp.userBlock==true) {
-        //console.log(resp.Email);
-        req.session.user=resp.Email
-       const { number } = req.body;
-       User_number = number;
-       client.verify.services(process.env.SERVICE_SID).verifications.create({
-         to: `+91${number}`,
-         channel: "sms",
-       });
-       res.render("user/otp-veri");
+ 
+      if (resp.userExist == false) {
+       
+         res.render("user/otp",{UserNotExist:true});
       } else {
-         res.redirect("/otp-verification")
-    }
+
+        if (resp.userBlock !== true) {
+          console.log("it shouldnt be working");
+          req.session.user = resp.Email;
+          const { number } = req.body;
+          User_number = number;
+          client.verify
+            .services(process.env.SERVICE_SID)
+            .verifications.create({
+              to: `+91${number}`,
+              channel: "sms",
+            });
+          
+        }
+        res.render("user/otp-veri",{user:resp.user});
+            // } else {
+            //   res.redirect("/otp-login");
+            // }
+        
+
+      }
+      
     })
 
 });
@@ -114,8 +133,6 @@ router.post("/otp-matching", function (req, res) {
  
    //res.redirect("/");
   
-  
-  
 });
 
 
@@ -132,7 +149,7 @@ router.get('/signup', function (req, res) {
 
 router.post('/signup', (req, res) => {
   let reqBody = req.body
-  reqBody.block = "false"
+  reqBody.block = false;
   //console.log(reqBody)
  userHelpers.doSignup(reqBody).then((response)=>{
   if (response.status){

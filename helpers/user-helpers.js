@@ -93,29 +93,26 @@ module.exports = {
 
   NumberExist: (number) => {
     return new Promise(async (resolve, reject) => {
-      let loginStatus = false;
-      let response = {};
-      let user = await db
-        .get()
-        .collection(collection.USER_COLLECTION)
-        .findOne({ phone: number });
-       console.log(user);
-      if (user) {
-         
+      let user = await db.get().collection(collection.USER_COLLECTION).findOne({ phone: number });
+        
+      if (user == null) {
+         console.log("login faild");
+         resolve({ userExist: false,});
+      } else {
          if (user.block == true) {
            resolve({ userBlock: true });
            console.log("login faild");
-           //resolve({ status: false });
-         } else {
-            resolve(user);
-         }
-       
-      } else {
-        console.log("login faild");
-        resolve({ userExist: false });
+           resolve({ status: false });
+         } else if (user !== null) {
+    
+            resolve( user);
+         } 
       }
     });
   },
+
+
+
 
   blockUser: (userId) => {
     return new Promise((resolve, reject) => {

@@ -57,6 +57,8 @@ router.post("/add-user", (req, res) => {
     res.redirect("/admin");
   });
 });
+
+
 router.post("/view-users", (req, res) => {
   const { Email, Password } = req.body;
   if (userName === Email && Pin === Password) {
@@ -72,6 +74,8 @@ router.post("/view-users", (req, res) => {
     res.redirect("/admin");
   }
 });
+
+
 //user delete
 router.get("/delete-product/:id", varifyLogin, (req, res) => {
   let proId = req.params.id;
@@ -79,10 +83,12 @@ router.get("/delete-product/:id", varifyLogin, (req, res) => {
     res.redirect("/admin/");
   });
 });
+
 router.get("/update-user/:id", varifyLogin, async (req, res) => {
   let user = await productHelpers.getProductDetails(req.params.id);
   res.render("admin/update-user", { user, admin: true });
 });
+
 router.post("/update-user/:id", (req, res) => {
   productHelpers.updateUser(req.params.id, req.body).then((response) => {
     res.redirect("/admin");
@@ -111,7 +117,20 @@ router.get("/edit-product/:id", varifyLogin, async (req, res) => {
 });
 
 //edit-product-post
-router.post("/product-edit/:id", varifyLogin, async (req, res) => {
+router.post("/product-edit/:id", varifyLogin,store.array("image", 4), async (req, res) => {
+ 
+   const files = req.files;
+   if (!files) {
+     const err = new Error("please choose the images");
+     res.redirect("/add-products", err);
+   }
+   //res.render("admin/add-products", { admin: true });
+   var filenames = req.files.map(function (file) {
+     return file.filename;
+   });
+
+   req.body.Image = filenames;
+
   let editProduct = await itemHelpers.updateProduct(req.params.id, req.body);
   res.render("admin/edit-product", {
     editProduct,
@@ -129,7 +148,7 @@ router.get("/add-products", varifyLogin, (req, res) => {
 });
 
 router.post("/add-item", store.array("image", 4), (req, res) => {
-  console.log("im working");
+ 
   const files = req.files;
   if (!files) {
     const err = new Error("please choose the images");
@@ -146,6 +165,9 @@ router.post("/add-item", store.array("image", 4), (req, res) => {
     res.redirect("/admin/add-products");
   });
 });
+
+
+
 
 router.get("/add-categories", varifyLogin, (req, res) => {
   res.render("admin/Add-category", { admin: true });
@@ -180,6 +202,8 @@ router.post("/add-category", (req, res) => {
   itemHelpers.addCategory(req.body);
   res.redirect("/admin/add-categories");
 });
+
+
 
 router.get("/edit-categories/:id", varifyLogin, (req, res) => {
   itemHelpers.getCategory(req.params.id).then((category) => {

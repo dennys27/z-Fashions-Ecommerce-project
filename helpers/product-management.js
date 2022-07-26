@@ -122,7 +122,8 @@ module.exports = {
         });
     });
   },
-  updateProduct: (proId, proDetals) => {
+
+  updateProduct: (proId, proDetails) => {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_COLLECTIONS)
@@ -130,10 +131,11 @@ module.exports = {
           { _id: objectId(proId) },
           {
             $set: {
-              name: proDetals.name,
-              category: proDetals.category,
-              description: proDetals.description,
-              price: proDetals.price,
+              name: proDetails.name,
+              category: proDetails.category,
+              description: proDetails.description,
+              price: proDetails.price,
+              Image:proDetails.Image,
             },
           }
         )

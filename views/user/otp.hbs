@@ -15,6 +15,10 @@
             {{#if invalidotp}}
                 <p class="error text-center" style="color: red;">Invalid otp</p>
             {{/if}}
+
+            {{#if UserNotExist}}
+                <p class="error text-center" style="color: red;">User doesnot exist</p>
+            {{/if}}
                 <div class="form-group text-center">
                     <label class="mb-3" style="color: #D3A4D6;">Enter your phone number</label>
                     <input type="text" class="form-control  " name="number" placeholder="Phone" required >
