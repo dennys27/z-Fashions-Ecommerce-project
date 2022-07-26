@@ -7,9 +7,13 @@
             {{#if loginerr}}
                 <p class="error text-center" style="color: red;">Invalid number</p>
             {{/if}}
+
+            {{#if otpvalidation}}
+                <p class="error text-center" style="color: red;">invalid otp</p>
+            {{/if}}
                 <div class="form-group">
                     <label>Enter the otp</label>
-                    <input type="phone" class="form-control" name="otp" placeholder="Phone">
+                    <input type="phone" class="form-control" name="otp" placeholder="Phone" required>
 
                 </div>
                

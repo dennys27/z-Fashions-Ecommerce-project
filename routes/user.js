@@ -24,6 +24,7 @@ router.get('/', function(req, res, next) {
  
    //console.log(user)
   let U_session = req.session;
+  
    userHelpers.isExist(U_session)
 
   // if (userHelpers.isExist(user) === "invalid") {
@@ -67,6 +68,7 @@ router.get("/otp-login", function (req, res) {
 
 
 router.post("/otp-verification", function (req, res) {
+ 
   userHelpers.NumberExist(req.body.number)
     .then((resp) => {
       console.log(resp);
@@ -81,7 +83,7 @@ router.post("/otp-verification", function (req, res) {
        });
        res.render("user/otp-veri");
       } else {
-         res.render("user/otp", { invalidph: "invalid phone number" });
+         res.redirect("/otp-verification")
     }
     })
 
@@ -91,7 +93,7 @@ router.post("/otp-verification", function (req, res) {
 
 router.post("/otp-matching", function (req, res) {
   const { otp } = req.body;
-  
+   
   client.verify
     .services(process.env.SERVICE_SID)
     .verificationChecks.create({
@@ -103,6 +105,10 @@ router.post("/otp-matching", function (req, res) {
       console.log(resp);
       if (resp.valid == true) {
         res.redirect("/");
+      } else if (resp.valid == false) {
+        req.session.otp = true;
+        let otpvalidation = req.session.otp;
+          res.render("user/otp-veri",{otpvalidation})
       }
     });
  
