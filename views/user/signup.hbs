@@ -2,7 +2,7 @@
     <div class="col-md-6 m-auto">
         <div class="containor mt-5 pl-5">
             <h2 class="text-center">Create Account</h2>
-            <form action="/signup" method="POST">
+            <form id="#forms" action="/signup" method="POST" onsubmit="return validate(event)">
              {{#if signerr}}
                 <p class="error text-center" style="color: red;">Username already taken</p>
             {{/if}}
@@ -12,16 +12,18 @@
                 <div class="form-group">
                     <label>User name</label>
                     <input type="text" class="form-control" name="Email" placeholder="Enter username" required>
-
+                      
                 </div>
                 <div class="form-group">
                     <label>Phone</label>
-                    <input type="text" class="form-control" name="phone" placeholder="Phone" required>
+                    <input id="phn" type="text" class="form-control" name="phone" placeholder="Phone" required>
+                     <p id="invalidphn" class="error text-center" style="color: red;">Invalid Phone Number</p>
 
                 </div>
                 <div class="form-group">
                     <label>Password</label>
                     <input type="password" class="form-control" name="Password" placeholder="Password" required>
+                     <p id="invalidpsw" class="error text-center" style="color: red; visibility:hidden">Invalid Password</p>
                 </div>
                 
                 
