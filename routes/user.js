@@ -84,7 +84,7 @@ router.post("/otp-verification", function (req, res) {
       } else {
 
         if (resp.userBlock !== true) {
-          console.log("it shouldnt be working");
+          console.log("it should be working");
           req.session.user = resp.Email;
           const { number } = req.body;
           User_number = number;
@@ -97,10 +97,7 @@ router.post("/otp-verification", function (req, res) {
           
         }
         res.render("user/otp-veri",{user:resp.user});
-            // } else {
-            //   res.redirect("/otp-login");
-            // }
-        
+          
 
       }
       
@@ -121,18 +118,17 @@ router.post("/otp-matching", function (req, res) {
       code: otp,
     })
     .then((resp) => {
-      console.log(resp);
-      if (resp.valid == true) {
-        res.redirect("/");
-      } else if (resp.valid == false) {
+      
+       if (resp.valid == false) {
         req.session.otp = true;
         let otpvalidation = req.session.otp;
           res.render("user/otp-veri",{otpvalidation})
+      } else if(resp.valid == true){
+        res.redirect("/");
       }
     });
  
-   //res.redirect("/");
-  
+ 
 });
 
 
