@@ -1,0 +1,38 @@
+{{#each cartProducts}}
+                                            <tr>
+                                                
+                                                <td class="product-thumbnail">
+                                                    <a href="/view-product/{{this._id}}"><img src="/image/product-images/{{this.product.Image.[0]}}" alt=""></a>
+                                                </td>
+                                                <td class="product-name">
+                                                    <h5><a href="/view-product/{{this._id}}">{{this.product.Name}}</a></h5>
+                                                </td>
+                                                <td class="product-cart-price"><span class="amount">{{this.product.Price}}</span></td>
+                                                <td class="product-total"><span>{{this.product.DiscountPrice}}</span></td>
+                                               
+                                                <td class="cart-quality">
+                                                   
+                                                    <button class="cart-item-count mr-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user._id}}',-1)" >-</button><span id="{{this.product._id}}">{{this.quantity}}</span><button class="cart-item-count mr-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user._id}}',1)">+</button>
+                                                </td>
+                                                <td class="product-remove"><button class="btn" onclick="deleteProduct('{{this._id}}','{{this.product._id}}')"><i class=" ti-trash "></i></button></td>
+                                            </tr>
+                                        {{/each}}
+{{#each cartProducts}}
+                                            <tr>
+                                                
+                                                <td class="product-thumbnail">
+                                                    <a href="/view-product/{{this._id}}"><img src="/image/product-images/{{this.product.Image.[0]}}" alt=""></a>
+                                                </td>
+                                                <td class="product-name">
+                                                    <h5><a href="/view-product/{{this._id}}">{{this.product.Name}}</a></h5>
+                                                </td>
+                                                <td class="product-cart-price"><span class="amount">{{this.product.Price}}</span></td>
+                                                <td class="product-total"><span>{{this.product.DiscountPrice}}</span></td>
+                                               
+                                                <td class="cart-quality">
+                                                   
+                                                    <button class="cart-item-count mr-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user._id}}',-1)" >-</button><span id="{{this.product._id}}">{{this.quantity}}</span><button class="cart-item-count mr-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user._id}}',1)">+</button>
+                                                </td>
+                                                <td class="product-remove"><button class="btn" onclick="deleteProduct('{{this._id}}','{{this.product._id}}')"><i class=" ti-trash "></i></button></td>
+                                            </tr>
+                                        {{/each}}

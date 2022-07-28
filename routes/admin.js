@@ -18,6 +18,7 @@ const varifyLogin = (req, res, next) => {
   }
 };
 
+
 /* GET users listing. */
 router.get("/", function (req, res, next) {
   if (req.session.users) {
@@ -124,6 +125,7 @@ router.post("/product-edit/:id", varifyLogin,store.array("image", 4), async (req
      const err = new Error("please choose the images");
      res.redirect("/add-products", err);
    }
+  
    //res.render("admin/add-products", { admin: true });
    var filenames = req.files.map(function (file) {
      return file.filename;
@@ -154,6 +156,8 @@ router.post("/add-item", store.array("image", 4), (req, res) => {
     const err = new Error("please choose the images");
     res.redirect("/add-products", err);
   }
+
+
   //res.render("admin/add-products", { admin: true });
   var filenames = req.files.map(function (file) {
     return file.filename;
@@ -179,8 +183,9 @@ router.get("/view-products", varifyLogin, (req, res) => {
   });
 });
 
-//categories
 
+
+//categories
 router.get("/categories", varifyLogin, (req, res) => {
   itemHelpers.getAllcategories().then((categories) => {
     res.render("admin/categories", { admin: true, categories });

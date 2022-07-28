@@ -45,7 +45,7 @@ module.exports = {
         .get()
         .collection(collection.USER_COLLECTION)
         .findOne({ Email: userData.Email });
-      console.log(user)
+     
       if (user) {
          if (user.block == true) {
            resolve({ userBlock: true });
@@ -130,6 +130,8 @@ module.exports = {
         });
     });
   },
+
+  
   unBlockUser: (userId) => {
     console.log(userId);
     return new Promise((resolve, reject) => {
