@@ -181,12 +181,15 @@ router.get("/cart", async function (req, res) {
    if (req.session.user) {
     cartCount = await cartHelpers.getCount(req.session.user._id);
     console.log(cartCount);
-  }
+   }
+  
+ 
 
   if (req.session.loggedIn) {
      let user = req.session.user;
-     cartHelpers.getCartProducts(req.session.user._id).then((data) => {
-       res.render("user/Cart", { user, data,cartCount });
+    cartHelpers.getCartProducts(req.session.user._id).then(async(data) => {
+        let total = await cartHelpers.getTotalAmount(req.session.user._id);
+       res.render("user/Cart", { user, data,cartCount,total });
      });
    
   } else {
@@ -199,6 +202,7 @@ router.get("/cart", async function (req, res) {
 
 router.post("/add-to-cart/:id", (req, res) => {
   cartHelpers.addToCart(req.params.id, req.session.user._id).then((data) => {
+     res.json({status:true});
  })
 })
 
@@ -207,6 +211,12 @@ router.post("/change-product-quantity", (req, res) => {
   cartHelpers.changeProductQuantity(req.body).then((response) => {
     res.json(response)
   })
+})
+
+router.get("/checkout", async (req, res) => {
+  let user = req.session.user;
+    let total = await cartHelpers.getTotalAmount(req.session.user._id);
+       res.render("user/checkout", { user,total });
 })
 
 

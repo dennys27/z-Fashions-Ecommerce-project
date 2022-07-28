@@ -1,5 +1,5 @@
  
-     function changeQuantity(cartId, proId, count) {
+     function changeQuantity(cartId, proId, count,dummy) {
        event.preventDefault();
        let quantity = parseInt(document.getElementById(proId).innerHTML);
        count = parseInt(count);
@@ -7,7 +7,7 @@
          url: "/change-product-quantity",
          data: {
            cart: cartId,
-           product: proId,
+           product: proId, 
            count: count,
            quantity: quantity,
          },
@@ -30,7 +30,7 @@ function addToCart(proId) {
        console.log("im working you know");
        $.ajax({
          url: "/add-to-cart/" + proId,
-         method: "POST",
+         method: "post",
          success: (response) => {
            if (response.added) {
              let count = $("#cart-count").html();
