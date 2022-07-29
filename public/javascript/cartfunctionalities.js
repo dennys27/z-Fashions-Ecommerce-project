@@ -7,7 +7,7 @@
          url: "/change-product-quantity",
          data: {
            cart: cartId,
-           product: proId, 
+           product: proId,   
            count: count,
            quantity: quantity,
          },
@@ -18,6 +18,7 @@
              location.reload();
            } else {
              document.getElementById(proId).innerHTML = quantity + count;
+             document.getElementById("total").innerHTML = response.total;
            }
          },
        });

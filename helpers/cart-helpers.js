@@ -7,8 +7,7 @@ var objectId = require("mongodb").ObjectId;
 
 module.exports = {
   addToCart: (proId, userId) => {
-    console.log("ghghh");
-    console.log(proId);
+   
     let proObj = {
       item: objectId(proId),
       quantity: 1,
@@ -18,7 +17,7 @@ module.exports = {
         .get()
         .collection(collection.CART_COLLECTION)
         .findOne({ user: objectId(userId) });
-      console.log(userCart);
+     
       if (userCart) {
         let proExist = userCart.products.findIndex(
           (product) => product.item == proId
@@ -34,7 +33,7 @@ module.exports = {
               }
             )
             .then(() => {
-              resolve();
+              resolve({ added: true });
             });
         } else {
           db.get()
@@ -46,7 +45,7 @@ module.exports = {
               }
             )
             .then((response) => {
-              resolve();
+              resolve({ added: true });
             });
         }
       } else {
@@ -58,7 +57,7 @@ module.exports = {
           .collection(collection.CART_COLLECTION)
           .insertOne(cartObj)
           .then((response) => {
-            resolve();
+            resolve({ added: true });
           });
       }
     });
@@ -101,7 +100,7 @@ module.exports = {
           },
         ])
         .toArray();
-      console.log(cartItems);
+      
       resolve(cartItems);
     });
   },
@@ -138,7 +137,7 @@ module.exports = {
             }
           )
           .then((response) => {
-            resolve({ status: true });
+            resolve(response);
           });
       }
     });
@@ -198,10 +197,7 @@ module.exports = {
               _id: null,
               total: {
                 $sum: {
-                  $multiply: [
-                    "$quantity",
-                    { $toInt: "$product.price" },
-                  ],
+                  $multiply: ["$quantity", { $toInt: "$product.price" }],
                 },
               },
             },
@@ -210,7 +206,116 @@ module.exports = {
         .toArray();
       if (total.length != 0) {
         resolve(total[0].total);
+      } else {
+        resolve();
       }
     });
   },
+
+  placeOrder: (order, products, total) => {
+    return new Promise(async (resolve, reject) => {
+      let status = order.PaymentMethod === "COD" ? "placed" : "pending";
+      let orderObj = {
+        deliveryDetails: {
+          mobile: order.PhoneNumber,
+          address: order.Address,
+          pincode: order.Zipcode,
+          appartment: order.Apartment,
+          city: order.City,
+          state: order.State,
+          country: order.Country,
+          totalAmount: total,
+        },
+        userId: objectId(order.userId),
+        paymentMethod: order.PaymentMethod,
+        products: products,
+        date: new Date(),
+        status: status,
+      };
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .insertOne(orderObj)
+        .then((response) => {
+          db.get()
+            .collection(collection.CART_COLLECTION)
+            .deleteOne({ user: objectId(order.userId) });
+          resolve();
+        });
+    });
+  },
+
+  getCartProductList: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      let cart = await db
+        .get()
+        .collection(collection.CART_COLLECTION)
+        .findOne({ user: objectId(userId) });
+      resolve(cart.products);
+    });
+  },
+
+  getUserOrders: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      let orders = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .find({ userId: objectId(userId) }).toArray()
+      resolve(orders);
+    });
+  },
+
+  getOrderProducts: (orderId) => {
+    return new Promise(async (resolve, reject) => {
+      let products = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .aggregate([
+          {
+            $match: { user: objectId(orderId) },
+          },
+          {
+            $unwind: "$products",
+          },
+          {
+            $project: {
+              item: "$products.item",
+              quantity: "$products.quantity",
+            },
+          },
+          {
+            $lookup: {
+              from: collection.PRODUCT_COLLECTIONS,
+              localField: "item",
+              foreignField: "_id",
+              as: "product",
+            },
+          },
+          {
+            $project: {
+              item: 1,
+              quantity: 1,
+              product: {
+                $arrayElemAt: ["$product", 0],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: {
+                  $multiply: ["$quantity", { $toInt: "$product.price" }],
+                },
+              },
+            },
+          },
+        ]);
+      
+      
+        
+      resolve(products);
+    });
+  },
+
+
 };

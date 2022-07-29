@@ -8,6 +8,16 @@ var productHelpers = require("../helpers/product-management");
 const cartHelpers = require("../helpers/cart-helpers");
 const { response } = require("express");
 
+
+const varifyLogin = (req, res, next) => {
+  if (req.session.user) {
+    next();
+  } else {
+    res.render("user/login");
+    req.session.err = false;
+  }
+};
+
 const client = require("twilio")(
   process.env.ACCOUNT_SID,
   process.env.AUTH_TOKEN,
@@ -200,24 +210,58 @@ router.get("/cart", async function (req, res) {
   
 });
 
-router.post("/add-to-cart/:id", (req, res) => {
+router.post("/add-to-cart/:id",varifyLogin, (req, res) => {
   cartHelpers.addToCart(req.params.id, req.session.user._id).then((data) => {
-     res.json({status:true});
+     res.json(data);
  })
 })
 
 
-router.post("/change-product-quantity", (req, res) => {
-  cartHelpers.changeProductQuantity(req.body).then((response) => {
+router.post("/change-product-quantity",varifyLogin, (req, res) => {
+  cartHelpers.changeProductQuantity(req.body).then(async(response) => {
+    let total = await cartHelpers.getTotalAmount(req.session.user._id);
+    console.log(total);
+    if (total > 0) {
+      response.total = total;
+    }
     res.json(response)
   })
-})
+}) 
 
-router.get("/checkout", async (req, res) => {
+router.get("/checkout", varifyLogin, async (req, res) => {
   let user = req.session.user;
     let total = await cartHelpers.getTotalAmount(req.session.user._id);
        res.render("user/checkout", { user,total });
 })
+
+router.post("/checkout-form",varifyLogin, async (req, res) => {
+  let user = req.session.user;
+ 
+  let products= await cartHelpers.getCartProductList(req.body.userId)
+  let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
+  cartHelpers.placeOrder(req.body,products,totalPrice).then((response) => {
+    res.json({status:true})
+  })
+ 
+  //res.render("user/checkout", { user,total });
+   
+})
+
+//orders list
+
+router.get("/orders-list", varifyLogin, async (req, res) => {
+  let user = req.session.user;
+  let orders = await cartHelpers.getUserOrders(user._id);
+  console.log(orders)
+  res.render("user/orderslist", { user, orders });
+});
+
+router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
+  let user = req.session.user;
+  let products = await cartHelpers.getOrderProducts(req.params.id);
+  console.log(orders);
+  res.render("user/view-ordered-products", { user, orders });
+});
 
 
 
