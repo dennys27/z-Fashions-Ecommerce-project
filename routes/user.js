@@ -186,7 +186,7 @@ router.get("/logout", (req, res) => {
 
 
 // cart section
-router.get("/cart", async function (req, res) {
+router.get("/cart",varifyLogin, async function (req, res) {
   let cartCount = 0;
    if (req.session.user) {
     cartCount = await cartHelpers.getCount(req.session.user._id);
@@ -263,13 +263,28 @@ router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
   res.render("user/view-ordered-products", { user, products });
 });
 
+//user profile
 router.get("/my-account/:id", varifyLogin, (req, res) => {
-  res.render("user/user-account")
+  let user = req.session.user;
+ 
+  res.render("user/user-account", { user });
+  
+  
 });
 
 router.post("/user-profile", varifyLogin, (req, res) => {
   console.log(req.body)
 });
+
+//profile edit
+
+router.get("/profile-edit/:id", varifyLogin, (req, res) => {
+  let user = req.session.user;
+
+  res.render("user/profile-edit", { user });
+});
+
+
 
 
 

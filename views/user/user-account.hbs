@@ -1,163 +1,180 @@
+<div class="container">
+  <div class="main-body mt-5">
 
-  <div class="container pt-5 mt-8">
-    <div class="row gutters">
-      
 
-      <form class=" " action="/user-profile" method="POST">
-      <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
-		
-        <div class="card h-100">
+    <div class="row gutters-sm mt-2">
+      <div class="col-md-4 mb-3">
+        <div class="card">
           <div class="card-body">
-            <div class="row gutters">
-              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                <h6 class="mb-2 text-primary">Personal Details</h6>
-              </div>
-              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                <div class="form-group">
-                  <label for="fullName">First Name</label>
-                  <input
-				  name="firstName"
-                    type="text"
-                    class="form-control"
-                    id="fullName"
-                    placeholder="Enter full name"
-                  />
-                </div>
-              </div>
-              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                <div class="form-group">
-                  <label for="LastName">Last Name</label>
-                  <input
-				   name="lastName"
-                    type="text"
-                    class="form-control"
-                    id="eMail"
-                    placeholder="Enter email ID"
-                  />
-                </div>
-              </div>
-              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                <div class="form-group">
-                  <label for="phone">Phone</label>
-                  <input
-				   name="phone"
-                    type="text"
-                    class="form-control"
-                    id="phone"
-                    placeholder="Enter phone number"
-                  />
-                </div>
-              </div>
-              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                <div class="form-group">
-                  <label for="website">Address</label>
-                  <input
-				   name="address"
-                    type="text"
-                    class="form-control"
-                    id="website"
-                    placeholder="address"
-                  />
-                </div>
-
-              </div>
-            </div>
-            <div class="row gutters">
-
-              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                <div class="form-group">
-                  <label for="Street">Street</label>
-                  <input
-				   name="street"
-                    type="name"
-                    class="form-control"
-                    id="Street"
-                    placeholder="Enter Street"
-                  />
-                </div>
-
-              </div>
-              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                <div class="form-group">
-                  <label for="ciTy">City</label>
-                  <input
-				   name="city"
-                    type="name"
-                    class="form-control"
-                    id="ciTy"
-                    placeholder="Enter City"
-                  />
-                </div>
-              </div>
-              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                <div class="form-group">
-                  <label for="sTate">State</label>
-                  <input
-				   name="state"
-                    type="text"
-                    class="form-control"
-                    id="sTate"
-                    placeholder="Enter State"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="sTate">Country</label>
-                  <input
-				   name="country"
-                    type="text"
-                    class="form-control"
-                    id="sTate"
-                    placeholder="Enter State"
-                  />
-                </div>
-              </div>
-              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                <div class="form-group">
-                  <label for="zIp">Zip Code</label>
-                  <input
-				   name="zipcode"
-                    type="text"
-                    class="form-control"
-                    id="zIp"
-                    placeholder="Zip Code"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="website">Appartment</label>
-                  <input
-				   name="appartment"
-                    type="text"
-                    class="form-control"
-                    id="website"
-                    placeholder="Appartment"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="row gutters">
-              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                <div class="text-right">
-                  <button
-                    type="button"
-                    id="submit"
-                   
-                    class="btn btn-secondary"
-                  >Cancel</button>
-                  <button
-                    type="submit"
-                    id="submit"
-                   
-                    class="btn btn-primary"
-                  >Update</button>
-                </div>
+            <div class="d-flex flex-column align-items-center text-center">
+              <img
+                src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                alt="Admin"
+                class="rounded-circle"
+                width="150"
+              />
+              <div class="mt-3">
+                <h4>{{user.Email}}</h4>
+                <p class="text-secondary mb-1">Premium Account</p>
+                <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
+                <button class="btn btn-primary">Edit Avatar</button>
+                <button class="btn btn-outline-primary">Message</button>
               </div>
             </div>
           </div>
         </div>
+
       </div>
-   </form>
+
+      <div class="col-md-8">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Name</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+               {{user.Email}}
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Email</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{user.Email}}@gmail.com
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Phone</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{user.phone}}
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Mobile</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                (320) 380-4539
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Password</h6>
+              </div>
+              <div type="password" class="col-sm-9 text-secondary">
+               **************
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-12">
+                <a
+                  class="btn btn-info"
+                
+                  href="/profile-edit/{{user._id}}"
+                >Edit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Address</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+               {{user.Email}}
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Apartment</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{user.Email}}@gmail.com
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Mobile</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{user.phone}}
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Zipcode</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                (320) 380-4539
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">City</h6>
+              </div>
+              <div type="password" class="col-sm-9 text-secondary">
+               **************
+              </div>
+            </div>
+            <hr />
+             
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">State</h6>
+              </div>
+              <div type="password" class="col-sm-9 text-secondary">
+               **************
+              </div>
+            </div>
+             <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Country</h6>
+              </div>
+              <div type="password" class="col-sm-9 text-secondary">
+               **************
+              </div>
+            </div>
+             <hr />
+            <div class="row">
+              <div class="col-sm-12">
+                <a
+                  class="btn btn-info"
+                  target="__blank"
+                  href="https://www.bootdey.com/snippets/view/profile-edit-data-and-skills"
+                >Edit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+      </div>
+
+  
+      
 
 
 
     </div>
+    
+
   </div>
+</div>

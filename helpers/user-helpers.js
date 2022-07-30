@@ -36,7 +36,7 @@ module.exports = {
       }
     });
   },
-  
+
   doLogin: (userData) => {
     return new Promise(async (resolve, reject) => {
       let loginStatus = false;
@@ -45,14 +45,13 @@ module.exports = {
         .get()
         .collection(collection.USER_COLLECTION)
         .findOne({ Email: userData.Email });
-     
+
       if (user) {
-         if (user.block == true) {
-           resolve({ userBlock: true });
-         }
+        if (user.block == true) {
+          resolve({ userBlock: true });
+        }
       }
-     
-      
+
       if (user) {
         bcrypt.compare(userData.Password, user.Password).then((status) => {
           if (status) {
@@ -93,26 +92,25 @@ module.exports = {
 
   NumberExist: (number) => {
     return new Promise(async (resolve, reject) => {
-      let user = await db.get().collection(collection.USER_COLLECTION).findOne({ phone: number });
-        
+      let user = await db
+        .get()
+        .collection(collection.USER_COLLECTION)
+        .findOne({ phone: number });
+
       if (user == null) {
-         console.log("login faild");
-         resolve({ userExist: false,});
+        console.log("login faild");
+        resolve({ userExist: false });
       } else {
-         if (user.block == true) {
-           resolve({ userBlock: true });
-           console.log("login faild");
-           resolve({ status: false });
-         } else if (user !== null) {
-    
-            resolve( user);
-         } 
+        if (user.block == true) {
+          resolve({ userBlock: true });
+          console.log("login faild");
+          resolve({ status: false });
+        } else if (user !== null) {
+          resolve(user);
+        }
       }
     });
   },
-
-
-
 
   blockUser: (userId) => {
     return new Promise((resolve, reject) => {
@@ -131,7 +129,6 @@ module.exports = {
     });
   },
 
-  
   unBlockUser: (userId) => {
     console.log(userId);
     return new Promise((resolve, reject) => {
@@ -146,6 +143,17 @@ module.exports = {
         )
         .then((response) => {
           resolve(response);
+        });
+    });
+  },
+
+  getUserDetails: (userId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .findOne({ _id: objectId(userId) })
+        .then((user) => {
+          resolve(user);
         });
     });
   },
