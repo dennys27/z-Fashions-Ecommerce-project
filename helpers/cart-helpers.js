@@ -229,7 +229,7 @@ module.exports = {
         userId: objectId(order.userId),
         paymentMethod: order.PaymentMethod,
         products: products,
-        date: new Date(),
+        date: new Date().toUTCString(),
         status: status,
       };
       db.get()
@@ -271,7 +271,7 @@ module.exports = {
         .collection(collection.ORDER_COLLECTION)
         .aggregate([
           {
-            $match: { user: objectId(orderId) },
+            $match: { _id: objectId(orderId) },
           },
           {
             $unwind: "$products",
@@ -290,7 +290,7 @@ module.exports = {
               as: "product",
             },
           },
-          {
+          { 
             $project: {
               item: 1,
               quantity: 1,
@@ -299,17 +299,8 @@ module.exports = {
               },
             },
           },
-          {
-            $group: {
-              _id: null,
-              total: {
-                $sum: {
-                  $multiply: ["$quantity", { $toInt: "$product.price" }],
-                },
-              },
-            },
-          },
-        ]);
+         
+        ]).toArray()
       
       
         

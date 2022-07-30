@@ -5,6 +5,7 @@ var router = express.Router();
 var productHelpers = require("../helpers/product-helpers");
 var itemHelpers = require("../helpers/product-management");
 const userHelpers = require("../helpers/user-helpers");
+const adminOrderHelper = require("../helpers/admin-order-helper");
 let userName = "admin";
 let Pin = "admin123";
 const store = require("../multer/multer");
@@ -216,9 +217,33 @@ router.get("/edit-categories/:id", varifyLogin, (req, res) => {
   });
 });
 
+
+
+
+
+//admin-orders-listing
+
+router.get("/admin-orders", varifyLogin, (req, res) => {
+  adminOrderHelper.getOrders().then((Items) => {
+    
+      res.render("admin/admin-orders", { admin: true,Items });
+ })
+});
+
+router.post("/change-order-status/:id", varifyLogin, (req, res) => {
+  console.log("yeah im working you know");
+    adminOrderHelper.changeOrderStatus(req.params.id,req.body.status)
+});
+
+
+
+
+
+
+
 router.post("/edit-category/:id", (req, res) => {
   //let category = req.body;
-  console.log(req.params.id);
+ 
   itemHelpers.updateCategory(req.params.id, req.body);
    
  res.redirect("/admin/categories");

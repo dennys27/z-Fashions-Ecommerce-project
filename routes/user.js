@@ -259,21 +259,17 @@ router.get("/orders-list", varifyLogin, async (req, res) => {
 router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let products = await cartHelpers.getOrderProducts(req.params.id);
-  console.log(orders);
-  res.render("user/view-ordered-products", { user, orders });
+  console.log(products);
+  res.render("user/view-ordered-products", { user, products });
 });
 
+router.get("/my-account/:id", varifyLogin, (req, res) => {
+  res.render("user/user-account")
+});
 
-
-
-
-
-
-
-
-
-
-
+router.post("/user-profile", varifyLogin, (req, res) => {
+  console.log(req.body)
+});
 
 
 

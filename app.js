@@ -11,6 +11,8 @@ var hbs=require('express-handlebars')
 var app = express();
 
 
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -35,6 +37,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/uploads"));
 app.use(express.static(__dirname + "/public/images"));
 app.use(express.static(__dirname + "/public/javascript"));
+
 app.use((req, res, next) => {
   if (!req.user) {
     res.header("cache-control", "private,no-cache,no-store,must revalidate");
@@ -42,6 +45,7 @@ app.use((req, res, next) => {
   }
   next();
 });
+
 app.use((req, res, next) => {
   if (!req.admin) {
     res.header("cache-control", "private,no-cache,no-store,must revalidate");

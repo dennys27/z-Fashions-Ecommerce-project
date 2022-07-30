@@ -99,6 +99,16 @@ module.exports = {
         });
     });
   },
+  getUserDetails: (userId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .findOne({ _id: objectId(prodId) })
+        .then((user) => {
+          resolve(user);
+        });
+    });
+  },
   //ADD-PRODUCT
   addItem: (userData) => {
     return new Promise(async (resolve, reject) => {
