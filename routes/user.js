@@ -1,7 +1,6 @@
 var express = require("express");
 const session = require("express-session");
 require("dotenv").config();
-//const { response } = requie('../app');
 var router = express.Router();
 const userHelpers = require("../helpers/user-helpers");
 var productHelpers = require("../helpers/product-management");
@@ -9,10 +8,15 @@ const cartHelpers = require("../helpers/cart-helpers");
 const { response } = require("express");
 
 
+
+
 const varifyLogin = (req, res, next) => {
+
   if (req.session.user) {
+    
     next();
   } else {
+    console.log("yes im working");
     res.render("user/login");
     req.session.err = false;
   }
@@ -88,6 +92,8 @@ router.post("/otp-verification", function (req, res) {
       if (resp.userBlock !== true) {
         console.log("it should be working");
         req.session.user = resp.Email;
+        
+       // req.session = resp
         const { number } = req.body;
         console.log(number);
         User_number = number;
@@ -193,7 +199,6 @@ router.get("/cart",varifyLogin, async function (req, res) {
     console.log(cartCount);
    }
   
- 
 
   if (req.session.loggedIn) {
      let user = req.session.user;
@@ -208,19 +213,20 @@ router.get("/cart",varifyLogin, async function (req, res) {
   }
  
   
-});
+}); 
 
-router.post("/add-to-cart/:id",varifyLogin, (req, res) => {
+router.post("/add-to-cart/:id", varifyLogin, (req, res) => {
+  
   cartHelpers.addToCart(req.params.id, req.session.user._id).then((data) => {
-     res.json(data);
- })
-})
+    res.json(data);
+  });
+});
 
 
 router.post("/change-product-quantity",varifyLogin, (req, res) => {
   cartHelpers.changeProductQuantity(req.body).then(async(response) => {
     let total = await cartHelpers.getTotalAmount(req.session.user._id);
-    console.log(total);
+   
     if (total > 0) {
       response.total = total;
     }
@@ -262,28 +268,83 @@ router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
   console.log(products);
   res.render("user/view-ordered-products", { user, products });
 });
-
+ 
 //user profile
 router.get("/my-account/:id", varifyLogin, (req, res) => {
   let user = req.session.user;
- 
-  res.render("user/user-account", { user });
-  
-  
+  userHelpers.getUserDetails(user._id).then((data) => { 
+    res.render("user/user-account", { user, data });
+    console.log(data);
+  })
 });
 
-router.post("/user-profile", varifyLogin, (req, res) => {
+router.get("/user-profile-update", varifyLogin, (req, res) => {
+  res.render("user/addressupdate")
   console.log(req.body)
 });
+
+router.post("/user-address-update", varifyLogin, (req, res) => {
+   let user = req.session.user;
+  userHelpers.updateAddressDetails(user._id, req.body).then((response) => {
+    res.json(response)
+  })
+  console.log(req.body)
+});
+
+
+
+
+
 
 //profile edit
 
 router.get("/profile-edit/:id", varifyLogin, (req, res) => {
   let user = req.session.user;
+  userHelpers.getUserDetails(user._id).then((data) => {
+    res.render("user/profile-edit", { user,data });
+  })
 
-  res.render("user/profile-edit", { user });
+  
 });
 
+router.post("/profile-edit", varifyLogin, (req, res) => {
+  let user = req.session.user;
+  userHelpers.updatePersonalDetails(user._id, req.body).then((response) => {
+    res.json(response)
+  })
+  console.log(req.body);
+ 
+});
+
+
+
+//change-password
+
+router.get("/change-password/:id", varifyLogin, (req, res) => {
+  let user = req.session.user;
+ 
+  res.render("user/changePassword", { user });
+});
+
+router.post("/change-password/", varifyLogin, (req, res) => {
+  let user = req.session.user;
+  userHelpers.updateUser(user._id, req.body).then((response) => {
+    res.json(response)
+  })
+  
+
+});
+
+
+
+router.get("/delete-cart-product", varifyLogin, (req, res) => {
+  console.log(req.body);
+  let user = req.session.user;
+  productHelpers.deleteCartItem(req.body.cart, req.body.product).then((response) => {
+     res.json(response)
+   })
+ 
+});
 
 
 

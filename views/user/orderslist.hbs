@@ -14,8 +14,8 @@
     <tbody>
         {{#each orders}}
       <tr>
-        <td>{{this.date}}</td>
-        <td>{{this.deliveryDetails.mobile}}</td>
+        <td> {{this.date}}</td>
+        <td>Order Id:{{this._id}} <br> {{this.deliveryDetails.mobile}}</td>
         <td>{{this.deliveryDetails.address}}</td>
         <td>{{this.deliveryDetails.totalAmount}}</td>
         <td>{{this.status}}</td>

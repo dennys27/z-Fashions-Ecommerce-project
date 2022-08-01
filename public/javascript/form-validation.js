@@ -24,6 +24,8 @@ function validate(event) {
     }
 }
 
+
+
  setTimeout(() => {
      document.getElementById("invalidphn").style.visibility = "hidden";
      console.log("working");

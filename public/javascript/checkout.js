@@ -15,3 +15,4 @@ $("#check-out-form").submit((event) => {
         })
     });
 })
+

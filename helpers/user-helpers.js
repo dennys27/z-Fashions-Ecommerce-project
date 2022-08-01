@@ -157,4 +157,65 @@ module.exports = {
         });
     });
   },
+
+  updateUser: (userId, userDetails) => {
+    return new Promise(async (resolve, reject) => {
+      userDetails.newpassword = await bcrypt.hash(userDetails.newpassword, 10);
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .updateOne(
+          { _id: objectId(userId) },
+          {
+            $set: {
+              Password: userDetails.newpassword,
+            },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+          console.log(response);
+        });
+    });
+  },
+
+  updatePersonalDetails: (userId, userDetails) => {
+    return new Promise(async (resolve, reject) => {
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .updateOne(
+          { _id: objectId(userId) },
+          {
+            $set: {
+              Email: userDetails.Email,
+              userEmail: userDetails.userEmail,
+              phone: userDetails.phone,
+            },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+          console.log(response);
+        });
+    });
+  },
+
+  updateAddressDetails: (userId, userDetails) => {
+    return new Promise(async (resolve, reject) => {
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .updateOne(
+          { _id: objectId(userId) },
+          {
+            $set: {
+              deliveryAddress:userDetails,
+              
+            },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+          console.log(response);
+        });
+    });
+  },
 };

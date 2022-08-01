@@ -34,7 +34,6 @@ module.exports = {
     });
   },
 
-
   getCategories: (prodId) => {
     return new Promise(async (resolve, reject) => {
       let products = await db
@@ -50,10 +49,9 @@ module.exports = {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_COLLECTIONS)
-        .findOne({ _id:objectId(editProduct) })
+        .findOne({ _id: objectId(editProduct) })
         .then((productData) => {
           resolve(productData);
-          
         });
     });
   },
@@ -145,7 +143,7 @@ module.exports = {
               category: proDetails.category,
               description: proDetails.description,
               price: proDetails.price,
-              Image:proDetails.Image,
+              Image: proDetails.Image,
             },
           }
         )
@@ -155,7 +153,7 @@ module.exports = {
     });
   },
   updateCategory: (proId, proDetals) => {
-    console.log(proId,proDetals)
+    console.log(proId, proDetals);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_CATAGORY)
@@ -186,6 +184,27 @@ module.exports = {
           }
         )
         .then((response) => {
+          resolve(response);
+        });
+    });
+  },
+
+  deleteCartItem: (cartId,proId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.CART_COLLECTION)
+        .updateOne(  { _id: objectId(cartId) },
+          {
+            $pull: {
+              products: {_id:proId
+              
+            }
+             
+            },
+
+          })
+        .then((response) => {
+          response.removed = true
           resolve(response);
         });
     });

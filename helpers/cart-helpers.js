@@ -250,7 +250,7 @@ module.exports = {
         .get()
         .collection(collection.CART_COLLECTION)
         .findOne({ user: objectId(userId) });
-      resolve(cart.products);
+      resolve(cart.products);  
     });
   },
 

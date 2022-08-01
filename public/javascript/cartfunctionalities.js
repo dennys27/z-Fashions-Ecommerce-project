@@ -28,34 +28,38 @@
 
   //ADD TO CART
 function addToCart(proId) {
-       console.log("im working you know");
+  console.log("im working you know");
+    
        $.ajax({
          url: "/add-to-cart/" + proId,
          method: "post",
-         success: (response) => {
+         success: (response) =>{
            if (response.added) {
              let count = $("#cart-count").html();
              count = parseInt(count) + 1;
              $("#cart-count").html(count);
+           } else {
+             location.href="/login"
            }
          },
        });
 }
      
 
-    //  function deleteProduct(cartId, proId) {
-    //    $.ajax({
-    //      url: "/delete-cart-product",
-    //      data: {
-    //        cart: cartId,
-    //        product: proId,
-    //      },
-    //      method: "post",
-    //      success: (response) => {
-    //        if (response.removed) {
-    //          alert("Product Removed from cart");
-    //          location.reload();
-    //        }
-    //      },
-    //    });
-    //  }
+function deleteProduct(cartId, proId) {
+  console.log("im workinnnnggg");
+       $.ajax({
+         url: "/delete-cart-product",
+         data: {
+           cart: cartId,
+           product: proId,
+         },
+         method: "post",
+         success: (response) => {
+           if (response.removed) {
+             alert("Product Removed from cart");
+             location.reload();
+           }
+         },
+       });
+     }
