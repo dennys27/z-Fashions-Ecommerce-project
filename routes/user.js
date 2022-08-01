@@ -12,7 +12,7 @@ const { response } = require("express");
 
 const varifyLogin = (req, res, next) => {
 
-  if (req.session.user || req.session.user.Email) {
+  if (req.session.user) {
     next();
   } else {
    
