@@ -194,15 +194,10 @@ module.exports = {
       db.get()
         .collection(collection.CART_COLLECTION)
         .updateOne(  { _id: objectId(cartId) },
-          {
-            $pull: {
-              products: {_id:proId
-              
+         {
+              $pull: { products: { item: objectId(proId) } },
             }
-             
-            },
-
-          })
+          )
         .then((response) => {
           response.removed = true
           resolve(response);

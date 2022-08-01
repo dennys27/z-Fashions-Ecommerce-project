@@ -12,11 +12,10 @@ const { response } = require("express");
 
 const varifyLogin = (req, res, next) => {
 
-  if (req.session.user) {
-    
+  if (req.session.user || req.session.user.Email) {
     next();
   } else {
-    console.log("yes im working");
+   
     res.render("user/login");
     req.session.err = false;
   }
@@ -40,7 +39,7 @@ router.get("/", async function (req, res, next) {
   userHelpers.isExist(U_session);
   if (req.session.user) {
     cartCount = await cartHelpers.getCount(req.session.user._id);
-    console.log(cartCount);
+   
   }
  
 
@@ -57,7 +56,7 @@ router.get("/", async function (req, res, next) {
     });
 
     res.render("index", { women, men, user,cartCount });
-    console.log(user);
+    
   });
 });
 
@@ -86,16 +85,18 @@ router.get("/otp-login", function (req, res) {
 
 router.post("/otp-verification", function (req, res) {
   userHelpers.NumberExist(req.body.number).then((resp) => {
+   
     if (resp.userExist == false) {
       res.render("user/otp", { UserNotExist: true });
     } else {
       if (resp.userBlock !== true) {
         console.log("it should be working");
-        req.session.user = resp.Email;
+       // req.session.user = resp.Email;
+        req.session.user = resp;
         
        // req.session = resp
         const { number } = req.body;
-        console.log(number);
+       
         User_number = number;
         client.verify.services(process.env.SERVICE_SID).verifications.create({
           to: `+91${number}`,
@@ -118,11 +119,13 @@ router.post("/otp-matching", function (req, res) {
       code: otp,
     })
     .then((resp) => {
+    
       if (resp.valid == false) {
         req.session.otp = true;
         let otpvalidation = req.session.otp;
         res.render("user/otp-veri", { otpvalidation });
       } else if (resp.valid == true) {
+         
         res.redirect("/");
       }
     });
@@ -174,6 +177,7 @@ router.post("/login", (req, res) => {
     } else if (response.status) {
       req.session.user = response.user;
       req.session.user = response.user;
+      console.log(req.session.user);
       req.session.loggedIn = true;
       res.redirect("/");
     } else {
@@ -196,7 +200,7 @@ router.get("/cart",varifyLogin, async function (req, res) {
   let cartCount = 0;
    if (req.session.user) {
     cartCount = await cartHelpers.getCount(req.session.user._id);
-    console.log(cartCount);
+    
    }
   
 
@@ -236,8 +240,10 @@ router.post("/change-product-quantity",varifyLogin, (req, res) => {
 
 router.get("/checkout", varifyLogin, async (req, res) => {
   let user = req.session.user;
-    let total = await cartHelpers.getTotalAmount(req.session.user._id);
-       res.render("user/checkout", { user,total });
+  let total = await cartHelpers.getTotalAmount(req.session.user._id);
+  
+    res.render("user/checkout", { user, total, Empty: false });
+  
 })
 
 router.post("/checkout-form",varifyLogin, async (req, res) => {
@@ -258,14 +264,14 @@ router.post("/checkout-form",varifyLogin, async (req, res) => {
 router.get("/orders-list", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let orders = await cartHelpers.getUserOrders(user._id);
-  console.log(orders)
+  
   res.render("user/orderslist", { user, orders });
 });
 
 router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let products = await cartHelpers.getOrderProducts(req.params.id);
-  console.log(products);
+ 
   res.render("user/view-ordered-products", { user, products });
 });
  
@@ -274,13 +280,13 @@ router.get("/my-account/:id", varifyLogin, (req, res) => {
   let user = req.session.user;
   userHelpers.getUserDetails(user._id).then((data) => { 
     res.render("user/user-account", { user, data });
-    console.log(data);
+   
   })
 });
 
 router.get("/user-profile-update", varifyLogin, (req, res) => {
   res.render("user/addressupdate")
-  console.log(req.body)
+
 });
 
 router.post("/user-address-update", varifyLogin, (req, res) => {
@@ -288,7 +294,7 @@ router.post("/user-address-update", varifyLogin, (req, res) => {
   userHelpers.updateAddressDetails(user._id, req.body).then((response) => {
     res.json(response)
   })
-  console.log(req.body)
+ 
 });
 
 
@@ -312,8 +318,7 @@ router.post("/profile-edit", varifyLogin, (req, res) => {
   userHelpers.updatePersonalDetails(user._id, req.body).then((response) => {
     res.json(response)
   })
-  console.log(req.body);
- 
+  
 });
 
 
@@ -337,13 +342,22 @@ router.post("/change-password/", varifyLogin, (req, res) => {
 
 
 
-router.get("/delete-cart-product", varifyLogin, (req, res) => {
-  console.log(req.body);
+router.post("/delete-cart-product", varifyLogin, (req, res) => {
+
   let user = req.session.user;
   productHelpers.deleteCartItem(req.body.cart, req.body.product).then((response) => {
      res.json(response)
    })
  
+});
+
+
+router.post("/user-cancel-order", varifyLogin, (req, res) => {
+  
+  let user = req.session.user;
+  userHelpers.changeOrderStatus(req.body.order).then((response) => {
+    res.json(response)
+  })
 });
 
 

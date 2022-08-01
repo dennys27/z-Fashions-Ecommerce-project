@@ -36,6 +36,33 @@
     </div>
   <div class="row mt-5 container">
    {{#each women}}
+
+   
+      {{!-- <div class="card-1 card-div col-md-3">
+            <div class="like-icon-div">
+                <label for="card-1-like" class="like-icon-div-child">
+                   
+                    <i class="far fa-heart heart-empty"></i>
+                    <i class="fas fa-heart heart-fill"></i>
+                </label>
+            </div>
+            
+            <div class="gow-img-div img-div">
+                <img src="/{{this.Image.[0]}}" alt="god-of-war-figurine">
+            </div>
+            <div class="text-container-for-card">
+                <h2 class="item-name">Kratos and Artreus Statue - God Of War</h2>
+                <p class="date"> Departure date: 31/03/2021 </p>
+                <div class="pricing-and-cart">
+                    <div class="pricing">
+                        <p class="previous-price">$999</p>
+                        <p class="current-price">$599</p>
+                    </div>
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+            </div>
+        </div> --}}
+
    <div class="col-md-3 mb-2 d-flex justify-content-center container-fluid prod-card m-3">
   
        
@@ -43,7 +70,7 @@
         <a href="/view-product/{{this._id}}" class="text-decoration-none ">
         <img
           src="/{{this.Image.[0]}}"
-          class="card-img-top"
+          class="card-img-top image-responsive"
           alt="..."
           style="width: 230px; height:230px"
         />

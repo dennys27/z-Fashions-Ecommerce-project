@@ -207,8 +207,7 @@ module.exports = {
           { _id: objectId(userId) },
           {
             $set: {
-              deliveryAddress:userDetails,
-              
+              deliveryAddress: userDetails,
             },
           }
         )
@@ -216,6 +215,26 @@ module.exports = {
           resolve(response);
           console.log(response);
         });
+    });
+  },
+
+  changeOrderStatus: (orderId) => {
+    return new Promise(async (resolve, reject) => {
+      let Order = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .updateOne(
+          { _id: objectId(orderId) },
+          {
+            $set: {
+              status:"cancelled",
+            },
+          }
+      ).then((data) => {
+         
+          resolve(data);
+        })
+      
     });
   },
 };

@@ -28,11 +28,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({secret:"key",
-resave:true,
-saveUninitialized:true,
-  cookie: { maxAge: 500000 }
-}))
+app.use(
+  session({
+    secret: "key",
+    resave: true,
+    saveUninitialized: true,
+    rolling: true,
+    cookie: { maxAge: 900000 },
+  })
+);
 app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/uploads"));
 app.use(express.static(__dirname + "/public/images"));

@@ -62,4 +62,25 @@ function deleteProduct(cartId, proId) {
            }
          },
        });
+}
+
+
+//cancel order
+     
+function cancelOrder(orderId) {
+
+  console.log("canell order ajax");
+       $.ajax({
+         url: "/user-cancel-order",
+         data: {
+           order:orderId
+         },
+         method: "post",
+         success: (response) => {
+           if (response.acknowledged) {
+             alert("order cancelled");
+             location.reload();
+           }
+         },
+       });
      }
