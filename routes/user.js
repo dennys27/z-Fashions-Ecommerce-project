@@ -198,29 +198,25 @@ router.get("/logout", (req, res) => {
 // cart section
 router.get("/cart",varifyLogin, async function (req, res) {
   let cartCount = 0;
-   if (req.session.user) {
-    cartCount = await cartHelpers.getCount(req.session.user._id);
+  cartCount = await cartHelpers.getCount(req.session.user._id);
+  let user = req.session.user;
+   cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
+     let total = await cartHelpers.getTotalAmount(req.session.user._id);
+     res.render("user/Cart", { user, data, cartCount, total });
+   });
     
-   }
-  
-
-  if (req.session.loggedIn) {
-     let user = req.session.user;
-    cartHelpers.getCartProducts(req.session.user._id).then(async(data) => {
-        let total = await cartHelpers.getTotalAmount(req.session.user._id);
-       res.render("user/Cart", { user, data,cartCount,total });
-     });
+  // if (req.session.loggedIn) {
+  //    let user = req.session.user;
    
-  } else {
+   
+  // } else {
     
-    res.redirect("/login");
-  }
+  //   res.redirect("/login");
+  // }
  
-  
 }); 
 
 router.post("/add-to-cart/:id", varifyLogin, (req, res) => {
-  
   cartHelpers.addToCart(req.params.id, req.session.user._id).then((data) => {
     res.json(data);
   });
