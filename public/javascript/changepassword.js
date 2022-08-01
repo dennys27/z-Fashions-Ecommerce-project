@@ -26,17 +26,29 @@ $("#changepsw").submit((event) => {
 
 $("#personalfm").submit((event) => {
   event.preventDefault();
-  $.ajax({
-    url: "/profile-edit",
-    method: "post",
-    data: $("#personalfm").serialize(),
-    success: (response) => {
-      if (response.acknowledged) {
-        location.href = "/";
-      }
-      alert("updated successfully");
-    },
-  });
+
+   let phnalpha = /[A-Za-z]/
+   let phoneNumber = /^[6-9]\d{9}$/gi
+   let phone = document.getElementById("phone-number").value;
+  if (!phnalpha.test(phone)) {
+    if (phoneNumber.test(phone)) {
+      
+        $.ajax({
+          url: "/profile-edit",
+          method: "post",
+          data: $("#personalfm").serialize(),
+          success: (response) => {
+            if (response.acknowledged) {
+              location.href = "/";
+            }
+            alert("updated successfully");
+          },
+        });
+
+    }
+  }
+
+
 });
 
 
