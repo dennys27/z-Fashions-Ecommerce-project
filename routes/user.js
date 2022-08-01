@@ -15,11 +15,11 @@ const varifyLogin = (req, res, next) => {
   if (req.session.user) {
     next();
   } else {
-   
     res.render("user/login");
     req.session.err = false;
   }
 };
+
 
 const client = require("twilio")(
   process.env.ACCOUNT_SID,

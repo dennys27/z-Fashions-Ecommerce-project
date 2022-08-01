@@ -1,16 +1,26 @@
 $("#changepsw").submit((event) => {
   event.preventDefault();
-  $.ajax({
-    url: "/change-password",
-    method: "post",
-    data: $("#changepsw").serialize(),
-    success: (response) => {
-      if (response.acknowledged) {
-        location.href = "/";
-      }
-      alert("order placed successfully");
-    },
-  });
+
+  var password = document.getElementById("txtPassword").value;
+  var confirmPassword = document.getElementById("txtConfirmPassword").value;
+  if (password != confirmPassword) {
+    alert("Passwords do not match.");
+    return false;
+  } {
+
+
+    $.ajax({
+      url: "/change-password",
+      method: "post",
+      data: $("#changepsw").serialize(),
+      success: (response) => {
+        if (response.acknowledged) {
+          location.href = "/";
+        }
+        alert("order placed successfully");
+      },
+    });
+  }
 });
 
 
