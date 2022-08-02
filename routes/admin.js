@@ -237,10 +237,6 @@ router.post("/change-order-status/:id", varifyLogin, (req, res) => {
 
 
 
-
-
-
-
 router.post("/edit-category/:id", (req, res) => {
   //let category = req.body;
  

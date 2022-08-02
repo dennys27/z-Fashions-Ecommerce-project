@@ -2,6 +2,14 @@ var db = require("../config/connection");
 var collection = require("../config/collections");
 var objectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
+require("dotenv").config();
+const Razorpay = require("razorpay");
+ 
+  var instance = new Razorpay({
+    key_id: "rzp_test_RwEwJd8bRByvpp",
+    key_secret: "MmMePXH6A05RnziOboOoX0uY",
+  });
+
 module.exports = {
   doSignup: (userData) => {
     return new Promise(async (resolve, reject) => {
@@ -130,7 +138,7 @@ module.exports = {
   },
 
   unBlockUser: (userId) => {
-    console.log(userId);
+   
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.USER_COLLECTION)
@@ -173,7 +181,7 @@ module.exports = {
         )
         .then((response) => {
           resolve(response);
-          console.log(response);
+        
         });
     });
   },
@@ -194,7 +202,7 @@ module.exports = {
         )
         .then((response) => {
           resolve(response);
-          console.log(response);
+         
         });
     });
   },
@@ -213,7 +221,7 @@ module.exports = {
         )
         .then((response) => {
           resolve(response);
-          console.log(response);
+         
         });
     });
   },
@@ -227,14 +235,33 @@ module.exports = {
           { _id: objectId(orderId) },
           {
             $set: {
-              status:"cancelled",
+              status: "cancelled",
             },
           }
-      ).then((data) => {
-         
+        )
+        .then((data) => {
           resolve(data);
-        })
-      
+        });
+    });
+  },
+
+  generateRazorPay: (orderId, totalPrice) => {
+    return new Promise(async (resolve, reject) => {
+      instance.orders.create({
+        amount: totalPrice,
+        currency: "INR",
+        receipt: orderId,
+        notes: {
+          key1: "value3",
+          key2: "value2",
+        },
+      },
+        (err, order) => {
+          console.log(err);
+          console.log("new order :", order)
+          resolve(order)
+        }
+      );
     });
   },
 };

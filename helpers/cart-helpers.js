@@ -236,10 +236,11 @@ module.exports = {
         .collection(collection.ORDER_COLLECTION)
         .insertOne(orderObj)
         .then((response) => {
+          console.log(response);
           db.get()
             .collection(collection.CART_COLLECTION)
             .deleteOne({ user: objectId(order.userId) });
-          resolve();
+          resolve(response);
         });
     });
   },
@@ -301,8 +302,6 @@ module.exports = {
           },
          
         ]).toArray()
-      
-      
         
       resolve(products);
     });

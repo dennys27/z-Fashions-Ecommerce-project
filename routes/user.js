@@ -5,7 +5,8 @@ var router = express.Router();
 const userHelpers = require("../helpers/user-helpers");
 var productHelpers = require("../helpers/product-management");
 const cartHelpers = require("../helpers/cart-helpers");
-const { response } = require("express");
+const { ObjectId } = require("mongodb");
+
 
 
 
@@ -177,7 +178,7 @@ router.post("/login", (req, res) => {
     } else if (response.status) {
       req.session.user = response.user;
       req.session.user = response.user;
-      console.log(req.session.user);
+      
       req.session.loggedIn = true;
       res.redirect("/");
     } else {
@@ -237,23 +238,39 @@ router.post("/change-product-quantity",varifyLogin, (req, res) => {
 router.get("/checkout", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let total = await cartHelpers.getTotalAmount(req.session.user._id);
-  
-    res.render("user/checkout", { user, total, Empty: false });
-  
+  let totalPrice = await cartHelpers.getTotalAmount(req.session.user._id);
+  if (totalPrice > 0) {
+     res.render("user/checkout", { user, total, Empty: false });
+  } else {
+    res.render("user/Cart",{emptyCart:true})
+  }
+   
 })
 
 router.post("/checkout-form",varifyLogin, async (req, res) => {
   let user = req.session.user;
- 
   let products= await cartHelpers.getCartProductList(req.body.userId)
   let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
-  cartHelpers.placeOrder(req.body,products,totalPrice).then((response) => {
-    res.json({status:true})
+   cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
+   
+    res.json({ status: true });
+    // if (req.body['paymentMethod'] == 'COD') {
+    //  res.json({ status: true });
+    // } else { 
+      
+    //   userHelpers.generateRazorPay(response.insertedId,totalPrice).then((data) => {
+    //     res.json(data)
+    //     console.log(data)
+    //   })
+    // }
+   
   })
- 
+    
   //res.render("user/checkout", { user,total });
    
 })
+
+
 
 //orders list
 

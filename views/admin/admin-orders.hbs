@@ -19,7 +19,11 @@
       {{#each Items}}
         <tr>
           <td>{{this.date}}</td>
-          <td>{{this.deliveryDetails.address}}
+          <td>
+            OrderId: {{this._id}}
+            <br>
+            {{this.deliveryDetails.address}}
+            
             <br />
             {{this.deliveryDetails.city}}
             <br />
