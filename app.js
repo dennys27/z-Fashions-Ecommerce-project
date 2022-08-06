@@ -9,6 +9,10 @@ var adminRouter = require('./routes/admin');
 var db=require('./config/connection')
 var hbs=require('express-handlebars')
 var app = express();
+var cors = require("cors");
+
+
+
 
 
 
@@ -28,7 +32,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(
+// app.use(cors());
+
+app.use(  
   session({
     secret: "key",
     resave: true,
@@ -41,6 +47,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/uploads"));
 app.use(express.static(__dirname + "/public/images"));
 app.use(express.static(__dirname + "/public/javascript"));
+
 
 app.use((req, res, next) => {
   if (!req.user) {
@@ -64,7 +71,7 @@ app.use('/admin', adminRouter);
 app.use(function(req, res, next) {
   next(createError(404));
 });
-
+ 
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development

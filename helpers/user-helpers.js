@@ -4,11 +4,19 @@ var objectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const Razorpay = require("razorpay");
- 
-  var instance = new Razorpay({
-    key_id: "rzp_test_RwEwJd8bRByvpp",
-    key_secret: "MmMePXH6A05RnziOboOoX0uY",
-  });
+const paypal = require("paypal-rest-sdk");
+const { resolve } = require("path");
+
+var instance = new Razorpay({
+  key_id: process.env.KEY_ID,
+  key_secret: process.env.KEY_SECRET,
+});
+
+paypal.configure({
+  mode: "sandbox",
+  client_id: process.env.CLIENT_ID,
+  client_secret: process.env.CLIENT_SECRET,
+});
 
 module.exports = {
   doSignup: (userData) => {
@@ -138,7 +146,6 @@ module.exports = {
   },
 
   unBlockUser: (userId) => {
-   
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.USER_COLLECTION)
@@ -181,7 +188,6 @@ module.exports = {
         )
         .then((response) => {
           resolve(response);
-        
         });
     });
   },
@@ -202,7 +208,6 @@ module.exports = {
         )
         .then((response) => {
           resolve(response);
-         
         });
     });
   },
@@ -221,7 +226,6 @@ module.exports = {
         )
         .then((response) => {
           resolve(response);
-         
         });
     });
   },
@@ -247,21 +251,133 @@ module.exports = {
 
   generateRazorPay: (orderId, totalPrice) => {
     return new Promise(async (resolve, reject) => {
-      instance.orders.create({
-        amount: totalPrice,
-        currency: "INR",
-        receipt: orderId,
-        notes: {
-          key1: "value3",
-          key2: "value2",
+      instance.orders.create(
+        {
+          amount: totalPrice * 100,
+          currency: "INR",
+          receipt: orderId,
+          notes: {
+            key1: "value3",
+            key2: "value2",
+          },
         },
-      },
         (err, order) => {
           console.log(err);
-          console.log("new order :", order)
-          resolve(order)
+          console.log("new order :", order);
+          resolve(order);
         }
       );
+    });
+  },
+
+  verifyPayment: (details) => {
+    return new Promise((resolve, reject) => {
+      const crypto = require("crypto");
+      let hmac = crypto.createHmac("sha256", process.env.KEY_SECRET);
+
+      hmac.update(
+        details["payment[razorpay_order_id]"] +
+          "|" +
+          details["payment[razorpay_payment_id]"]
+      );
+      hmac = hmac.digest("hex");
+      console.log("im workng till here.........");
+      if (hmac == details["payment[razorpay_signature]"]) {
+        console.log("hashiiiiiiinnnnnggggg......");
+        resolve();
+      } else {
+        reject("im failed...............");
+      }
+    });
+  },
+
+  // verifyPayment: (details) => {
+
+  //   return new Promise((resolve, reject) => {
+  //      console.log("hashed your id............");
+  //     const crypto = require("crypto");
+  //     let hmac = crypto
+  //       .createHmac("sha256", "rzp_test_RwEwJd8bRByvpp")
+  //       .update(
+  //         details[
+  //         "payment[razorpay_order_id]" +
+  //         "|" +
+  //         details["payment[razorpay_payment_id]"]
+  //         ]
+  //       );
+  //       hmac.digest("hex");
+  //     if (hmac == details["payment[razorpay_signature]"]) {
+  //       //console.log("hashed your id............")
+  //       resolve();
+  //     } else {
+  //       reject();
+  //     }
+  //   })
+  // },
+
+  changePaymentStatus: (orderId) => {
+    // console.log(orderId);
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .updateOne(
+          { _id: objectId(orderId) },
+          {
+            $set: {
+              status: "placed",
+            },
+          }
+        )
+        .then(() => {
+          resolve();
+        });
+    });
+  },
+
+  generatePayPal: (orderId, totalPrice) => {
+    return new Promise(async (resolve, reject) => {
+       const create_payment_json = {
+         intent: "sale",
+         payer: {
+           payment_method: "paypal",
+         },
+         redirect_urls: {
+           return_url: "http://localhost:3000/cart",
+           cancel_url: "http://localhost:3000/",
+         },
+         transactions: [
+           {
+             item_list: {
+               items: [
+                 {
+                   name: "Red Sox Hat",
+                   sku: "001",
+                   price: "25.00",
+                   currency: "USD",
+                   quantity: 1,
+                 },
+               ],
+             },
+             amount: {
+               currency: "USD",
+               total: "25.00",
+             },
+             description: "Hat for the best team ever",
+           },
+         ],
+       };
+
+      paypal.payment.create(create_payment_json, function (error, payment) {
+        if (error) {
+          console.log(error.details);
+        }
+        
+        resolve(payment)
+       
+
+       });
+
+    
     });
   },
 };

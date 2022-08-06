@@ -7,12 +7,7 @@ var productHelpers = require("../helpers/product-management");
 const cartHelpers = require("../helpers/cart-helpers");
 const { ObjectId } = require("mongodb");
 
-
-
-
-
 const varifyLogin = (req, res, next) => {
-
   if (req.session.user) {
     next();
   } else {
@@ -20,7 +15,6 @@ const varifyLogin = (req, res, next) => {
     req.session.err = false;
   }
 };
-
 
 const client = require("twilio")(
   process.env.ACCOUNT_SID,
@@ -40,9 +34,7 @@ router.get("/", async function (req, res, next) {
   userHelpers.isExist(U_session);
   if (req.session.user) {
     cartCount = await cartHelpers.getCount(req.session.user._id);
-   
   }
- 
 
   productHelpers.getAllproducts().then((products) => {
     let men = [];
@@ -56,8 +48,7 @@ router.get("/", async function (req, res, next) {
       }
     });
 
-    res.render("index", { women, men, user,cartCount });
-    
+    res.render("index", { women, men, user, cartCount });
   });
 });
 
@@ -86,18 +77,17 @@ router.get("/otp-login", function (req, res) {
 
 router.post("/otp-verification", function (req, res) {
   userHelpers.NumberExist(req.body.number).then((resp) => {
-   
     if (resp.userExist == false) {
       res.render("user/otp", { UserNotExist: true });
     } else {
       if (resp.userBlock !== true) {
         console.log("it should be working");
-       // req.session.user = resp.Email;
+        // req.session.user = resp.Email;
         req.session.user = resp;
-        
-       // req.session = resp
+
+        // req.session = resp
         const { number } = req.body;
-       
+
         User_number = number;
         client.verify.services(process.env.SERVICE_SID).verifications.create({
           to: `+91${number}`,
@@ -120,13 +110,11 @@ router.post("/otp-matching", function (req, res) {
       code: otp,
     })
     .then((resp) => {
-    
       if (resp.valid == false) {
         req.session.otp = true;
         let otpvalidation = req.session.otp;
         res.render("user/otp-veri", { otpvalidation });
       } else if (resp.valid == true) {
-         
         res.redirect("/");
       }
     });
@@ -148,7 +136,7 @@ router.get("/signup", function (req, res) {
 router.post("/signup", (req, res) => {
   let reqBody = req.body;
   reqBody.block = false;
-  //console.log(reqBody)
+
   userHelpers.doSignup(reqBody).then((response) => {
     if (response.status) {
       req.session.signErr = true;
@@ -166,6 +154,7 @@ router.post("/signup", (req, res) => {
 
 router.get("/view-product/:id", function (req, res) {
   productHelpers.getProductData(req.params.id).then((Product) => {
+    console.log(req.params.id,"ohooooooooooooo");
     res.render("user/product-view", { Product, userHead: true });
   });
 });
@@ -173,12 +162,12 @@ router.get("/view-product/:id", function (req, res) {
 router.post("/login", (req, res) => {
   userHelpers.doLogin(req.body).then((response) => {
     if (response.userBlock) {
-      req.session.blockedUser = true;
+      req.session.blockedUser = true;   
       res.redirect("/login");
     } else if (response.status) {
       req.session.user = response.user;
       req.session.user = response.user;
-      
+
       req.session.loggedIn = true;
       res.redirect("/");
     } else {
@@ -194,28 +183,24 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-
-
 // cart section
-router.get("/cart",varifyLogin, async function (req, res) {
+router.get("/cart", varifyLogin, async function (req, res) {
   let cartCount = 0;
   cartCount = await cartHelpers.getCount(req.session.user._id);
   let user = req.session.user;
-   cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
-     let total = await cartHelpers.getTotalAmount(req.session.user._id);
-     res.render("user/Cart", { user, data, cartCount, total });
-   });
-    
+  cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
+    let total = await cartHelpers.getTotalAmount(req.session.user._id);
+    res.render("user/Cart", { user, data, cartCount, total });
+  });
+
   // if (req.session.loggedIn) {
   //    let user = req.session.user;
-   
-   
+
   // } else {
-    
+
   //   res.redirect("/login");
   // }
- 
-}); 
+});
 
 router.post("/add-to-cart/:id", varifyLogin, (req, res) => {
   cartHelpers.addToCart(req.params.id, req.session.user._id).then((data) => {
@@ -223,162 +208,162 @@ router.post("/add-to-cart/:id", varifyLogin, (req, res) => {
   });
 });
 
-
-router.post("/change-product-quantity",varifyLogin, (req, res) => {
-  cartHelpers.changeProductQuantity(req.body).then(async(response) => {
+router.post("/change-product-quantity", varifyLogin, (req, res) => {
+  cartHelpers.changeProductQuantity(req.body).then(async (response) => {
     let total = await cartHelpers.getTotalAmount(req.session.user._id);
-   
+
     if (total > 0) {
       response.total = total;
     }
-    res.json(response)
-  })
-}) 
+    res.json(response);
+  });
+});
 
 router.get("/checkout", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let total = await cartHelpers.getTotalAmount(req.session.user._id);
   let totalPrice = await cartHelpers.getTotalAmount(req.session.user._id);
   if (totalPrice > 0) {
-     res.render("user/checkout", { user, total, Empty: false });
+    res.render("user/checkout", { user, total, Empty: false });
   } else {
-    res.render("user/Cart",{emptyCart:true})
+    res.render("user/Cart", { emptyCart: true });
   }
-   
-})
+});
 
-router.post("/checkout-form",varifyLogin, async (req, res) => {
-  let user = req.session.user;
-  let products= await cartHelpers.getCartProductList(req.body.userId)
+//payment gateway
+
+router.post("/checkout-form", varifyLogin, async (req, res) => {
+  let user = req.session.user._id;
+  let products = await cartHelpers.getCartProductList(req.body.userId);
   let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
-   cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
-   
-    res.json({ status: true });
-    // if (req.body['paymentMethod'] == 'COD') {
-    //  res.json({ status: true });
-    // } else { 
-      
-    //   userHelpers.generateRazorPay(response.insertedId,totalPrice).then((data) => {
-    //     res.json(data)
-    //     console.log(data)
-    //   })
-    // }
-   
-  })
+  cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
+    if (req.body["PaymentMethod"] == "COD") {
+      //console.log("looooooooo");
+      res.json({ codSuccess: true });
+    } else if (req.body["PaymentMethod"] == "RazorPay") {
+     // console.log("looooooooo");
+      cartHelpers.getOrderId(user).then((orderDetails) => {
+        userHelpers
+          .generateRazorPay(orderDetails._id.toString(), totalPrice)
+          .then((data) => {
+            data.razorpay = true;
+            // console.log(data);
+            res.json(data);
+          });
+      });
+    } else if (req.body["PaymentMethod"] == "PayPal") {
     
+      cartHelpers.getOrderId(user).then((orderDetails) => {
+         console.log(totalPrice);
+        userHelpers
+          .generatePayPal(orderDetails._id.toString(), totalPrice)
+          .then((data) => {
+            console.log(data);
+            res.json(data);
+          });
+      });
+    }
+  });
+
   //res.render("user/checkout", { user,total });
-   
-})
-
-
+});
 
 //orders list
 
 router.get("/orders-list", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let orders = await cartHelpers.getUserOrders(user._id);
-  
+
   res.render("user/orderslist", { user, orders });
 });
 
 router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let products = await cartHelpers.getOrderProducts(req.params.id);
- 
+
   res.render("user/view-ordered-products", { user, products });
 });
- 
+
 //user profile
 router.get("/my-account/:id", varifyLogin, (req, res) => {
   let user = req.session.user;
-  userHelpers.getUserDetails(user._id).then((data) => { 
+  userHelpers.getUserDetails(user._id).then((data) => {
     res.render("user/user-account", { user, data });
-   
-  })
+  });
 });
 
 router.get("/user-profile-update", varifyLogin, (req, res) => {
-  res.render("user/addressupdate")
-
+  res.render("user/addressupdate");
 });
 
 router.post("/user-address-update", varifyLogin, (req, res) => {
-   let user = req.session.user;
+  let user = req.session.user;
   userHelpers.updateAddressDetails(user._id, req.body).then((response) => {
-    res.json(response)
-  })
- 
+    res.json(response);
+  });
 });
-
-
-
-
-
 
 //profile edit
 
 router.get("/profile-edit/:id", varifyLogin, (req, res) => {
   let user = req.session.user;
   userHelpers.getUserDetails(user._id).then((data) => {
-    res.render("user/profile-edit", { user,data });
-  })
-
-  
+    res.render("user/profile-edit", { user, data });
+  });
 });
 
 router.post("/profile-edit", varifyLogin, (req, res) => {
   let user = req.session.user;
   userHelpers.updatePersonalDetails(user._id, req.body).then((response) => {
-    res.json(response)
-  })
-  
+    res.json(response);
+  });
 });
-
-
 
 //change-password
 
 router.get("/change-password/:id", varifyLogin, (req, res) => {
   let user = req.session.user;
- 
+
   res.render("user/changePassword", { user });
 });
 
 router.post("/change-password/", varifyLogin, (req, res) => {
   let user = req.session.user;
   userHelpers.updateUser(user._id, req.body).then((response) => {
-    res.json(response)
-  })
-  
-
+    res.json(response);
+  });
 });
-
-
 
 router.post("/delete-cart-product", varifyLogin, (req, res) => {
-
   let user = req.session.user;
-  productHelpers.deleteCartItem(req.body.cart, req.body.product).then((response) => {
-     res.json(response)
-   })
- 
+  productHelpers
+    .deleteCartItem(req.body.cart, req.body.product)
+    .then((response) => {
+      res.json(response);
+    });
 });
-
 
 router.post("/user-cancel-order", varifyLogin, (req, res) => {
-  
   let user = req.session.user;
   userHelpers.changeOrderStatus(req.body.order).then((response) => {
-    res.json(response)
-  })
+    res.json(response);
+  });
 });
 
-
-
-
-
-
-
-
+router.post("/verify-payment", varifyLogin, (req, res) => {
+  console.log(req.body);
+  userHelpers
+    .verifyPayment(req.body)
+    .then(() => {
+      userHelpers.changePaymentStatus(req.body["order[receipt]"]).then(() => {
+        console.log("payment successfull");
+        res.json({ status: true });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json({ status: false, errMsg: "" });
+    });
+});
 
 module.exports = router;

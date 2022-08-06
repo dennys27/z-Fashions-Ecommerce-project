@@ -267,11 +267,19 @@ router.get("/Un-Block-user/:id", varifyLogin, (req, res) => {
     req.session.loggedIn = null;
     res.redirect("/admin/view-users");
   });
-});
+}); 
 
 router.get("/logout", varifyLogin, (req, res) => {
   req.session.users = null;
   res.redirect("/admin");
 });
+
+//admin dashboard  
+
+router.get("/dashboard", varifyLogin, (req, res) => {
+  res.render("admin/admin", { admin: true })
+})
+
+
 
 module.exports = router;

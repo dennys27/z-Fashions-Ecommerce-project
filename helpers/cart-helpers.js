@@ -251,7 +251,11 @@ module.exports = {
         .get()
         .collection(collection.CART_COLLECTION)
         .findOne({ user: objectId(userId) });
-      resolve(cart.products);  
+      if (cart) {
+          resolve(cart.products);
+      } else {
+        resolve()
+       } 
     });
   },
 
@@ -304,6 +308,18 @@ module.exports = {
         ]).toArray()
         
       resolve(products);
+    });
+  },
+
+  getOrderId: (user) => {
+    return new Promise(async (resolve, reject) => {
+      let products = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .findOne({ userId: ObjectId(user) }).then((orderDetails) => {
+           resolve(orderDetails);
+        })
+        
     });
   },
 

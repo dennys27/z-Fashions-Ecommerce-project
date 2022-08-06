@@ -43,15 +43,17 @@ module.exports = {
         .toArray();
       resolve(products);
     });
-  },
+  }, 
 
-  getProductData: (editProduct) => {
+  getProductData: (editProduct) => { 
+    
+    console.log(editProduct); 
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_COLLECTIONS)
         .findOne({ _id: objectId(editProduct) })
-        .then((productData) => {
-          resolve(productData);
+        .then((productData) => { 
+          resolve(productData); 
         });
     });
   },
@@ -60,7 +62,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_CATAGORY)
-        .findOne({ _id: objectId(editProduct) })
+        .findOne({ _id: objectId(editProduct.toHexString()) })
         .then((productData) => {
           resolve(productData);
         });

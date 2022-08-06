@@ -55,15 +55,26 @@ $("#personalfm").submit((event) => {
 
 $("#address-form").submit((event) => {
   event.preventDefault();
-  $.ajax({
-    url: "/user-address-update",
-    method: "post",
-    data: $("#address-form").serialize(),
-    success: (response) => {
-      if (response.acknowledged) {
-        location.href = "/";
-      }
-      alert("updated successfully");
-    },
-  });
+
+    let phnalpha = /[A-Za-z]/;
+    let phoneNumber = /^[6-9]\d{9}$/gi;
+  let phone = document.getElementById("phone-number-2").value;
+
+  if (!phnalpha.test(phone)) {
+    if (phoneNumber.test(phone)) {
+  
+      $.ajax({
+        url: "/user-address-update",
+        method: "post",
+        data: $("#address-form").serialize(),
+        success: (response) => {
+          if (response.acknowledged) {
+            alert("updated successfully");
+            location.href = "/";
+          }
+          
+        },
+      });
+    }
+  }
 });
