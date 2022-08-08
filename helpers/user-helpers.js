@@ -2,10 +2,12 @@ var db = require("../config/connection");
 var collection = require("../config/collections");
 var objectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
-require("dotenv").config();
+
 const Razorpay = require("razorpay");
 const paypal = require("paypal-rest-sdk");
 const { resolve } = require("path");
+require("dotenv").config();
+
 
 var instance = new Razorpay({
   key_id: process.env.KEY_ID,

@@ -159,6 +159,19 @@ router.get("/view-product/:id", function (req, res) {
   });
 });
 
+//user address
+
+router.get("/my-addresses/:id", function (req, res) {
+  userHelpers.getUserDetails(req.params.id).then((userData) => {
+     console.log(req.params.id, "addressssssss");
+     res.render("user/user-addresses", { userData, userHead: true });
+  })
+   
+});
+
+
+
+
 router.post("/login", (req, res) => {
   userHelpers.doLogin(req.body).then((response) => {
     if (response.userBlock) {
@@ -217,7 +230,7 @@ router.post("/change-product-quantity", varifyLogin, (req, res) => {
     }
     res.json(response);
   });
-});
+}); 
 
 router.get("/checkout", varifyLogin, async (req, res) => {
   let user = req.session.user;
@@ -280,16 +293,20 @@ router.get("/orders-list", varifyLogin, async (req, res) => {
 router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let products = await cartHelpers.getOrderProducts(req.params.id);
-
-  res.render("user/view-ordered-products", { user, products });
+  let orderDetails = await cartHelpers.getInvoice(req.params.id);
+ // console.log(req.params.id);
+  console.log(orderDetails);
+  res.render("user/invoice", { user, products,orderDetails });
 });
 
 //user profile
 router.get("/my-account/:id", varifyLogin, (req, res) => {
   let user = req.session.user;
-  userHelpers.getUserDetails(user._id).then((data) => {
-    res.render("user/user-account", { user, data });
-  });
+  // userHelpers.getUserDetails(user._id).then((data) => {
+  //   res.render("user/user-account", { user, data });
+  // });
+  let userId = req.params.id;
+  res.render("user/youraccount",{user,userId})
 });
 
 router.get("/user-profile-update", varifyLogin, (req, res) => {

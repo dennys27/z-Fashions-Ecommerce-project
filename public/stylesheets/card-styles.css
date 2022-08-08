@@ -21,6 +21,10 @@
   border-radius: 0 0 7px 7px;
 }
 
+.dress-card:hover{
+ box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+
 .dress-card-title {
   line-height: 0.5rem;
 }
@@ -35,7 +39,7 @@
 }
 
 .dress-card-off {
-  color: #E06C9F;
+  color: #0099ff;
 }
 
 .dress-card-para {
@@ -126,16 +130,16 @@
 }
 
 .bag-button {
-  background: #E06C9F;
+  background: #0099ff;
   color: white;
 }
 
 .bag-button :hover{
-  background: #e299b9;
+  background: #0099ff;
 }
 
 .wish-button {
-  border: 1px solid #E06C9F;
-  color: #E06C9F;
+  border: 1px solid #0099ff;
+  color: #000000;
 }
 

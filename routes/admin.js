@@ -277,7 +277,7 @@ router.get("/logout", varifyLogin, (req, res) => {
 //admin dashboard  
 
 router.get("/dashboard", varifyLogin, (req, res) => {
-  res.render("admin/admin", { admin: true })
+  res.render("admin/dashboard", { admin: true })
 })
 
 

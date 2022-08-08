@@ -217,6 +217,8 @@ module.exports = {
       let status = order.PaymentMethod === "COD" ? "placed" : "pending";
       let orderObj = {
         deliveryDetails: {
+          firstName: order.FirstName,
+          lastName: order.LastName,
           mobile: order.PhoneNumber,
           address: order.Address,
           pincode: order.Zipcode,
@@ -229,7 +231,7 @@ module.exports = {
         userId: objectId(order.userId),
         paymentMethod: order.PaymentMethod,
         products: products,
-        date: new Date().toUTCString(),
+        date: new Date().toDateString(),
         status: status,
       };
       db.get()
@@ -317,6 +319,18 @@ module.exports = {
         .get()
         .collection(collection.ORDER_COLLECTION)
         .findOne({ userId: ObjectId(user) }).then((orderDetails) => {
+           resolve(orderDetails);
+        })
+        
+    });
+  },
+
+  getInvoice: (order) => {
+    return new Promise(async (resolve, reject) => {
+      let products = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .findOne({ _id: ObjectId(order) }).then((orderDetails) => {
            resolve(orderDetails);
         })
         

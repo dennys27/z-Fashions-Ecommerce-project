@@ -1,0 +1,122 @@
+<div class="container card w-75" style="margin-top: 100px;">
+  <div class="card-body ">
+    <div class="container mb-5 mt-3">
+      <div class="row d-flex align-items-baseline">
+        <div class="col-xl-9">
+          <p style="color: #7e8d9f;font-size: 20px;">Invoice &gt;&gt;
+            <strong>ID: {{orderDetails._id}}</strong></p>
+        </div>
+      </div>
+      <div class="container">
+        <div class="col-md-12">
+          <div class="text-center">
+           
+            <p class="pt-2">Z-Fashions</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-8">
+            <ul class="list-unstyled">
+              <li class="text-muted">To:
+                <span style="color:#8f8061 ;">{{orderDetails.deliveryDetails.firstName}} {{orderDetails.deliveryDetails.lastName}}</span></li>
+              <li class="text-muted">{{orderDetails.deliveryDetails.address}}</li>
+              <li class="text-muted">{{orderDetails.deliveryDetails.state}}, {{orderDetails.deliveryDetails.country}}</li>
+              <li class="text-muted"><i class="fas fa-phone"></i>
+                {{orderDetails.deliveryDetails.mobile}}</li>
+            </ul>
+          </div>
+          <div class="col-xl-4">
+            <p class="text-muted">Invoice</p>
+            <ul class="list-unstyled">
+              <li class="text-muted"><i
+                  class="fas fa-circle"
+                  style="color:#8f8061 ;"
+                ></i>
+                <span class="fw-bold">ID:</span>#123-456</li>
+              <li class="text-muted"><i
+                  class="fas fa-circle"
+                  style="color:#8f8061 ;"
+                ></i>
+                <span class="fw-bold">Creation Date: </span>{{orderDetails.date}}</li>
+              <li class="text-muted"><i
+                  class="fas fa-circle"
+                  style="color:#8f8061;"
+                ></i>
+                <span class="me-1 fw-bold">Status:</span><span
+                  class="badge bg-warning text-black fw-bold"
+                >
+                  {{orderDetails.status}}</span></li>
+            </ul>
+          </div>
+        </div>
+
+        {{#each products}}
+        <div class="row my-2 mx-1 justify-content-center">
+          <div class="col-md-2 mb-4 mb-md-0">
+            <div 
+            
+              class="bg-image ripple rounded-5 mb-4 overflow-hidden d-block"
+              data-ripple-color="light"
+            >
+              <img
+                src="/{{this.product.Image.[0]}}"
+                class="w-100 image-responsive"
+                height="100px"
+                alt="Elegant shoes and shirt"
+                
+              />
+              <a href="#!">
+                <div class="hover-overlay">
+                  <div
+                    class="mask"
+                    style="background-color: hsla(0, 0%, 98.4%, 0.2)"
+                  ></div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-md-7 mb-4 mb-md-0">
+            <p class="fw-bold">{{this.product.name}}</p>
+            <p class="mb-1">
+              <span class="text-muted me-2">Size:</span><span>xl</span>
+            </p>
+            <p>
+              <span class="text-muted me-2">Color:</span><span>Gray</span>
+            </p>
+          </div>
+          <div class="col-md-3 mb-4 mb-md-0">
+            <h5 class="mb-2">
+              <s class="text-muted me-2 small align-middle">₹1050</s><span
+                class="align-middle"
+              >₹ {{this.product.price}}</span>
+            </h5>
+            <p class="text-danger"><small>You save 25%</small></p>
+          </div>
+        </div>
+
+        {{/each}}
+
+        <hr />
+        <div class="row">
+          <div class="col-xl-8">
+            <p class="ms-3">PaymentMethod : {{orderDetails.paymentMethod}}</p>
+          </div>
+          <div class="col-xl-3">
+            <ul class="list-unstyled">
+              <li class="text-muted ms-3"><span
+                  class="text-black me-4"
+                >SubTotal</span>{{orderDetails.deliveryDetails.totalAmount}}</li>
+              <li class="text-muted ms-3 mt-2"><span
+                  class="text-black me-4"
+                >Shipping</span>free</li>
+            </ul>
+            <p class="text-black float-start"><span class="text-black me-3">
+                Total Amount</span><span
+                style="font-size: 25px;"
+              >{{orderDetails.deliveryDetails.totalAmount}}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
