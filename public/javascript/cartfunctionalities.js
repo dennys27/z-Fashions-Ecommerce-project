@@ -47,7 +47,17 @@ function addToCart(proId) {
      
 
 function deleteProduct(cartId, proId) {
-  console.log("im workinnnnggg");
+
+  swal({
+    title: "Are you sure?",
+    text: "do you want to remove this product from your cart",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then((willDelete) => {
+    if (willDelete) {
+
+       console.log("im workinnnnggg");
        $.ajax({
          url: "/delete-cart-product",
          data: {
@@ -57,11 +67,34 @@ function deleteProduct(cartId, proId) {
          method: "post",
          success: (response) => {
            if (response.removed) {
-             alert("Product Removed from cart");
              location.reload();
            }
          },
        });
+      swal("Poof! Product removed from your cart", {
+        icon: "success",
+      });
+    } else {
+      swal("Your product is safe in your cart");
+    }
+  });
+
+
+  // console.log("im workinnnnggg");
+  //      $.ajax({
+  //        url: "/delete-cart-product",
+  //        data: {
+  //          cart: cartId,
+  //          product: proId,
+  //        },
+  //        method: "post",
+  //        success: (response) => {
+  //          if (response.removed) {
+  //            swal("Good job!", "Product removed", "success");
+  //            location.reload();
+  //          }
+  //        },
+  //      });
 }
 
 

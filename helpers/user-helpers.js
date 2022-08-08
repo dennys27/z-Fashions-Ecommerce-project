@@ -7,7 +7,7 @@ const Razorpay = require("razorpay");
 const paypal = require("paypal-rest-sdk");
 const { resolve } = require("path");
 require("dotenv").config();
-
+ 
 
 var instance = new Razorpay({
   key_id: process.env.KEY_ID,
@@ -221,7 +221,7 @@ module.exports = {
         .updateOne(
           { _id: objectId(userId) },
           {
-            $set: {
+            $push: {
               deliveryAddress: userDetails,
             },
           }
@@ -337,49 +337,47 @@ module.exports = {
   },
 
   generatePayPal: (orderId, totalPrice) => {
-    return new Promise(async (resolve, reject) => {
-       const create_payment_json = {
-         intent: "sale",
-         payer: {
-           payment_method: "paypal",
-         },
-         redirect_urls: {
-           return_url: "http://localhost:3000/cart",
-           cancel_url: "http://localhost:3000/",
-         },
-         transactions: [
-           {
-             item_list: {
-               items: [
-                 {
-                   name: "Red Sox Hat",
-                   sku: "001",
-                   price: "25.00",
-                   currency: "USD",
-                   quantity: 1,
-                 },
-               ],
-             },
-             amount: {
-               currency: "USD",
-               total: "25.00",
-             },
-             description: "Hat for the best team ever",
-           },
-         ],
-       };
-
-      paypal.payment.create(create_payment_json, function (error, payment) {
-        if (error) {
-          console.log(error.details);
-        }
-        
-        resolve(payment)
-       
-
-       });
-
     
-    });
+    let price = totalPrice.toString()
+   return new Promise((resolve, reject) => {
+     const create_payment_json = {
+       "intent": "sale",
+       "payer": {
+         "payment_method": "paypal",
+       },
+       "redirect_urls": {
+         "return_url": "http://localhost:3000/success",
+         "cancel_url": "http://localhost:3000/cancel",
+       },
+       "transactions": [
+         {
+           "item_list": {
+             "items": [
+               {
+                 "name": "Red Sox Hat",
+                 "sku": "001",
+                 "price": totalPrice,
+                 "currency": "USD",
+                 "quantity": 1,
+               },
+             ],
+           },
+           "amount": {
+             "currency": "USD",
+             "total": totalPrice,
+           },
+           "description": "Hat for the best team ever",
+         },
+       ],
+     };
+
+     paypal.payment.create(create_payment_json, function (error, payment) {
+       if (error) {
+         throw error;
+       } else {
+         resolve(payment);
+       }
+     });
+   });
   },
 };

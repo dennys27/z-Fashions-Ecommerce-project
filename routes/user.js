@@ -6,6 +6,7 @@ const userHelpers = require("../helpers/user-helpers");
 var productHelpers = require("../helpers/product-management");
 const cartHelpers = require("../helpers/cart-helpers");
 const { ObjectId } = require("mongodb");
+const paypal = require("paypal-rest-sdk");
 
 const varifyLogin = (req, res, next) => {
   if (req.session.user) {
@@ -154,7 +155,7 @@ router.post("/signup", (req, res) => {
 
 router.get("/view-product/:id", function (req, res) {
   productHelpers.getProductData(req.params.id).then((Product) => {
-    console.log(req.params.id,"ohooooooooooooo");
+   
     res.render("user/product-view", { Product, userHead: true });
   });
 });
@@ -163,7 +164,7 @@ router.get("/view-product/:id", function (req, res) {
 
 router.get("/my-addresses/:id", function (req, res) {
   userHelpers.getUserDetails(req.params.id).then((userData) => {
-     console.log(req.params.id, "addressssssss");
+     console.log(userData);
      res.render("user/user-addresses", { userData, userHead: true });
   })
    
@@ -234,6 +235,7 @@ router.post("/change-product-quantity", varifyLogin, (req, res) => {
 
 router.get("/checkout", varifyLogin, async (req, res) => {
   let user = req.session.user;
+  console.log(user);
   let total = await cartHelpers.getTotalAmount(req.session.user._id);
   let totalPrice = await cartHelpers.getTotalAmount(req.session.user._id);
   if (totalPrice > 0) {
@@ -249,7 +251,10 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
   let user = req.session.user._id;
   let products = await cartHelpers.getCartProductList(req.body.userId);
   let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
+  req.session.total = totalPrice
   cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
+    req.session.orderId = response.insertedId.toString();
+    console.log(response.insertedId.toString());
     if (req.body["PaymentMethod"] == "COD") {
       //console.log("looooooooo");
       res.json({ codSuccess: true });
@@ -320,6 +325,45 @@ router.post("/user-address-update", varifyLogin, (req, res) => {
   });
 });
 
+//paypal
+router.get("/success", varifyLogin, (req, res) => {
+  let amount = req.session.total;
+  let orderIdPaypal = req.session.orderId;
+  userHelpers.changePaymentStatus(orderIdPaypal).then(() => {
+    const payerId = req.query.PayerID;
+    const paymentId = req.query.paymentId;
+    console.log(payerId);
+    const execute_payment_json = {
+      payer_id: payerId,
+      transactions: [
+        {
+          amount: {
+            currency: "USD",
+            total: amount,
+          },
+        },
+      ],
+    };
+    
+    paypal.payment.execute(
+      paymentId,
+      execute_payment_json,
+      function (error, payment) {
+        if (error) {
+          console.log(error.response);
+          throw error;
+        } else {
+          console.log(JSON.stringify(payment));
+          res.redirect("/orders-list");
+        }
+      }
+    );
+  });
+});
+
+
+
+
 //profile edit
 
 router.get("/profile-edit/:id", varifyLogin, (req, res) => {
@@ -382,5 +426,17 @@ router.post("/verify-payment", varifyLogin, (req, res) => {
       res.json({ status: false, errMsg: "" });
     });
 });
+
+
+
+
+
+
+router.get("/cancel", varifyLogin, (req, res) => {
+res.send('Cancelled')
+});
+
+
+
 
 module.exports = router;
