@@ -267,6 +267,9 @@ module.exports = {
           console.log(err);
           console.log("new order :", order);
           resolve(order);
+          if (err) {
+            console.log(err);
+          }
         }
       );
     });
@@ -336,48 +339,61 @@ module.exports = {
     });
   },
 
-  generatePayPal: (orderId, totalPrice) => {
-    
-    let price = totalPrice.toString()
-   return new Promise((resolve, reject) => {
-     const create_payment_json = {
-       "intent": "sale",
-       "payer": {
-         "payment_method": "paypal",
-       },
-       "redirect_urls": {
-         "return_url": "http://localhost:3000/success",
-         "cancel_url": "http://localhost:3000/cancel",
-       },
-       "transactions": [
-         {
-           "item_list": {
-             "items": [
-               {
-                 "name": "Red Sox Hat",
-                 "sku": "001",
-                 "price": totalPrice,
-                 "currency": "USD",
-                 "quantity": 1,
-               },
-             ],
-           },
-           "amount": {
-             "currency": "USD",
-             "total": totalPrice,
-           },
-           "description": "Hat for the best team ever",
-         },
-       ],
-     };
+  deleteOrder: (orderId) => {
 
-     paypal.payment.create(create_payment_json, function (error, payment) {
-       if (error) {
-         throw error;
-       } else {
-         resolve(payment);
-       }
-     });
-   });
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .deleteOne({ _id: objectId(orderId) })
+        .then((response) => {
+          resolve(response);
+        });
+    });
+    
+
+  },
+
+  generatePayPal: (orderId, totalPrice) => {
+    let price = totalPrice.toString();
+    return new Promise((resolve, reject) => {
+      const create_payment_json = {
+        intent: "sale",
+        payer: {
+          payment_method: "paypal",
+        },
+        redirect_urls: {
+          return_url: "http://localhost:3000/success",
+          cancel_url: "http://localhost:3000/cancel",
+        },
+        transactions: [
+          {
+            item_list: {
+              items: [
+                {
+                  name: "Red Sox Hat",
+                  sku: "001",
+                  price: totalPrice,
+                  currency: "USD",
+                  quantity: 1,
+                },
+              ],
+            },
+            amount: {
+              currency: "USD",
+              total: totalPrice,
+            },
+            description: "Hat for the best team ever",
+          },
+        ],
+      };
+
+      paypal.payment.create(create_payment_json, function (error, payment) {
+        if (error) {
+          throw error;
+        } else {
+          resolve(payment);
+        }
+      });
+    });
   },
 };

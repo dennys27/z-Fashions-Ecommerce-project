@@ -214,7 +214,7 @@ module.exports = {
 
   placeOrder: (order, products, total) => {
     return new Promise(async (resolve, reject) => {
-      let status = order.PaymentMethod === "COD" ? "placed" : "pending";
+      let status = order.PaymentMethod === "COD" ? "placed" : "placed";
       let orderObj = {
         deliveryDetails: {
           firstName: order.FirstName,

@@ -38,15 +38,12 @@
               <span> Description About this product:- </span>
              {{Product.description}}
             </div>
-            <form action="" method="post" accept-charset="utf-8">
+          
               <ul class="spe_ul"></ul>
               <div class="_p-qty-and-cart">
                 <div class="_p-add-cart">
-                  <button class="btn-theme btn buy-btn" tabindex="0">
-                    <i class="fa fa-shopping-cart"></i>
-                    Buy Now
-                  </button>
-                  <button class="btn-theme btn btn-success" tabindex="0">
+                
+                  <button onClick="addToCart('{{Product._id}}')" class="btn-theme btn btn-success" tabindex="0">
                     <i class="fa fa-shopping-cart"></i>
                     Add to Cart
                   </button>
@@ -55,7 +52,7 @@
                   <input type="hidden" name="url" value="" />
                 </div>
               </div>
-            </form>
+          
           </div>
         </div>
       </div>

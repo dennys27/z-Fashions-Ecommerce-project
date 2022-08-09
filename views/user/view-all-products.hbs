@@ -1,0 +1,84 @@
+<div class="container-fluid mt-5">
+  <h4 class="pt-4 ml-3">Product view</h4>
+  <div class="row mt-5 container-fluid  align-items-center ">
+   
+   {{#if men}}
+
+    {{#each men}}
+
+  <div class="col-md-3">
+          
+        <div class="dress-card border">
+          <a href="/view-product/{{this._id}}">
+          <div  class="dress-card-head" style="width:284px; height: 254px;; overflow:hidden;">
+            <div class="img-fluid image-container container-fluid d-flex justify-content-center"> 
+               <img class="dress-card-img-top" src="/{{this.Image.[0]}}" alt="">
+            </div>
+            <div class="surprise-bubble"><span class="dress-card-heart">
+                <i class="fas fa-heart"></i>
+              </span><a href="/view-product/{{this._id}}"> <span>More</span></a></div>
+          </div>
+          <div class="dress-card-body">
+            <h4 class="dress-card-title"></h4>
+            <p class="dress-card-para">{{this.name}}</p>
+            <p class="dress-card-para"><span class="dress-card-price">₹{{this.price}} &ensp;</span><span class="dress-card-crossed">Rs.2099</span><span class="dress-card-off">&ensp;(60% OFF)</span></p>
+            <div class="row">
+              <div class="col-md-6 card-button"><div onClick="addToCart('{{this._id}}')" class="card-button-inner bag-button">Add to Bag</div></div>
+              <div class="col-md-6 card-button"><a href="" class="text-decoration-none"><div style="cursor: pointer;" class="card-button-inner wish-button">Whishlist</div></a></div>
+            </div>
+          </div>
+          </a>
+        </div>
+      </div>
+
+   
+
+        
+      {{/each}}
+      {{/if}}
+     
+
+      {{#if women}}
+
+    {{#each women}}
+
+
+        <div class="col-md-3">
+          
+        <div class="dress-card border">
+          <a href="/view-product/{{this._id}}">
+          <div  class="dress-card-head" style="width:284px; height: 254px;; overflow:hidden;">
+            <div class="img-fluid image-container container-fluid d-flex justify-content-center"> 
+               <img class="dress-card-img-top" src="/{{this.Image.[0]}}" alt="">
+            </div>
+            <div class="surprise-bubble"><span class="dress-card-heart">
+                <i class="fas fa-heart"></i>
+              </span><a href="/view-product/{{this._id}}"> <span>More</span></a></div>
+          </div>
+          <div class="dress-card-body">
+            <h4 class="dress-card-title"></h4>
+            <p class="dress-card-para">{{this.name}}</p>
+            <p class="dress-card-para"><span class="dress-card-price">₹{{this.price}} &ensp;</span><span class="dress-card-crossed">Rs.2099</span><span class="dress-card-off">&ensp;(60% OFF)</span></p>
+            <div class="row">
+              <div class="col-md-6 card-button"><div onClick="addToCart('{{this._id}}')" class="card-button-inner bag-button">Add to Bag</div></div>
+              <div class="col-md-6 card-button"><a href="" class="text-decoration-none"><div style="cursor: pointer;" class="card-button-inner wish-button">Whishlist</div></a></div>
+            </div>
+          </div>
+          </a>
+        </div>
+        
+      </div>
+
+   
+
+        
+      {{/each}}
+      {{/if}}
+
+
+
+
+
+  </div>
+
+</div>

@@ -252,36 +252,42 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
   let products = await cartHelpers.getCartProductList(req.body.userId);
   let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
   req.session.total = totalPrice
-  cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
-    req.session.orderId = response.insertedId.toString();
-    console.log(response.insertedId.toString());
-    if (req.body["PaymentMethod"] == "COD") {
-      //console.log("looooooooo");
-      res.json({ codSuccess: true });
-    } else if (req.body["PaymentMethod"] == "RazorPay") {
-     // console.log("looooooooo");
-      cartHelpers.getOrderId(user).then((orderDetails) => {
-        userHelpers
-          .generateRazorPay(orderDetails._id.toString(), totalPrice)
-          .then((data) => {
-            data.razorpay = true;
-            // console.log(data);
-            res.json(data);
-          });
-      });
-    } else if (req.body["PaymentMethod"] == "PayPal") {
+  if (totalPrice > 0) {
     
-      cartHelpers.getOrderId(user).then((orderDetails) => {
-         console.log(totalPrice);
-        userHelpers
-          .generatePayPal(orderDetails._id.toString(), totalPrice)
-          .then((data) => {
-            console.log(data);
-            res.json(data);
-          });
-      });
-    }
-  });
+     cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
+       req.session.orderId = response.insertedId.toString();
+       console.log(response.insertedId.toString());
+       if (req.body["PaymentMethod"] == "COD") {
+  
+         res.json({ codSuccess: true });
+       } else if (req.body["PaymentMethod"] == "RazorPay") {
+       
+         cartHelpers.getOrderId(user).then((orderDetails) => {
+           userHelpers
+             .generateRazorPay(orderDetails._id.toString(), totalPrice)
+             .then((data) => {
+               data.razorpay = true;
+               
+               res.json(data);
+             });
+         });
+       } else if (req.body["PaymentMethod"] == "PayPal") {
+         cartHelpers.getOrderId(user).then((orderDetails) => {
+           console.log(totalPrice);
+           userHelpers
+             .generatePayPal(orderDetails._id.toString(), totalPrice)
+             .then((data) => {
+               console.log(data);
+               res.json(data);
+             });
+         });
+       }
+     }); 
+
+  } else {
+     res.json({cempty:true});
+  }
+ 
 
   //res.render("user/checkout", { user,total });
 });
@@ -356,9 +362,40 @@ router.get("/success", varifyLogin, (req, res) => {
           console.log(JSON.stringify(payment));
           res.redirect("/orders-list");
         }
-      }
+      } 
     );
   });
+});
+
+
+//full products view
+
+router.get("/view-all-products/:category", varifyLogin, (req, res) => {
+  let user = req.session.user;
+  let query = req.params.category
+  console.log(query);
+  productHelpers.getAllproducts().then((products) => {
+    let men = [];
+    let women = [];
+
+    products.map((data) => {
+      if (data.category == "men") {
+        men.push(data);
+      } else if (data.category == "women") {
+        women.push(data);
+      }
+    });
+    if (query == "men") {
+       res.render("user/view-all-products", { user, men });
+    } else {
+       res.render("user/view-all-products", { user, women });
+    }
+   
+   
+  });
+
+
+  
 });
 
 
@@ -411,30 +448,58 @@ router.post("/user-cancel-order", varifyLogin, (req, res) => {
   });
 });
 
+
+  //marked----------
+
 router.post("/verify-payment", varifyLogin, (req, res) => {
-  console.log(req.body);
-  userHelpers
-    .verifyPayment(req.body)
-    .then(() => {
-      userHelpers.changePaymentStatus(req.body["order[receipt]"]).then(() => {
-        console.log("payment successfull");
-        res.json({ status: true });
+
+  console.log(req.body,"testing deleting order");
+  if (
+    req.body["order[receipt]"] == null ||
+    req.body["order[receipt]"] == "" ||
+    req.body["order[receipt]"] == undefined
+  ) {
+    userHelpers.deleteOrder(req.session.orderId);
+  } else {
+    userHelpers
+      .verifyPayment(req.body)
+      .then(() => {
+        userHelpers.changePaymentStatus(req.body["order[receipt]"]).then(() => {
+          console.log("payment successfull");
+          res.json({ status: true });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.json({ status: false, errMsg: "" });
       });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json({ status: false, errMsg: "" });
-    });
+  }
+ 
+  
+  
 });
-
-
-
-
 
 
 router.get("/cancel", varifyLogin, (req, res) => {
 res.send('Cancelled')
 });
+
+
+router.get("/test", varifyLogin, (req, res) => {
+  userHelpers.getUserDetails(req.session.user._id).then((user) => {
+    res.render("user/test", { user });
+  });
+});
+router.post("/test-1", varifyLogin, (req, res) => {
+   
+  console.log(req.body);
+
+    res.send("success")
+ 
+});
+
+
+
 
 
 

@@ -8,7 +8,7 @@ $("#changepsw").submit((event) => {
     return false;
   } {
 
-
+   
     $.ajax({
       url: "/change-password",
       method: "post",

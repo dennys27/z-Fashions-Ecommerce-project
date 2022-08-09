@@ -80,7 +80,7 @@ function deleteProduct(cartId, proId) {
   });
 
 
-  // console.log("im workinnnnggg");
+
   //      $.ajax({
   //        url: "/delete-cart-product",
   //        data: {

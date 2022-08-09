@@ -19,8 +19,38 @@ $("#check-out-form").submit((event) => {
             location.href = response.links[i].href;
           }
         }
+      } else if (response.cempty) {
+        swal("Here's the title!", "your cart is empty");
+        location.href = "/cart";
       }
      
+    },
+  });
+});
+
+$("#Default-Address").submit((event) => {
+  event.preventDefault();
+  $.ajax({
+    url: "/checkout-form",
+    method: "post",
+    data: $("#Default-Address").serialize(),
+    success: (response) => {
+      console.log(response);
+      if (response.codSuccess) {
+        location.href = "/cart";
+      } else if (response.razorpay == true) {
+        console.log(response);
+        razorpayPayment(response);
+      } else if (response.payer.payment_method == "paypal") {
+        for (let i = 0; i < response.links.length; i++) {
+          if (response.links[i].rel === "approval_url") {
+            location.href = response.links[i].href;
+          }
+        }
+      } else if (response.cempty) {
+        swal("Here's the title!", "your cart is empty");
+        location.href = "/cart";
+      }
     },
   });
 });
