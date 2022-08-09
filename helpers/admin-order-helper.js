@@ -28,9 +28,11 @@ module.exports = {
                        status:status
                     }
                 
+            }).then((data) => {
+                 
+                 resolve(data);
             })
-            console.log(Order);
-            resolve()
+           
            
             
         })

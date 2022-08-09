@@ -6,9 +6,11 @@ var productHelpers = require("../helpers/product-helpers");
 var itemHelpers = require("../helpers/product-management");
 const userHelpers = require("../helpers/user-helpers");
 const adminOrderHelper = require("../helpers/admin-order-helper");
+const cartHelpers = require("../helpers/cart-helpers");
 let userName = "admin";
 let Pin = "admin123";
 const store = require("../multer/multer");
+
 
 const varifyLogin = (req, res, next) => {
   if (req.session.users) {
@@ -232,7 +234,21 @@ router.get("/admin-orders", varifyLogin, (req, res) => {
 
 router.post("/change-order-status/:id", varifyLogin, (req, res) => {
   console.log("yeah im working you know");
-    adminOrderHelper.changeOrderStatus(req.params.id,req.body.status)
+  adminOrderHelper.changeOrderStatus(req.params.id, req.body.status).then((data) => {
+      res.json({data})
+    })
+});
+
+//admin-view - order details
+
+router.get("/admin-view-order-details/:id", varifyLogin, async (req, res) => {
+ 
+  let products = await cartHelpers.getOrderProducts(req.params.id);
+  console.log(products,"ordered detailsssssssssssssss");
+  let orderDetails = await cartHelpers.getInvoice(req.params.id);
+  // console.log(req.params.id);
+  
+  res.render("user/invoice", { admin: true, products, orderDetails });
 });
 
 

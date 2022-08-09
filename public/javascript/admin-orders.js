@@ -31,4 +31,23 @@ function changeOrderStatus(orderId,status) {
   });
 }
 
+//change order status dropdown
+function changeOrderStatusAdmin(orderId,status) {
+  console.log("changing order status");
+  $.ajax({
+    url: "/admin/change-order-status/" + orderId,
+    method: "POST",
+    data: {
+      status: status,
+    },
+
+    success: (response) => {
+      if (response) {
+        location.reload();
+     }
+     
+    },
+  });
+}
+
 

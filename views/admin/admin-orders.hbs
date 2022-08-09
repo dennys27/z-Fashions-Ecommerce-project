@@ -32,7 +32,20 @@
           <td>{{this.status}}</td>
           <td data-order="1000">₹{{this.deliveryDetails.totalAmount}}</td>
           <td data-order="1000">
-            <button
+
+
+            <select class="form-select" aria-label="Default select example" onchange="changeOrderStatusAdmin('{{this._id}}',value);">
+  <option value="pending">Pending</option>
+  <option value="delivered">Delivered</option>
+  <option value="cancel">Cancel</option>
+</select>
+             <a href="/admin/admin-view-order-details/{{this._id}}"
+              class="btn btn-primary mt-3"
+            >view details</a>
+
+
+
+            {{!-- <button
               onclick="changeOrderStatus('{{this._id}}','pending')"
               class="btn btn-primary"
             >Pending</button>
@@ -43,7 +56,7 @@
             <button
               onclick="changeOrderStatus('{{this._id}}','cancelled')"
               class="btn btn-primary"
-            >Cancel</button>
+            >Cancel</button> --}}
           </td>
         </tr>
       {{/each}}
