@@ -180,7 +180,7 @@ router.get("/add-categories", varifyLogin, (req, res) => {
   res.render("admin/Add-category", { admin: true });
 });
 
-router.get("/view-products", varifyLogin, (req, res) => {
+router.get("/view-products", varifyLogin, (req, res) => { 
   itemHelpers.getAllproducts().then((products) => {
     res.render("admin/view-products", { admin: true, products });
   });
@@ -205,7 +205,6 @@ router.get("/delete-category/:id", varifyLogin, (req, res) => {
 
 
 router.post("/add-category", (req, res) => {
-  //let category = req.body;
   console.log(req.body);
   itemHelpers.addCategory(req.body);
   res.redirect("/admin/add-categories");
@@ -227,6 +226,8 @@ router.get("/edit-categories/:id", varifyLogin, (req, res) => {
 
 router.get("/admin-orders", varifyLogin, (req, res) => {
   adminOrderHelper.getOrders().then((Items) => {
+    const reversed = Items.reverse()
+    Items = reversed;
     
       res.render("admin/admin-orders", { admin: true,Items });
  })
@@ -239,30 +240,22 @@ router.post("/change-order-status/:id", varifyLogin, (req, res) => {
     })
 });
 
-//admin-view - order details
 
+//admin-view - order details
 router.get("/admin-view-order-details/:id", varifyLogin, async (req, res) => {
- 
   let products = await cartHelpers.getOrderProducts(req.params.id);
-  console.log(products,"ordered detailsssssssssssssss");
   let orderDetails = await cartHelpers.getInvoice(req.params.id);
-  // console.log(req.params.id);
-  
   res.render("user/invoice", { admin: true, products, orderDetails });
 });
 
 
 
 router.post("/edit-category/:id", (req, res) => {
-  //let category = req.body;
- 
   itemHelpers.updateCategory(req.params.id, req.body);
-   
  res.redirect("/admin/categories");
 });
 
 router.post("/add-category", (req, res) => {
-  //let category = req.body;
   console.log(req.body);
   itemHelpers.addCategory(req.body);
   res.redirect("/admin/add-categories");
@@ -276,6 +269,7 @@ router.get("/Block-user/:id", varifyLogin, (req, res) => {
     res.redirect("/admin/view-users");
   });
 });
+
 router.get("/Un-Block-user/:id", varifyLogin, (req, res) => {
   let userId = req.params.id;
   userHelpers.unBlockUser(userId).then((response) => {
@@ -290,8 +284,8 @@ router.get("/logout", varifyLogin, (req, res) => {
   res.redirect("/admin");
 });
 
-//admin dashboard  
 
+//admin dashboard  
 router.get("/dashboard", varifyLogin, (req, res) => {
   res.render("admin/dashboard", { admin: true })
 })

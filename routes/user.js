@@ -297,6 +297,8 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
 router.get("/orders-list", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let orders = await cartHelpers.getUserOrders(user._id);
+  const reversed = orders.reverse()
+  orders = reversed
 
   res.render("user/orderslist", { user, orders });
 });
