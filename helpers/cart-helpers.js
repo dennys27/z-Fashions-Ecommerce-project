@@ -228,11 +228,13 @@ module.exports = {
           country: order.Country,
           totalAmount: total,
         },
+        totalAmount: total,
         userId: objectId(order.userId),
         paymentMethod: order.PaymentMethod,
         products: products,
         date: new Date().toDateString(),
         status: status,
+        timeStamp: new Date(),
       };
       db.get()
         .collection(collection.ORDER_COLLECTION)

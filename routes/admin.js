@@ -245,7 +245,7 @@ router.post("/change-order-status/:id", varifyLogin, (req, res) => {
 router.get("/admin-view-order-details/:id", varifyLogin, async (req, res) => {
   let products = await cartHelpers.getOrderProducts(req.params.id);
   let orderDetails = await cartHelpers.getInvoice(req.params.id);
-  res.render("user/invoice", { admin: true, products, orderDetails });
+  res.render("admin/invoice", { admin: true, products, orderDetails });
 });
 
 
@@ -286,8 +286,17 @@ router.get("/logout", varifyLogin, (req, res) => {
 
 
 //admin dashboard  
-router.get("/dashboard", varifyLogin, (req, res) => {
-  res.render("admin/dashboard", { admin: true })
+router.get("/dashboard", varifyLogin, async(req, res) => {
+  let cod =await adminOrderHelper.codTotal()
+  let razorpay = await adminOrderHelper.razorTotal();
+  let paypal = await adminOrderHelper.paypalTotal();
+  
+  adminOrderHelper.getLastweekOrders().then((response) => {
+    //console.log(response);
+     res.render("admin/dashboard", { admin: true,cod,razorpay,paypal });
+    
+  })
+ 
 })
 
 

@@ -9,6 +9,7 @@
   {{#each userData.deliveryAddress}}
     <div class=" w-25 col-md-3 m-2 border-2" style="height: 250px">
       <div class="container text-wrap p-3">
+        
         <div class="text-wrap" style="height: 150px"> 
         <p class="fw-bold">{{this.FirstName}} {{this.LastName}}</p>
         <p class="text-justify">
@@ -18,12 +19,12 @@
         </p>
         </div>
         <div class="mt-4 d-flex">
-          <a class="text-decoration-none" href=""> Edit</a>
+          <span class="text-decoration-none text-primary" onclick="makeItDefault('{{this.uId}}')"> Make it default</span>
           <div
             class="m-2"
             style=" height:10px; width:2px; background-color:rgb(78, 78, 78);"
           ></div>
-          <a class="text-decoration-none" href=""> Remove</a>
+          <span onclick="removeAddress('{{this.uId}}')" class="text-decoration-none text-primary" href=""> Remove</span>
         </div>
       </div>
     </div>

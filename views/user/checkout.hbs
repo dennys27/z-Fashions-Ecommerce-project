@@ -155,17 +155,17 @@
       <h5 class="fw-bold">Default-Address</h5>
 
       <div class="container-fluid">
-         <label for="">{{user.deliveryAddress.[0].FirstName}} {{user.deliveryAddress.[0].LastName}}</label>
-         <label for="">{{user.deliveryAddress.[0].Address}},</label>
+         <label for="">{{defaultAddress.FirstName}} {{defaultAddress.LastName}}</label>
+         <label for="">{{defaultAddress.Address}}</label>
           <br>
-         <label for="">{{user.deliveryAddress.[0].Apartment}}</label>
+         <label for="">{{defaultAddress.Apartment}}</label>
          <br>
-         <label for="">{{user.deliveryAddress.[0].Zipcode}}</label>
-         <label for="">{{user.deliveryAddress.[0].City}}</label>
-         <label for="">{{user.deliveryAddress.[0].State}}</label>
+         <label for="">{{defaultAddress.Zipcode}}</label>
+         <label for="">{{defaultAddress.City}}</label>
+         <label for="">{{defaultAddress.State}}</label>
           <br>
-         <label for="">{{user.deliveryAddress.[0].Country}}</label>
-         <label for="">{{user.deliveryAddress.[0].deliveryPhone}}</label>
+         <label for="">{{defaultAddress.Country}}</label>
+         <label for="">{{defaultAddress.deliveryPhone}}</label>
         
       </div>
       <form id="Default-Address"  class=" container-fluid" >
@@ -176,14 +176,14 @@
            
               placeholder="First name*"
               required hidden
-              value="{{user.deliveryAddress.[0].FirstName}}"
+              value="{{defaultAddress.FirstName}}"
               
             />
             <input
               type="text"
               name="userId"
               placeholder="First name"
-              value="{{user._id}}"
+              value="{{userAd._id}}"
               hidden
              
             />
@@ -193,7 +193,7 @@
               class="border rounded h-10 w-full focus:outline-none focus:border-green-200 px-2 mt-2 text-sm"
               placeholder="Last name*"
               required hidden
-              value="{{user.deliveryAddress.[0].LastName}}"
+              value="{{defaultAddress.LastName}}"
             />
         
          
@@ -203,7 +203,7 @@
             class="border rounded h-10 w-full focus:outline-none focus:border-green-200 px-2 mt-2 text-sm"
             placeholder="Address*"
             required hidden
-            value="{{user.deliveryAddress.[0].Address}}"
+            value="{{defaultAddress.Address}}"
           />
           <input
             type="text"
@@ -211,7 +211,7 @@
             class="border rounded h-10 w-full focus:outline-none focus:border-green-200 px-2 mt-2 text-sm"
             placeholder="Apartment, suite, etc."
             required hidden
-            value="{{user.deliveryAddress.[0].Apartment}}"
+            value="{{defaultAddress.Apartment}}"
           />
           <div class="grid md:grid-cols-3 md:gap-2">
             <input
@@ -220,7 +220,7 @@
               class="border rounded h-10 w-full focus:outline-none focus:border-green-200 px-2 mt-2 text-sm"
               placeholder="Zipcode*"
               required hidden
-              value="{{user.deliveryAddress.[0].Zipcode}}"
+              value="{{defaultAddress.Zipcode}}"
             />
             <input
               type="text"
@@ -228,7 +228,7 @@
               class="border rounded h-10 w-full focus:outline-none focus:border-green-200 px-2 mt-2 text-sm"
               placeholder="City*"
               required hidden
-              value="{{user.deliveryAddress.[0].City}}"
+              value="{{defaultAddress.City}}"
             />
             <input
               type="text"
@@ -236,7 +236,7 @@
               class="border rounded h-10 w-full focus:outline-none focus:border-green-200 px-2 mt-2 text-sm"
               placeholder="State*"
               required hidden
-              value="{{user.deliveryAddress.[0].State}}"
+              value="{{defaultAddress.State}}"
             />
           </div>
           <input
@@ -245,7 +245,7 @@
             class="border rounded h-10 w-full focus:outline-none focus:border-green-200 px-2 mt-2 text-sm"
             placeholder="Country*"
             required hidden
-            value="{{user.deliveryAddress.[0].Country}}"
+            value="{{defaultAddress.Country}}"
           />
           <input
             type="text"
@@ -253,7 +253,7 @@
             class="border rounded h-10 w-full focus:outline-none focus:border-green-200 px-2 mt-2 text-sm"
             placeholder="Phone Number*"
             required hidden
-             value="{{user.deliveryAddress.[0].deliveryPhone}}"
+             value="{{defaultAddress.deliveryPhone}}"
           />
 
         <select name="PaymentMethod" class="form-select" aria-label="Default select example" style="width: 120px;">

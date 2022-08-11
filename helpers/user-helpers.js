@@ -174,6 +174,16 @@ module.exports = {
         });
     });
   },
+  // userDefaultAddress: (userId) => {
+  //   return new Promise((resolve, reject) => {
+  //     db.get()
+  //       .collection(collection.USER_COLLECTION)
+  //       .findOne({ _id: objectId(userId) })
+  //       .then((user) => {
+  //         resolve(user);
+  //       });
+  //   });
+  // },
 
   updateUser: (userId, userDetails) => {
     return new Promise(async (resolve, reject) => {
@@ -340,7 +350,6 @@ module.exports = {
   },
 
   deleteOrder: (orderId) => {
-
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -349,8 +358,6 @@ module.exports = {
           resolve(response);
         });
     });
-    
-
   },
 
   generatePayPal: (orderId, totalPrice) => {
@@ -396,4 +403,55 @@ module.exports = {
       });
     });
   },
+
+  deleteAddress: (uniqueId) => {
+    let unId = parseFloat(uniqueId);
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .updateMany(
+          {},
+          { $pull: { deliveryAddress: { uId: unId } } },
+          { multi: true }
+        )
+        .then((data) => {
+          resolve({ deleted: true });
+        });
+    });
+  },
+
+  addressDefault: (uniqueId,userobjId) => {
+   
+    let unId = parseFloat(uniqueId);
+     console.log(unId);
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .update(
+          { "deliveryAddress.default": true },
+          { $set: { "deliveryAddress.$.default": false } })
+        .then(() => {
+
+            db.get()
+              .collection(collection.USER_COLLECTION)
+              .findOneAndUpdate(
+                {
+                  _id: objectId(userobjId),
+                  "deliveryAddress.uId": unId,
+                },
+                {
+                  $set: { "deliveryAddress.$.default": true },
+                }
+              )
+              .then((data) => {
+                console.log(data);
+              });
+       
+        
+      })
+      
+    
+    });
+  },
 };
+

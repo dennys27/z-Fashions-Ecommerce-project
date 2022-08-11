@@ -14,7 +14,7 @@
                     class="d-flex justify-content-between align-items-center mb-5"
                   >
                     <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
-                    <h6 class="mb-0 text-muted">{{cartCount}} items</h6>
+                  
                   </div>
              
                        {{#if emptyCart}}
@@ -36,7 +36,7 @@
                     <div class="col-md-3 col-lg-3 col-xl-3">
                       <h6 class="text-muted">{{this.product.name}}</h6>
                       <h6 class="text-black mb-0">{{this.product.category}}</h6>
-                      <p>1x {{this.quantity}}</p>
+                      <p class="{{this.product._id}}">1 x {{this.quantity}}</p>
                     </div>
                     <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                       <button
@@ -88,7 +88,8 @@
                   <hr class="my-4" />
 
                   <div class="d-flex justify-content-between mb-4">
-                    <h5 class="text-uppercase">items 3</h5>
+                      
+                    <h5 class="text-uppercase">items {{cartCount}}</h5>
                    
                   </div>
 
@@ -104,12 +105,32 @@
                       />
                       <label class="form-label" for="form3Examplea2">Enter your
                         code</label>
+                        <button
+                    type="button"
+                    class="btn btn-dark btn-block btn-md"
+                    data-mdb-ripple-color="dark"
+                  > Apply</button>
                     </div>
                   </div>
 
-                  <hr class="my-4" />
+                   {{#each data}}
+
+                  <div class="d-flex ">
+                      <span >{{this.product.name}}  -  ₹ {{this.product.price}} <br> Quantity - {{this.quantity}}</span>
+                     
+                    </div>
+                     <hr class="my-4" />
+                      {{/each}}
+
+                  
 
                   <div class="d-flex justify-content-between mb-5">
+                    
+                    <h6 class="text-uppercase">Shipping</h6>
+                     <h6 id="shipping-fee">free</h6>
+                  </div>
+                  <div class="d-flex justify-content-between mb-5">
+                    
                     <h5 class="text-uppercase">Total price</h5>
                      <h5 id="total">₹ {{total}}</h5>
                   </div>

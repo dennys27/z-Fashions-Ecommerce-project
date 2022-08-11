@@ -14,11 +14,13 @@
          method: "post",
          success: (response) => {
            if (response.removeProduct) {
-             alert("Product Removed from cart");
+             swal("Product Removed from cart");
              location.reload();
            } else {
              document.getElementById(proId).innerHTML = quantity + count;
+             document.getElementsByClassName(proId).innerHTML = quantity + count;
              document.getElementById("total").innerHTML = response.total;
+             
            }
          },
        });
@@ -102,18 +104,36 @@ function deleteProduct(cartId, proId) {
      
 function cancelOrder(orderId) {
 
-  console.log("canell order ajax");
-       $.ajax({
-         url: "/user-cancel-order",
-         data: {
-           order:orderId
-         },
-         method: "post",
-         success: (response) => {
-           if (response.acknowledged) {
-             alert("order cancelled");
-             location.reload();
-           }
-         },
-       });
+  swal({
+    title: "Are you sure?",
+    text: "Do you want to cance the order",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then((willDelete) => {
+    if (willDelete) {
+      swal("Order cancelled successfully", {
+        icon: "success",
+      })
+      
+      console.log("canell order ajax");
+      $.ajax({
+        url: "/user-cancel-order",
+        data: {
+          order: orderId,
+        },
+        method: "post",
+        success: (response) => {
+          if (response.acknowledged) {
+            location.reload();
+          }
+        },
+      });
+        
+    } else {
+      // swal("");
+    }
+  });
+
+  
      }

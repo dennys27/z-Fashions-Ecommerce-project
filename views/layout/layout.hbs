@@ -7,6 +7,7 @@
 
      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <link href="https://demo.dashboardpack.com/architectui-html-free/main.css" rel="stylesheet">
     <style>
         .sidebar {
             position: fixed;
@@ -96,7 +97,9 @@
 <body>
     {{#if admin}}
     {{>admin-header}}
-    {{else}}
+    {{else if user}}
+    {{>user-header}}
+    {{else if guestuser}}
     {{>user-header}}
     {{/if}}
     {{{body}}}
@@ -120,7 +123,8 @@
 <script type="text/javascript"  src="/checkout.js"></script>
 <script type="text/javascript"  src="/admin-orders.js"></script>
 <script type="text/javascript"  src="/changepassword.js"></script>
-<script type="text/javascript"  src="/product-slider.js"></script>
+<script type="text/javascript"  src="/common.js"></script>
+
 
 <script type="text/javascript"  src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
 

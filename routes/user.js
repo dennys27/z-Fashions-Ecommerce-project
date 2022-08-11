@@ -26,6 +26,7 @@ const client = require("twilio")(
 );
 
 let User_number = "";
+let guestuser = true;
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
@@ -49,7 +50,7 @@ router.get("/", async function (req, res, next) {
       }
     });
 
-    res.render("index", { women, men, user, cartCount });
+    res.render("index", { guestuser, women, men, user, cartCount });
   });
 });
 
@@ -126,6 +127,7 @@ router.get("/signup", function (req, res) {
     res.redirect("/");
   } else {
     res.render("user/signup", {
+      guestuser,
       signerr: req.session.signErr,
       phoneerr: req.session.phnExists,
     });
@@ -156,18 +158,23 @@ router.post("/signup", (req, res) => {
 router.get("/view-product/:id", function (req, res) {
   productHelpers.getProductData(req.params.id).then((Product) => {
    
-    res.render("user/product-view", { Product, userHead: true });
+    res.render("user/product-view", { guestuser, Product, userHead: true });
   });
 });
 
 //user address
 
-router.get("/my-addresses/:id", function (req, res) {
+router.get("/my-addresses/:id", varifyLogin, function (req, res) {
   userHelpers.getUserDetails(req.params.id).then((userData) => {
-     console.log(userData);
+     req.session.fordel=userData._id
      res.render("user/user-addresses", { userData, userHead: true });
   })
    
+});
+
+
+router.post("/make-default", varifyLogin, async(req, res)=> {
+  await userHelpers.addressDefault(req.body.uId,req.session.fordel)
 });
 
 
@@ -200,12 +207,15 @@ router.get("/logout", (req, res) => {
 // cart section
 router.get("/cart", varifyLogin, async function (req, res) {
   let cartCount = 0;
-  cartCount = await cartHelpers.getCount(req.session.user._id);
-  let user = req.session.user;
-  cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
-    let total = await cartHelpers.getTotalAmount(req.session.user._id);
-    res.render("user/Cart", { user, data, cartCount, total });
-  });
+  await cartHelpers.getCount(req.session.user._id).then((cartCount) => {
+     console.log(cartCount);
+     let user = req.session.user;
+     cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
+       let total = await cartHelpers.getTotalAmount(req.session.user._id);
+       res.render("user/Cart", { user, data, cartCount, total });
+     });
+  })
+ 
 
   // if (req.session.loggedIn) {
   //    let user = req.session.user;
@@ -235,11 +245,20 @@ router.post("/change-product-quantity", varifyLogin, (req, res) => {
 
 router.get("/checkout", varifyLogin, async (req, res) => {
   let user = req.session.user;
+  let defaultAddress;
   console.log(user);
   let total = await cartHelpers.getTotalAmount(req.session.user._id);
   let totalPrice = await cartHelpers.getTotalAmount(req.session.user._id);
   if (totalPrice > 0) {
-    res.render("user/checkout", { user, total, Empty: false });
+    let userAd = await userHelpers.getUserDetails(req.session.user._id);
+    
+     userAd.deliveryAddress.map((data) => {
+      if (data.default == true) {
+        defaultAddress=data
+      }
+     })
+
+    res.render("user/checkout", { user,userAd, defaultAddress, total, Empty: false });
   } else {
     res.render("user/Cart", { emptyCart: true });
   }
@@ -266,6 +285,7 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
            userHelpers
              .generateRazorPay(orderDetails._id.toString(), totalPrice)
              .then((data) => {
+               console.log(data,"for editinggggggg");
                data.razorpay = true;
                
                res.json(data);
@@ -313,7 +333,7 @@ router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
 });
 
 //user profile
-router.get("/my-account/:id", varifyLogin, (req, res) => {
+router.get("/my-account/:id", varifyLogin, (req, res) => { 
   let user = req.session.user;
   // userHelpers.getUserDetails(user._id).then((data) => {
   //   res.render("user/user-account", { user, data });
@@ -328,7 +348,12 @@ router.get("/user-profile-update", varifyLogin, (req, res) => {
 
 router.post("/user-address-update", varifyLogin, (req, res) => {
   let user = req.session.user;
+  let uniqueId = Math.random();
+  req.body.uId = uniqueId;
+  req.body.default = false;
+   console.log(req.body);
   userHelpers.updateAddressDetails(user._id, req.body).then((response) => {
+   
     res.json(response);
   });
 });
@@ -367,6 +392,12 @@ router.get("/success", varifyLogin, (req, res) => {
       } 
     );
   });
+});
+
+router.get("/cancel", varifyLogin, (req, res) => {
+  userHelpers.deleteOrder(req.session.orderId).then((data) => {
+    res.redirect("/cart")
+  })
 });
 
 
@@ -482,9 +513,17 @@ router.post("/verify-payment", varifyLogin, (req, res) => {
 });
 
 
-router.get("/cancel", varifyLogin, (req, res) => {
-res.send('Cancelled')
+//address-delete
+router.post("/delete-address", varifyLogin, (req, res) => {
+  console.log(req.body);
+  userHelpers.deleteAddress(req.body.uId).then((data) => {
+  res.json(data)
+})
+  
 });
+
+
+
 
 
 router.get("/test", varifyLogin, (req, res) => {
@@ -499,6 +538,8 @@ router.post("/test-1", varifyLogin, (req, res) => {
     res.send("success")
  
 });
+
+
 
 
 
