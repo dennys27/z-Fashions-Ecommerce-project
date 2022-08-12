@@ -406,7 +406,7 @@ module.exports = {
                 {
                   name: "Red Sox Hat",
                   sku: "001",
-                  price: totalPrice,
+                  price: "0",
                   currency: "USD",
                   quantity: 1,
                 },

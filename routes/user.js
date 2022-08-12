@@ -285,10 +285,10 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
     
      cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
        req.session.orderId = response.insertedId.toString();
-        cartHelpers.deleteCart(req.session.user._id)
+       
        //console.log(response.insertedId.toString());
        if (req.body["PaymentMethod"] == "COD") {
-  
+           cartHelpers.deleteCart(req.session.user._id);
          res.json({ codSuccess: true });
        } else if (req.body["PaymentMethod"] == "RazorPay") {
        
@@ -334,7 +334,7 @@ router.post("/verify-payment", varifyLogin, (req, res) => {
     userHelpers
       .verifyPayment(req.body)
       .then((data) => {
-       
+        cartHelpers.deleteCart(req.session.user._id);
            userHelpers
              .changePaymentStatus(req.body["order[receipt]"])
              .then(() => {
