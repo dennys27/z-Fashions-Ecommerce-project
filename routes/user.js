@@ -165,16 +165,21 @@ router.get("/view-product/:id", function (req, res) {
 //user address
 
 router.get("/my-addresses/:id", varifyLogin, function (req, res) {
+  let user = req.session.user
   userHelpers.getUserDetails(req.params.id).then((userData) => {
      req.session.fordel=userData._id
-     res.render("user/user-addresses", { userData, userHead: true });
+     res.render("user/user-addresses", {user, userData, userHead: true });
   })
    
 });
 
 
 router.post("/make-default", varifyLogin, async(req, res)=> {
-  await userHelpers.addressDefault(req.body.uId,req.session.fordel)
+  await userHelpers.addressDefault(req.body.uId, req.session.fordel).then((data) => {
+    console.log(data, "testiiinngggg");
+    data.default = true;
+    res.json(data)
+  })
 });
 
 

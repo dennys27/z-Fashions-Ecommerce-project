@@ -444,7 +444,7 @@ module.exports = {
                 }
               )
               .then((data) => {
-                console.log(data);
+              resolve(data)
               });
        
         

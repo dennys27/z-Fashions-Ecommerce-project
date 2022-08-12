@@ -21,8 +21,7 @@ function removeAddress(uId) {
 
 
 function makeItDefault(uId,objectId) {
-  console.log(uId);
-  console.log(objectId);
+ 
 
   $.ajax({
     url: "/make-default",
@@ -32,7 +31,7 @@ function makeItDefault(uId,objectId) {
     method: "post",
     success: (response) => {
       console.log(response);
-      if (response.deleted) {
+      if (response.default) {
         swal("default address changed");
         location.reload();
       } else {
