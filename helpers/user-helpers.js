@@ -2,12 +2,10 @@ var db = require("../config/connection");
 var collection = require("../config/collections");
 var objectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
-
 const Razorpay = require("razorpay");
 const paypal = require("paypal-rest-sdk");
-const { resolve } = require("path");
 require("dotenv").config();
- 
+ const CC = require("currency-converter-lt");
 
 var instance = new Razorpay({
   key_id: process.env.KEY_ID,
@@ -285,23 +283,35 @@ module.exports = {
     });
   },
 
+  deletePending: () => {
+    return new Promise(async (resolve, reject) => {
+        let Order = await db
+          .get()
+          .collection(collection.ORDER_COLLECTION)
+          .deleteMany(
+            { status: "pending" },
+          )
+          .then((data) => {
+            resolve(data);
+          });
+     
+    })
+    },
+
   verifyPayment: (details) => {
     return new Promise((resolve, reject) => {
       const crypto = require("crypto");
       let hmac = crypto.createHmac("sha256", process.env.KEY_SECRET);
-
       hmac.update(
         details["payment[razorpay_order_id]"] +
           "|" +
           details["payment[razorpay_payment_id]"]
       );
       hmac = hmac.digest("hex");
-      console.log("im workng till here.........");
       if (hmac == details["payment[razorpay_signature]"]) {
-        console.log("hashiiiiiiinnnnnggggg......");
-        resolve();
+        resolve({pay:true});
       } else {
-        reject("im failed...............");
+        reject({ pay: false });
       }
     });
   },
@@ -358,14 +368,31 @@ module.exports = {
           resolve(response);
         });
     });
+  }, 
+
+  converter: (price) => {
+     return new Promise((resolve, reject) => {
+      
+         let currencyConverter = new CC({
+           from: "INR",
+           to: "USD",
+           amount: price,
+           isDecimalComma: false,
+         });
+       currencyConverter.convert().then((response) => {
+        resolve(response)
+       });
+       
+     });
   },
 
   generatePayPal: (orderId, totalPrice) => {
-    let price = totalPrice.toString();
+    
+   
     return new Promise((resolve, reject) => {
       const create_payment_json = {
         intent: "sale",
-        payer: {
+        payer: { 
           payment_method: "paypal",
         },
         redirect_urls: {

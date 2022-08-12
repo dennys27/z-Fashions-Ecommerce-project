@@ -7,6 +7,8 @@ var productHelpers = require("../helpers/product-management");
 const cartHelpers = require("../helpers/cart-helpers");
 const { ObjectId } = require("mongodb");
 const paypal = require("paypal-rest-sdk");
+const CC = require("currency-converter-lt")
+  ;
 
 const varifyLogin = (req, res, next) => {
   if (req.session.user) {
@@ -112,12 +114,15 @@ router.post("/otp-matching", function (req, res) {
       code: otp,
     })
     .then((resp) => {
+
       if (resp.valid == false) {
         req.session.otp = true;
         let otpvalidation = req.session.otp;
         res.render("user/otp-veri", { otpvalidation });
       } else if (resp.valid == true) {
+        console.log(resp.valid);
         res.redirect("/");
+
       }
     });
 });
@@ -280,7 +285,8 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
     
      cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
        req.session.orderId = response.insertedId.toString();
-       console.log(response.insertedId.toString());
+        cartHelpers.deleteCart(req.session.user._id)
+       //console.log(response.insertedId.toString());
        if (req.body["PaymentMethod"] == "COD") {
   
          res.json({ codSuccess: true });
@@ -290,22 +296,25 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
            userHelpers
              .generateRazorPay(orderDetails._id.toString(), totalPrice)
              .then((data) => {
-               console.log(data,"for editinggggggg");
+              console.log(data);
                data.razorpay = true;
-               
                res.json(data);
              });
          });
        } else if (req.body["PaymentMethod"] == "PayPal") {
-         cartHelpers.getOrderId(user).then((orderDetails) => {
-           console.log(totalPrice);
-           userHelpers
-             .generatePayPal(orderDetails._id.toString(), totalPrice)
-             .then((data) => {
-               console.log(data);
-               res.json(data);
-             });
-         });
+         userHelpers.converter(totalPrice).then((price) => {
+           let converted = parseInt(price)
+           cartHelpers.getOrderId(user).then((orderDetails) => {
+              
+              userHelpers
+                .generatePayPal(orderDetails._id.toString(), converted)
+                .then((data) => {
+                  console.log(data);
+                  res.json(data);
+                });
+            });
+         })
+        
        }
      }); 
 
@@ -317,9 +326,42 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
   //res.render("user/checkout", { user,total });
 });
 
+
+ // verify payment...............
+
+router.post("/verify-payment", varifyLogin, (req, res) => {
+  console.log(req.body,"to fix the order issue......");
+    userHelpers
+      .verifyPayment(req.body)
+      .then((data) => {
+       
+           userHelpers
+             .changePaymentStatus(req.body["order[receipt]"])
+             .then(() => {
+                console.log("payment successfull....$$$$$$............");
+               res.json({ status: true });
+             });
+        
+        // else {
+        //   console.log("almight is hereeeeeeee......");
+        //   userHelpers.deleteOrder(req.session.order)
+        //   res.json({ status: false });
+        // }
+       
+      })
+      .catch((err) => {
+        console.log(err);
+        res.json({ status: false, errMsg: "" });
+      });
+  }
+ 
+);
+
+
 //orders list
 
 router.get("/orders-list", varifyLogin, async (req, res) => {
+  userHelpers.deletePending();
   let user = req.session.user;
   let orders = await cartHelpers.getUserOrders(user._id);
   const reversed = orders.reverse()
@@ -365,6 +407,7 @@ router.post("/user-address-update", varifyLogin, (req, res) => {
 
 //paypal
 router.get("/success", varifyLogin, (req, res) => {
+   cartHelpers.deleteCart(req.session.user._id);
   let amount = req.session.total;
   let orderIdPaypal = req.session.orderId;
   userHelpers.changePaymentStatus(orderIdPaypal).then(() => {
@@ -400,11 +443,11 @@ router.get("/success", varifyLogin, (req, res) => {
 });
 
 router.get("/cancel", varifyLogin, (req, res) => {
+ 
   userHelpers.deleteOrder(req.session.orderId).then((data) => {
     res.redirect("/cart")
   })
 });
-
 
 //full products view
 
@@ -435,9 +478,6 @@ router.get("/view-all-products/:category", varifyLogin, (req, res) => {
 
   
 });
-
-
-
 
 //profile edit
 
@@ -487,35 +527,6 @@ router.post("/user-cancel-order", varifyLogin, (req, res) => {
 });
 
 
-  //marked----------
-
-router.post("/verify-payment", varifyLogin, (req, res) => {
-
-  console.log(req.body,"testing deleting order");
-  if (
-    req.body["order[receipt]"] == null ||
-    req.body["order[receipt]"] == "" ||
-    req.body["order[receipt]"] == undefined
-  ) {
-    userHelpers.deleteOrder(req.session.orderId);
-  } else {
-    userHelpers
-      .verifyPayment(req.body)
-      .then(() => {
-        userHelpers.changePaymentStatus(req.body["order[receipt]"]).then(() => {
-          console.log("payment successfull");
-          res.json({ status: true });
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        res.json({ status: false, errMsg: "" });
-      });
-  }
- 
-  
-  
-});
 
 
 //address-delete

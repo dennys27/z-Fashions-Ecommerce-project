@@ -21,8 +21,6 @@ function removeAddress(uId) {
 
 
 function makeItDefault(uId,objectId) {
- 
-
   $.ajax({
     url: "/make-default",
     data: {

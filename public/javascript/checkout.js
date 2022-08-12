@@ -7,7 +7,7 @@ $("#check-out-form").submit((event) => {
     method: "post",
     data: $("#check-out-form").serialize(),
     success: (response) => {
-      console.log(response);
+      // console.log(response);
       if (response.codSuccess) {
         location.href = "/cart";
       } else if(response.razorpay==true) {
@@ -56,7 +56,7 @@ $("#Default-Address").submit((event) => {
 });
 
 function razorpayPayment(order) {
- 
+ //console.log(order,".........&&&&&.........");
   var options = {
     key: "rzp_test_WusE7m4kbzt470",
     amount: "50000",
@@ -87,7 +87,7 @@ function razorpayPayment(order) {
 }
 
 function verifyPayment(payment, order) {
-   console.log("payment ajax is workinggggg");
+   //console.log(payment,"payment ajax is workinggggg..............55668877");
   $.ajax({
     url: "/verify-payment",
     data: {
@@ -96,7 +96,7 @@ function verifyPayment(payment, order) {
     },
     method: "post",
     success: (response) => {
-      console.log(response);
+      console.log(response, ".........&&&&&.........");
       if (response.status) {
         location.href = "/orders-list";
       } else {

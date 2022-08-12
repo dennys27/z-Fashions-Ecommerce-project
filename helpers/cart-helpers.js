@@ -1,9 +1,9 @@
 var db = require("../config/connection");
 var collection = require("../config/collections");
 const { ObjectId } = require("mongodb");
-const { response } = require("express");
 const bcrypt = require("bcrypt");
 var objectId = require("mongodb").ObjectId;
+const CC = require("currency-converter-lt");
 
 module.exports = {
   addToCart: (proId, userId) => {
@@ -213,8 +213,9 @@ module.exports = {
   },
 
   placeOrder: (order, products, total) => {
+    
     return new Promise(async (resolve, reject) => {
-      let status = order.PaymentMethod === "COD" ? "placed" : "placed";
+      let status = order.PaymentMethod === "COD" ? "placed" : "pending";
       let orderObj = {
         deliveryDetails: {
           firstName: order.FirstName,
@@ -242,12 +243,22 @@ module.exports = {
         .then((response) => {
         
 
-          db.get()
-            .collection(collection.CART_COLLECTION)
-            .deleteOne({ user: objectId(order.userId) });
+          // db.get()
+          //   .collection(collection.CART_COLLECTION)
+          //   .deleteOne({ user: objectId(order.userId) });
           resolve(response);
         });
     });
+  },
+
+  //delete cart
+ deleteCart: (orderId) => {
+   return new Promise(async (resolve, reject) => {
+     db.get()
+       .collection(collection.CART_COLLECTION)
+       .deleteOne({ user: objectId(orderId) });
+    
+   });
   },
 
   getCartProductList: (userId) => {
