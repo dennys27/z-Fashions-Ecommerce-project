@@ -10,6 +10,7 @@ const cartHelpers = require("../helpers/cart-helpers");
 let userName = "admin";
 let Pin = "admin123";
 const store = require("../multer/multer");
+const productManagement = require("../helpers/product-management");
 
 
 const varifyLogin = (req, res, next) => {
@@ -290,14 +291,62 @@ router.get("/dashboard", varifyLogin, async(req, res) => {
   let cod =await adminOrderHelper.codTotal()
   let razorpay = await adminOrderHelper.razorTotal();
   let paypal = await adminOrderHelper.paypalTotal();
+  let orders = await adminOrderHelper.getOrders();
+  let total = orders.length
+  let clients = await productHelpers.getAlluser();
+  let users = clients.length;
+  let weekly = 0;
+  let monthly = 0;
+  let yearly = 0;
+  productManagement.getGraphDetails().then(async(data) => {
+    let temp = data;
+    // console.log(temp);
+    await temp.map((det) => {
+     
+      if (det.status != "cancelled") {
+        weekly = weekly + det.totalAmount;
+      }
+    });
+
+    productManagement.getMonthDetails().then(async (msales) => {
+    let temp2 = msales
+      await temp2.map((det) => {
+       
+        if (det.status != "cancelled") {
+          monthly = monthly + det.totalAmount;
+        }
+      });
+      
+    })
+    productManagement.getYearDetails().then(async (ysales) => {
+      let temp3 = ysales;
+      await temp3.map((det) => {
+        console.log(det.totalAmount);
+        if (det.status != "cancelled") {
+          yearly = yearly + det.totalAmount;
+        }
+      });
+      
+    });
+
+    //first try
+    await adminOrderHelper.getLastweekOrders().then((response) => {
+      res.render("admin/dashboard", {
+        admin: true,
+        cod,
+        razorpay,
+        paypal,
+        total,
+        users,
+        weekly,
+        monthly,
+        yearly,
+      });
+    });
+  });
+
+}),
   
-  adminOrderHelper.getLastweekOrders().then((response) => {
-    //console.log(response);
-     res.render("admin/dashboard", { admin: true,cod,razorpay,paypal });
-    
-  })
- 
-})
 
 
 

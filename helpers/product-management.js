@@ -43,17 +43,16 @@ module.exports = {
         .toArray();
       resolve(products);
     });
-  }, 
+  },
 
-  getProductData: (editProduct) => { 
-    
-    console.log(editProduct); 
+  getProductData: (editProduct) => {
+    console.log(editProduct);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_COLLECTIONS)
         .findOne({ _id: objectId(editProduct) })
-        .then((productData) => { 
-          resolve(productData); 
+        .then((productData) => {
+          resolve(productData);
         });
     });
   },
@@ -191,19 +190,71 @@ module.exports = {
     });
   },
 
-  deleteCartItem: (cartId,proId) => {
+  deleteCartItem: (cartId, proId) => {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.CART_COLLECTION)
-        .updateOne(  { _id: objectId(cartId) },
-         {
-              $pull: { products: { item: objectId(proId) } },
-            }
-          )
+        .updateOne(
+          { _id: objectId(cartId) },
+          {
+            $pull: { products: { item: objectId(proId) } },
+          }
+        )
         .then((response) => {
-          response.removed = true
+          response.removed = true;
           resolve(response);
         });
+    });
+  },
+
+  getGraphDetails: () => {
+    return new Promise(async (resolve, reject) => {
+      let week = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .find({
+          timeStamp: {
+            $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
+          },
+        })
+        .sort({ timeStamp: -1 })
+        .toArray();
+
+      resolve(week);
+    });
+  },
+
+  getMonthDetails: () => {
+    return new Promise(async (resolve, reject) => {
+      let month = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .find({
+          timeStamp: {
+            $gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
+          },
+        })
+        .sort({ timeStamp: -1 })
+        .toArray();
+
+      resolve(month);
+    });
+  },
+
+  getYearDetails: () => {
+    return new Promise(async (resolve, reject) => {
+      let month = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .find({
+          timeStamp: {
+            $gte: new Date(new Date().getTime() - 365 * 24 * 60 * 60 * 1000),
+          },
+        })
+        .sort({ timeStamp: -1 })
+        .toArray();
+
+      resolve(month);
     });
   },
 };

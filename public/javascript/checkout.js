@@ -37,7 +37,7 @@ $("#Default-Address").submit((event) => {
     success: (response) => {
       console.log(response);
       if (response.codSuccess) {
-        location.href = "/cart";
+        location.href = "/orders-list";
       } else if (response.razorpay == true) {
         console.log(response);
         razorpayPayment(response);

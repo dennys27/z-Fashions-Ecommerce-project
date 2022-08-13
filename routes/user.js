@@ -288,7 +288,8 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
        
        //console.log(response.insertedId.toString());
        if (req.body["PaymentMethod"] == "COD") {
-           cartHelpers.deleteCart(req.session.user._id);
+         cartHelpers.deleteCart(req.session.user._id);
+         
          res.json({ codSuccess: true });
        } else if (req.body["PaymentMethod"] == "RazorPay") {
        
@@ -390,7 +391,8 @@ router.get("/my-account/:id", varifyLogin, (req, res) => {
 });
 
 router.get("/user-profile-update", varifyLogin, (req, res) => {
-  res.render("user/addressupdate");
+  let user = req.session.user;
+  res.render("user/addressupdate",{user});
 });
 
 router.post("/user-address-update", varifyLogin, (req, res) => {

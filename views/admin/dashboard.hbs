@@ -1,59 +1,84 @@
-<div class="row container row ml-5"> 
-<div class="chart mt-5 col-lg-5" style="width:800px; height:400px;">
-  <canvas id="myChart" width="800" height="700"></canvas>
+
+<div class="container d-flex justify-content-center mt-5">
+
+
+  <div class="row container-fluid">
+<div class="myChartDiv col-lg-5" style="width: 500px; height:350px;">
+  <canvas id="myChart" width="600" height="350"></canvas>
+</div>
+
+ <div class="col-lg-7 container-fluid d-flex justify-content-center">
+    <div class="myChartDiv" style="width: 350px; height:300px;" >
+  <canvas id="myChart1" width="200" height="200"></canvas>
 </div>
  </div>
  
- 
- <div class="container d-flex justify-content-center">
-  <div class="row container">
-  <div class="col-md-6 col-xl-4">
-                                <div class="card mb-3 widget-content bg-midnight-bloom">
-                                    <div class="widget-content-wrapper text-white">
-                                        <div class="widget-content-left">
-                                            <div class="widget-heading">Total Orders</div>
-                                            <div class="widget-subheading">Last year expenses</div>
-                                        </div>
-                                        <div class="widget-content-right">
-                                            <div class="widget-numbers text-white"><span>1896</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-xl-4">
-                                <div class="card mb-3 widget-content bg-arielle-smile">
-                                    <div class="widget-content-wrapper text-white">
-                                        <div class="widget-content-left">
-                                            <div class="widget-heading">Clients</div>
-                                            <div class="widget-subheading">Total Clients </div>
-                                        </div>
-                                        <div class="widget-content-right">
-                                            <div class="widget-numbers text-white"><span>0</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-xl-4">
-                                <div class="card mb-3 widget-content bg-grow-early">
-                                    <div class="widget-content-wrapper text-white">
-                                        <div class="widget-content-left">
-                                            <div class="widget-heading">Profit</div>
-                                            <div class="widget-subheading">2022</div>
-                                        </div>
-                                        <div class="widget-content-right">
-                                            <div class="widget-numbers text-white"><span>46%</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                           
- </div>
- </div>
- 
+</div>
 
+
+
+
+</div>
+
+
+<div class="container d-flex justify-content-center mt-4">
+  <div class="row container">
+    <div class="col-md-6 col-xl-4">
+      <div class="card mb-3 widget-content bg-midnight-bloom">
+        <div class="widget-content-wrapper text-white">
+          <div class="widget-content-left">
+            <div class="widget-heading">Total Orders</div>
+            <div class="widget-subheading">total number of orders</div>
+          </div>
+          <div class="widget-content-right">
+            <div class="widget-numbers text-white"><span
+                class="p-3"
+              >{{total}}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+      <div class="card mb-3 widget-content bg-arielle-smile">
+        <div class="widget-content-wrapper text-white">
+          <div class="widget-content-left">
+            <div class="widget-heading">Clients</div>
+            <div class="widget-subheading">Total Clients </div>
+          </div>
+          <div class="widget-content-right">
+            <div class="widget-numbers text-white"><span
+                class="p-3"
+              >{{users}}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+      <div class="card mb-3 widget-content bg-grow-early">
+        <div class="widget-content-wrapper text-white">
+          <div class="widget-content-left">
+            <div class="widget-heading">Profit</div>
+            <div class="widget-subheading">2022</div>
+          </div>
+          <div class="widget-content-right">
+            <div class="widget-numbers text-white"><span>46%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <script>
-  var ctx = document.getElementById("myChart").getContext("2d");
+  var ctx = document.getElementById("myChart"); var myChart = new Chart(ctx, {
+  type: 'bar', data: { labels: ["week", "month", "year"], datasets: [{ label: 'total revenue', data: [{{weekly}}, {{monthly}},{{yearly}}] }] },
+  options: { plugins: { legend: { align: 'end', position: 'top', labels: {
+  padding: 25, boxWidth: 10, usePointStyle: true, }, }, } } });
+</script>
+
+<script>
+  var ctx = document.getElementById("myChart1").getContext("2d");
 let gradient = ctx.createLinearGradient(0,0,0,400)
 gradient.addColorStop(0,'rgba(58,123,213,1)')
 gradient.addColorStop(1,'rgba(0,210,255,0.3)')
@@ -102,9 +127,57 @@ var chart = new Chart(ctx, {
   },
 });
 
-
-  //second chart
-
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{! <script>
+  const MyPlugin = {
+  afterInit: (chart) => {
+    console.log('afterInit')
+  },
+  beforeDraw: (chart) => {
+    console.log('beforeDraw')
+    return true; // If I switch to false then the chart is not drawn, it works as expected.
+  },
+  afterDraw: (chart) => {
+    console.log('afterDraw')
+  },
+  beforeTooltipDraw: (chart) => {
+    console.log('beforeTooltipDraw');
+    return false; // This being false should mean that the tooltip is not drawn, but it is...
+  },
+  afterTooltipDraw: (chart) => {
+    console.log('afterTooltipDraw');
+  },
+  id: 'my_plugin',
+};
+
+Chart.register(MyPlugin);
+
+var ctx = document.getElementById("myChart");
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3]
+        }]
+    },
+    options: {
+      scales: {
+        x: {
+          
+        },
+        y: {
+          
+        }
+      }
+    }
+});
+
+
+
+</script> }}
+<script src="https://npmcdn.com/chart.js@latest/dist/chart.min.js"></script>
+
+{{! <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> }}
