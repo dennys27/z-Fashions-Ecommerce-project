@@ -1,0 +1,26 @@
+<div class="container mt-5">
+<table class="table table-hover">
+    <a class="text-decoration-none" href="/admin/add-coupons"><button class="btn btn-primary m-3 float-right">Add Coupons</button></a>
+<thead>
+    <tr>
+      <th scope="col">Sl</th>
+      <th scope="col">Coupon Code</th>
+      <th scope="col">Percentage</th>
+      <th scope="col">Expiry</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each coupons}}
+    <tr>
+      <th scope="row">*</th>
+      <td>{{this.code}}</td>
+      <td>{{this.percentage}}%</td>
+      <td>{{this.expiry}}</td>
+      <td> <button onclick="deleteCoupons('{{this._id}}')" class="btn btn-primary">Delete</button></td>
+    </tr>
+   {{/each}}
+  
+  </tbody>
+</table>
+</div>

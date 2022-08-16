@@ -1,7 +1,5 @@
 var db = require("../config/connection");
 var collection = require("../config/collections");
-const { ObjectId } = require("mongodb");
-const { response } = require("express");
 const bcrypt = require("bcrypt");
 var objectId = require("mongodb").ObjectId;
 module.exports = {
@@ -171,6 +169,7 @@ module.exports = {
         });
     });
   },
+  
   updateUser: (proId, proDetals) => {
     return new Promise((resolve, reject) => {
       db.get()

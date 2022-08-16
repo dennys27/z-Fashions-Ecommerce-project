@@ -38,3 +38,71 @@ function makeItDefault(uId,objectId) {
     },
   });
 }
+
+
+$("#add-coupons").submit((event) => {
+  event.preventDefault();
+  $.ajax({
+    url: "/admin/add-coupons",
+    method: "post",
+    data: $("#add-coupons").serialize(),
+    success: (response) => {
+      if (response.acknowledged) {
+        swal("updated successfully");
+        location.href = "/";
+      }
+    },
+  });
+});
+
+
+function deleteCoupons(uId) {
+  
+  swal({
+    title: "Are you sure?",
+    text: "Once deleted, you will not be able to recover this coupon!",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then((willDelete) => {
+    if (willDelete) {
+  $.ajax({
+    url: "/admin/delete-coupons",
+    data: {
+      uId,
+    },
+    method: "post",
+    success: (response) => {
+      if (response.acknowledged) {
+        swal("coupon deleted successfully");
+        location.reload();
+      } else {
+        swal("something went wrong");
+      }
+    },
+  });
+
+    } else {
+      swal("Your coupon is safe!");
+    }
+  });
+}
+
+function applycoupon(uId) {
+  
+  $.ajax({
+    url: "/admin/apply-coupons",
+    data: {
+      uId,
+    },
+    method: "post",
+    success: (response) => {
+      if (response.acknowledged) {
+        swal("coupon applied successfully");
+        location.reload();
+      } else {
+        swal("something went wrong");
+      }
+    },
+  });
+}

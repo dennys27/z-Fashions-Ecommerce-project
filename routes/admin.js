@@ -1,6 +1,4 @@
 var express = require("express");
-// const { response } = require('../app');
-
 var router = express.Router();
 var productHelpers = require("../helpers/product-helpers");
 var itemHelpers = require("../helpers/product-management");
@@ -11,6 +9,8 @@ let userName = "admin";
 let Pin = "admin123";
 const store = require("../multer/multer");
 const productManagement = require("../helpers/product-management");
+const offerHelpers = require("../helpers/offerHelpers");
+const { applyCoupons } = require("../helpers/offerHelpers");
 
 
 const varifyLogin = (req, res, next) => {
@@ -229,13 +229,11 @@ router.get("/admin-orders", varifyLogin, (req, res) => {
   adminOrderHelper.getOrders().then((Items) => {
     const reversed = Items.reverse()
     Items = reversed;
-    
       res.render("admin/admin-orders", { admin: true,Items });
  })
 });
 
 router.post("/change-order-status/:id", varifyLogin, (req, res) => {
-  console.log("yeah im working you know");
   adminOrderHelper.changeOrderStatus(req.params.id, req.body.status).then((data) => {
       res.json({data})
     })
@@ -257,10 +255,41 @@ router.post("/edit-category/:id", (req, res) => {
 });
 
 router.post("/add-category", (req, res) => {
-  console.log(req.body);
   itemHelpers.addCategory(req.body);
   res.redirect("/admin/add-categories");
 });
+
+router.get("/coupons-management",varifyLogin, async(req, res) => {
+  await offerHelpers.getCoupons().then((coupons) => {
+     res.render("admin/coupons", { admin: true,coupons });
+  })
+});
+
+router.get("/add-coupons",varifyLogin, (req, res) => {
+  res.render("admin/add-coupons", { admin: true });
+});
+
+//coupons
+router.post("/add-coupons",varifyLogin, (req, res) => {
+  offerHelpers.addCoupons(req.body).then((data) => {
+ })
+});
+
+router.post("/delete-coupons", varifyLogin, (req, res) => {
+  offerHelpers.deleteCoupon(req.body.uId).then((data) => {
+    console.log(data);
+    res.json(data)
+  })
+ 
+});
+
+
+router.post("/apply-coupons", varifyLogin,async (req, res) => {
+  const time = await offerHelpers.applyCoupons() 
+  console.log(time);
+});
+
+
 
 router.get("/Block-user/:id", varifyLogin, (req, res) => {
   let userId = req.params.id;
@@ -284,6 +313,8 @@ router.get("/logout", varifyLogin, (req, res) => {
   req.session.users = null;
   res.redirect("/admin");
 });
+
+
 
 
 //admin dashboard  
@@ -319,15 +350,16 @@ router.get("/dashboard", varifyLogin, async(req, res) => {
       
     })
     productManagement.getYearDetails().then(async (ysales) => {
-      let temp3 = ysales;
+      let temp3 = ysales; 
       await temp3.map((det) => {
-        console.log(det.totalAmount);
         if (det.status != "cancelled") {
           yearly = yearly + det.totalAmount;
         }
       });
       
     });
+
+    console.log(await adminOrderHelper.test()); 
 
     //first try
     await adminOrderHelper.getLastweekOrders().then((response) => {
@@ -344,6 +376,7 @@ router.get("/dashboard", varifyLogin, async(req, res) => {
       });
     });
   });
+
 
 }),
   

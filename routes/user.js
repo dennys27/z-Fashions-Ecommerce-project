@@ -1,14 +1,11 @@
 var express = require("express");
-const session = require("express-session");
 require("dotenv").config();
 var router = express.Router();
 const userHelpers = require("../helpers/user-helpers");
-var productHelpers = require("../helpers/product-management");
+const productHelpers = require("../helpers/product-management");
 const cartHelpers = require("../helpers/cart-helpers");
-const { ObjectId } = require("mongodb");
 const paypal = require("paypal-rest-sdk");
-const CC = require("currency-converter-lt")
-  ;
+
 
 const varifyLogin = (req, res, next) => {
   if (req.session.user) {
@@ -48,7 +45,7 @@ router.get("/", async function (req, res, next) {
       if (data.category == "men") {
         men.push(data);
       } else if (data.category == "women") {
-        women.push(data);
+        women.push(data); 
       }
     });
 
@@ -181,7 +178,7 @@ router.get("/my-addresses/:id", varifyLogin, function (req, res) {
 
 router.post("/make-default", varifyLogin, async(req, res)=> {
   await userHelpers.addressDefault(req.body.uId, req.session.fordel).then((data) => {
-    console.log(data, "testiiinngggg");
+   
     data.default = true;
     res.json(data)
   })
@@ -218,7 +215,7 @@ router.get("/logout", (req, res) => {
 router.get("/cart", varifyLogin, async function (req, res) {
   let cartCount = 0;
   await cartHelpers.getCount(req.session.user._id).then((cartCount) => {
-     console.log(cartCount);
+   
      let user = req.session.user;
      cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
        let total = await cartHelpers.getTotalAmount(req.session.user._id);
@@ -238,7 +235,7 @@ router.get("/cart", varifyLogin, async function (req, res) {
 
 router.post("/add-to-cart/:id", varifyLogin, (req, res) => {
   cartHelpers.addToCart(req.params.id, req.session.user._id).then((data) => {
-    res.json(data);
+    res.json(data); 
   });
 });
 
@@ -256,21 +253,23 @@ router.post("/change-product-quantity", varifyLogin, (req, res) => {
 router.get("/checkout", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let defaultAddress;
-  console.log(user);
+  
   let total = await cartHelpers.getTotalAmount(req.session.user._id);
   let totalPrice = await cartHelpers.getTotalAmount(req.session.user._id);
   if (totalPrice > 0) {
     let userAd = await userHelpers.getUserDetails(req.session.user._id);
-    
-     userAd.deliveryAddress.map((data) => {
-      if (data.default == true) {
-        defaultAddress=data
-      }
-     })
+  
+    if (userAd.deliveryAddress) {
+      userAd.deliveryAddress.map((data) => {
+        if (data.default == true) {
+          defaultAddress = data;
+        }
+      });
+    }
 
     res.render("user/checkout", { user,userAd, defaultAddress, total, Empty: false });
   } else {
-    res.render("user/Cart", { emptyCart: true });
+    res.render("user/Cart", { user, emptyCart: true });
   }
 });
 
@@ -294,10 +293,11 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
        } else if (req.body["PaymentMethod"] == "RazorPay") {
        
          cartHelpers.getOrderId(user).then((orderDetails) => {
+           req.session.uniqueOrder=orderDetails._id
            userHelpers
-             .generateRazorPay(orderDetails._id.toString(), totalPrice)
+             .generateRazorPay(response.insertedId.toString(), totalPrice)
              .then((data) => {
-              console.log(data);
+           
                data.razorpay = true;
                res.json(data);
              });
@@ -310,7 +310,7 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
               userHelpers
                 .generatePayPal(orderDetails._id.toString(), converted)
                 .then((data) => {
-                  console.log(data);
+                 
                   res.json(data);
                 });
             });
@@ -331,24 +331,17 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
  // verify payment...............
 
 router.post("/verify-payment", varifyLogin, (req, res) => {
-  console.log(req.body,"to fix the order issue......");
     userHelpers
       .verifyPayment(req.body)
       .then((data) => {
         cartHelpers.deleteCart(req.session.user._id);
-           userHelpers
-             .changePaymentStatus(req.body["order[receipt]"])
-             .then(() => {
-                console.log("payment successfull....$$$$$$............");
-               res.json({ status: true });
-             });
+        userHelpers.changePaymentStatus(req.body["order[receipt]"])
+          .then(() => {
+           
+           res.json({ status: true });
+        })
+          
         
-        // else {
-        //   console.log("almight is hereeeeeeee......");
-        //   userHelpers.deleteOrder(req.session.order)
-        //   res.json({ status: false });
-        // }
-       
       })
       .catch((err) => {
         console.log(err);
@@ -400,7 +393,6 @@ router.post("/user-address-update", varifyLogin, (req, res) => {
   let uniqueId = Math.random();
   req.body.uId = uniqueId;
   req.body.default = false;
-   console.log(req.body);
   userHelpers.updateAddressDetails(user._id, req.body).then((response) => {
    
     res.json(response);
@@ -415,7 +407,6 @@ router.get("/success", varifyLogin, (req, res) => {
   userHelpers.changePaymentStatus(orderIdPaypal).then(() => {
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
-    console.log(payerId);
     const execute_payment_json = {
       payer_id: payerId,
       transactions: [
@@ -445,7 +436,6 @@ router.get("/success", varifyLogin, (req, res) => {
 });
 
 router.get("/cancel", varifyLogin, (req, res) => {
- 
   userHelpers.deleteOrder(req.session.orderId).then((data) => {
     res.redirect("/cart")
   })
@@ -501,7 +491,6 @@ router.post("/profile-edit", varifyLogin, (req, res) => {
 
 router.get("/change-password/:id", varifyLogin, (req, res) => {
   let user = req.session.user;
-
   res.render("user/changePassword", { user });
 });
 
@@ -533,16 +522,11 @@ router.post("/user-cancel-order", varifyLogin, (req, res) => {
 
 //address-delete
 router.post("/delete-address", varifyLogin, (req, res) => {
-  console.log(req.body);
   userHelpers.deleteAddress(req.body.uId).then((data) => {
   res.json(data)
 })
   
 });
-
-
-
-
 
 router.get("/test", varifyLogin, (req, res) => {
   userHelpers.getUserDetails(req.session.user._id).then((user) => {
@@ -551,8 +535,6 @@ router.get("/test", varifyLogin, (req, res) => {
 });
 router.post("/test-1", varifyLogin, (req, res) => {
    
-  console.log(req.body);
-
     res.send("success")
  
 });

@@ -341,11 +341,11 @@ module.exports = {
   // },
 
   changePaymentStatus: (orderId) => {
-    // console.log(orderId);
+     console.log(orderId);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
-        .updateOne(
+        .updateMany(
           { _id: objectId(orderId) },
           {
             $set: {
@@ -353,7 +353,8 @@ module.exports = {
             },
           }
         )
-        .then(() => {
+        .then((data) => {
+          console.log(data,"im trying to change the status")
           resolve();
         });
     });

@@ -1,67 +1,79 @@
 
-<div class="container d-flex justify-content-center mt-5">
+<div class="container d-flex justify-content-center mt-3">
 
+  <div class="row container-fluid p-5">
+    <div
+      class="myChartDiv col-lg-7"
+      style="width: 500px; height:350px; background-color:rgb(255, 255, 255); border-radius:10px; box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;"
+    >
+      <canvas id="myChart" width="600px" height="350px"></canvas>
+    </div>
 
-  <div class="row container-fluid">
-<div class="myChartDiv col-lg-5" style="width: 500px; height:350px;">
-  <canvas id="myChart" width="600" height="350"></canvas>
+    <div class="col-lg-5 container-fluid d-flex justify-content-center">
+      <div
+        class="myChartDiv"
+        style="width: 400px; height:400px;background-color:rgb(255, 255, 255); border-radius:10px; box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;"
+      >
+        <canvas id="myChart1" width="200px" height="200px"></canvas>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
- <div class="col-lg-7 container-fluid d-flex justify-content-center">
-    <div class="myChartDiv" style="width: 350px; height:300px;" >
-  <canvas id="myChart1" width="200" height="200"></canvas>
-</div>
- </div>
- 
-</div>
-
-
-
-
-</div>
-
-
-<div class="container d-flex justify-content-center mt-4">
+<div style="margin-top:30px;" class="container d-flex justify-content-center">
   <div class="row container">
     <div class="col-md-6 col-xl-4">
-      <div class="card mb-3 widget-content bg-midnight-bloom">
+      <div
+        class="card mb-3 widget-content bg-white"
+        style="box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;"
+      >
         <div class="widget-content-wrapper text-white">
           <div class="widget-content-left">
-            <div class="widget-heading">Total Orders</div>
-            <div class="widget-subheading">total number of orders</div>
+            <div class="widget-heading text-dark">Total Orders</div>
+            <div class="widget-subheading text-dark">total number of orders</div>
           </div>
           <div class="widget-content-right">
             <div class="widget-numbers text-white"><span
-                class="p-3"
+                class="p-3 text-muted"
               >{{total}}</span></div>
           </div>
         </div>
       </div>
     </div>
     <div class="col-md-6 col-xl-4">
-      <div class="card mb-3 widget-content bg-arielle-smile">
+      <div
+        class="card mb-3 widget-content bg-white"
+        style="box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;"
+      >
         <div class="widget-content-wrapper text-white">
           <div class="widget-content-left">
-            <div class="widget-heading">Clients</div>
-            <div class="widget-subheading">Total Clients </div>
+            <div class="widget-heading text-dark">Clients</div>
+            <div class="widget-subheading text-dark">Total Clients </div>
           </div>
           <div class="widget-content-right">
             <div class="widget-numbers text-white"><span
-                class="p-3"
+                class="p-3 text-muted"
               >{{users}}</span></div>
           </div>
         </div>
       </div>
     </div>
     <div class="col-md-6 col-xl-4">
-      <div class="card mb-3 widget-content bg-grow-early">
+      <div
+        class="card mb-3 widget-content bg-white"
+        style="box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;"
+      >
         <div class="widget-content-wrapper text-white">
           <div class="widget-content-left">
-            <div class="widget-heading">Profit</div>
-            <div class="widget-subheading">2022</div>
+            <div class="widget-heading text-dark">Profit</div>
+            <div class="widget-subheading text-dark">2022</div>
           </div>
           <div class="widget-content-right">
-            <div class="widget-numbers text-white"><span>46%</span></div>
+            <div class="widget-numbers text-muted"><span
+                class="p-3"
+              >{{yearly}}</span></div>
           </div>
         </div>
       </div>
@@ -71,113 +83,22 @@
 </div>
 
 <script>
-  var ctx = document.getElementById("myChart"); var myChart = new Chart(ctx, {
-  type: 'bar', data: { labels: ["week", "month", "year"], datasets: [{ label: 'total revenue', data: [{{weekly}}, {{monthly}},{{yearly}}] }] },
-  options: { plugins: { legend: { align: 'end', position: 'top', labels: {
-  padding: 25, boxWidth: 10, usePointStyle: true, }, }, } } });
+  var ctx = document.getElementById("myChart");
+  var myChart = new Chart(ctx, {
+  type: 'bar', data: { labels: ["Last 7 days", "last 30 days", "last 365 days"],
+  datasets: [{ label:'total revenue', data: [{{weekly}},{{monthly}},{{yearly}}] , backgroundColor: ["#3282B8", "#0F4C75", "#151965"],
+  }], }, options: { plugins: { legend: { align: 'end', position: 'top', labels:
+  { padding: 5, boxWidth: 5, usePointStyle: true, }, }, } } });
 </script>
 
 <script>
-  var ctx = document.getElementById("myChart1").getContext("2d");
-let gradient = ctx.createLinearGradient(0,0,0,400)
-gradient.addColorStop(0,'rgba(58,123,213,1)')
-gradient.addColorStop(1,'rgba(0,210,255,0.3)')
-
-var chart = new Chart(ctx, {
-  // The type of chart we want to create
-  type: 'doughnut', // also try bar or other graph types
-
-  // The data for our dataset
-  data: {
-    labels: [
-     "COD","RAZORPAY","PAYPAL"
-    ],
-    // Information about the dataset
-    datasets: [
-      {
-        label: "Sales",
-         backgroundColor: [
-      'rgb(255, 99, 132)',
-      'rgb(54, 162, 235)',
-      'rgb(255, 205, 86)'
-    ],
-       
-        
-        data: [
-         {{cod.total}},
-         {{razorpay.total}},
-         {{paypal.total}},
-        ],
-      },
-    ],
-  },
-
-  // Configuration options
-  options: {
-    layout: {
-      padding: 10,
-    },
-    legend: {
-      position: "bottom",
-    },
-    title: {
-      display: true,
-      text: "gate way stats",
-    },
-  },
-});
-
+  var ctx = document.getElementById("myChart1").getContext("2d"); 
+  let gradient = ctx.createLinearGradient(0,0,0,400)
+  gradient.addColorStop(0,'rgba(58,123,213,1)')
+  gradient.addColorStop(1,'rgba(0,210,255,0.3)')
+  var chart = new Chart(ctx, {  type: 'doughnut', data: { labels: ["COD","RAZORPAY","PAYPAL" ], datasets: [ {
+  label: "Sales", backgroundColor: [ 'rgb(255, 99, 132)', 'rgb(54, 162, 235)',
+  'rgb(255, 205, 86)' ], data: [{{cod.total}},{{razorpay.total}},{{paypal.total}}, ], }, ], },  options: { layout: {
+  padding: 10, }, legend: { position: "bottom", }, title: { display: true, text:"gate way stats", }, }, });
 </script>
-
-{{! <script>
-  const MyPlugin = {
-  afterInit: (chart) => {
-    console.log('afterInit')
-  },
-  beforeDraw: (chart) => {
-    console.log('beforeDraw')
-    return true; // If I switch to false then the chart is not drawn, it works as expected.
-  },
-  afterDraw: (chart) => {
-    console.log('afterDraw')
-  },
-  beforeTooltipDraw: (chart) => {
-    console.log('beforeTooltipDraw');
-    return false; // This being false should mean that the tooltip is not drawn, but it is...
-  },
-  afterTooltipDraw: (chart) => {
-    console.log('afterTooltipDraw');
-  },
-  id: 'my_plugin',
-};
-
-Chart.register(MyPlugin);
-
-var ctx = document.getElementById("myChart");
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3]
-        }]
-    },
-    options: {
-      scales: {
-        x: {
-          
-        },
-        y: {
-          
-        }
-      }
-    }
-});
-
-
-
-</script> }}
 <script src="https://npmcdn.com/chart.js@latest/dist/chart.min.js"></script>
-
-{{! <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> }}
