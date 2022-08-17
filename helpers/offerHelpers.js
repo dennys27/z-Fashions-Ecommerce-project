@@ -31,12 +31,17 @@ module.exports = {
     });
     },
   
-  applyCoupons: (cId) => {
+  applyCoupons: (cId,userId) => {
     return new Promise(async(resolve, reject) => {
-     let coupons= await db.get()
-        .collection(collection.COUPONS)
-         .find({code:cId})
-        resolve(coupons)
+     let coupons = await db
+       .get()
+       .collection(collection.COUPONS)
+        .find({ code: cId }).toArray()
+        let date = new Date();
+        let expdate = new Date(coupons[0].expiry);
+        
+
+      
     });
   },
 };

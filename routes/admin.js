@@ -10,7 +10,7 @@ let Pin = "admin123";
 const store = require("../multer/multer");
 const productManagement = require("../helpers/product-management");
 const offerHelpers = require("../helpers/offerHelpers");
-const { applyCoupons } = require("../helpers/offerHelpers");
+
 
 
 const varifyLogin = (req, res, next) => {
@@ -284,10 +284,7 @@ router.post("/delete-coupons", varifyLogin, (req, res) => {
 });
 
 
-router.post("/apply-coupons", varifyLogin,async (req, res) => {
-  const time = await offerHelpers.applyCoupons() 
-  console.log(time);
-});
+
 
 
 

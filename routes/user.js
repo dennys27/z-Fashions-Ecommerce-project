@@ -5,6 +5,7 @@ const userHelpers = require("../helpers/user-helpers");
 const productHelpers = require("../helpers/product-management");
 const cartHelpers = require("../helpers/cart-helpers");
 const paypal = require("paypal-rest-sdk");
+const offerHelpers = require("../helpers/offerHelpers");
 
 
 const varifyLogin = (req, res, next) => {
@@ -223,14 +224,6 @@ router.get("/cart", varifyLogin, async function (req, res) {
      });
   })
  
-
-  // if (req.session.loggedIn) {
-  //    let user = req.session.user;
-
-  // } else {
-
-  //   res.redirect("/login");
-  // }
 });
 
 router.post("/add-to-cart/:id", varifyLogin, (req, res) => {
@@ -540,7 +533,13 @@ router.post("/test-1", varifyLogin, (req, res) => {
 });
 
 
-
+router.post("/apply-coupons", varifyLogin, async (req, res) => {
+  
+  await offerHelpers.applyCoupons(req.body.couponCode).then((data) => {
+   
+  })
+  
+});
 
 
 

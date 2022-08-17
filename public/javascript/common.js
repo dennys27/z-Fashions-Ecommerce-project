@@ -88,14 +88,12 @@ function deleteCoupons(uId) {
   });
 }
 
-function applycoupon(uId) {
-  
+$("#coupon-form").submit((event) => {
+  event.preventDefault();
   $.ajax({
-    url: "/admin/apply-coupons",
-    data: {
-      uId,
-    },
+    url: "/apply-coupons",
     method: "post",
+    data: $("#coupon-form").serialize(),
     success: (response) => {
       if (response.acknowledged) {
         swal("coupon applied successfully");
@@ -105,4 +103,4 @@ function applycoupon(uId) {
       }
     },
   });
-}
+});
