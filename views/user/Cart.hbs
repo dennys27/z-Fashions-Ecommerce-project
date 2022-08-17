@@ -105,6 +105,7 @@
                         id="form3Examplea2"
                         class="form-control form-control-lg"
                       />
+                      <input name="userId" value="{{user._id}}" type="text" hidden>
                       <label class="form-label" for="form3Examplea2">Enter your
                         code</label>
                         <button
@@ -135,7 +136,7 @@
                   <div class="d-flex justify-content-between mb-5">
                     
                     <h5 class="text-uppercase">Total price</h5>
-                     <h5 id="total">₹ {{total}}</h5>
+                   <span class="d-flex">₹ <h5 id="total">{{total}}</h5></span>  
                   </div>
                    
                    <a class="text-decoration-none" href="/checkout">

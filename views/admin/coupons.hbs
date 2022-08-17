@@ -6,6 +6,7 @@
       <th scope="col">Sl</th>
       <th scope="col">Coupon Code</th>
       <th scope="col">Percentage</th>
+      <th scope="col">starting</th>
       <th scope="col">Expiry</th>
       <th scope="col">Action</th>
     </tr>
@@ -16,7 +17,8 @@
       <th scope="row">*</th>
       <td>{{this.code}}</td>
       <td>{{this.percentage}}%</td>
-      <td>{{this.expiry}}</td>
+      <td>{{this.starting}}</td>
+      <td>{{this.ending}}</td>
       <td> <button onclick="deleteCoupons('{{this._id}}')" class="btn btn-primary">Delete</button></td>
     </tr>
    {{/each}}

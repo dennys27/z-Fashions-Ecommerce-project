@@ -216,7 +216,6 @@ router.get("/logout", (req, res) => {
 router.get("/cart", varifyLogin, async function (req, res) {
   let cartCount = 0;
   await cartHelpers.getCount(req.session.user._id).then((cartCount) => {
-   
      let user = req.session.user;
      cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
        let total = await cartHelpers.getTotalAmount(req.session.user._id);
@@ -272,13 +271,13 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
   let user = req.session.user._id;
   let products = await cartHelpers.getCartProductList(req.body.userId);
   let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
+  let discountedPrice = await cartHelpers.getDiscount(user._id)
   req.session.total = totalPrice
   if (totalPrice > 0) {
     
      cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
        req.session.orderId = response.insertedId.toString();
        
-       //console.log(response.insertedId.toString());
        if (req.body["PaymentMethod"] == "COD") {
          cartHelpers.deleteCart(req.session.user._id);
          
@@ -529,14 +528,17 @@ router.get("/test", varifyLogin, (req, res) => {
 router.post("/test-1", varifyLogin, (req, res) => {
    
     res.send("success")
- 
+    
 });
 
 
+
+//coupons
 router.post("/apply-coupons", varifyLogin, async (req, res) => {
-  
-  await offerHelpers.applyCoupons(req.body.couponCode).then((data) => {
-   
+  await offerHelpers.applyCoupons(req.body.couponCode,req.session.user._id).then((data) => {
+    req.session.discountedPrice = data[0].percentage;
+    console.log();
+    res.json(data);
   })
   
 });

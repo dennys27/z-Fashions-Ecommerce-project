@@ -31,16 +31,29 @@ module.exports = {
     });
     },
   
-  applyCoupons: (cId,userId) => {
+  applyCoupons: (cId, userId) => {
+    console.log(cId.toString());
+    let response = {};
     return new Promise(async(resolve, reject) => {
      let coupons = await db
        .get()
        .collection(collection.COUPONS)
         .find({ code: cId }).toArray()
+      console.log(coupons);
         let date = new Date();
-        let expdate = new Date(coupons[0].expiry);
-        
-
+        let starting = new Date(coupons[0].starting);
+        let ending = new Date(coupons[0].ending);
+      if (date <= ending || date >= starting) { 
+        coupons[0].cExist = true;
+        db.get().collection(collection.CART_COLLECTION).updateOne({ user: objectId(userId) },
+          { $set:{ coupon: cId,couponDiscount:coupons[0].percentage} }, {upsert:true}).then((data) => {
+            console.log(data);
+          })
+          resolve(coupons)
+      } else {
+        resolve({coupon:"invalid"})
+        }
+ 
       
     });
   },

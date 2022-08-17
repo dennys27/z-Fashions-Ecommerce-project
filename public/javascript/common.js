@@ -94,10 +94,16 @@ $("#coupon-form").submit((event) => {
     url: "/apply-coupons",
     method: "post",
     data: $("#coupon-form").serialize(),
-    success: (response) => {
-      if (response.acknowledged) {
-        swal("coupon applied successfully");
-        location.reload();
+    success:async (response) => {
+       console.log(response[0]);
+      if (response[0].cExist) {
+        let total = document.getElementById("total").innerHTML;
+        console.log(total);
+        let discountPrice = (response[0].percentage * total) / 100;
+        console.log(discountPrice);
+        document.getElementById("total").innerHTML = discountPrice;
+       await swal("coupon applied successfully");
+       
       } else {
         swal("something went wrong");
       }

@@ -7,7 +7,6 @@ const CC = require("currency-converter-lt");
 
 module.exports = {
   addToCart: (proId, userId) => {
-   
     let proObj = {
       item: objectId(proId),
       quantity: 1,
@@ -17,7 +16,7 @@ module.exports = {
         .get()
         .collection(collection.CART_COLLECTION)
         .findOne({ user: objectId(userId) });
-     
+
       if (userCart) {
         let proExist = userCart.products.findIndex(
           (product) => product.item == proId
@@ -100,7 +99,7 @@ module.exports = {
           },
         ])
         .toArray();
-      
+
       resolve(cartItems);
     });
   },
@@ -154,6 +153,16 @@ module.exports = {
         count = cart.products.length;
       }
       resolve(count);
+    });
+  },
+  getDiscount: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      let coupon = await db
+        .get()
+        .collection(collection.COUPONS)
+        .findOne({ user: objectId(userId) });
+      console.log(coupon,"ohhoooooiiiii");
+      resolve({code:coupon});
     });
   },
 
@@ -212,8 +221,8 @@ module.exports = {
     });
   },
 
+
   placeOrder: (order, products, total) => {
-    
     return new Promise(async (resolve, reject) => {
       let status = order.PaymentMethod === "COD" ? "placed" : "pending";
       let orderObj = {
@@ -241,8 +250,6 @@ module.exports = {
         .collection(collection.ORDER_COLLECTION)
         .insertOne(orderObj)
         .then((response) => {
-        
-
           // db.get()
           //   .collection(collection.CART_COLLECTION)
           //   .deleteOne({ user: objectId(order.userId) });
@@ -252,13 +259,12 @@ module.exports = {
   },
 
   //delete cart
- deleteCart: (orderId) => {
-   return new Promise(async (resolve, reject) => {
-     db.get()
-       .collection(collection.CART_COLLECTION)
-       .deleteOne({ user: objectId(orderId) });
-    
-   });
+  deleteCart: (orderId) => {
+    return new Promise(async (resolve, reject) => {
+      db.get()
+        .collection(collection.CART_COLLECTION)
+        .deleteOne({ user: objectId(orderId) });
+    });
   },
 
   getCartProductList: (userId) => {
@@ -268,10 +274,10 @@ module.exports = {
         .collection(collection.CART_COLLECTION)
         .findOne({ user: objectId(userId) });
       if (cart) {
-          resolve(cart.products);
+        resolve(cart.products);
       } else {
-        resolve()
-       } 
+        resolve();
+      }
     });
   },
 
@@ -280,7 +286,8 @@ module.exports = {
       let orders = await db
         .get()
         .collection(collection.ORDER_COLLECTION)
-        .find({ userId: objectId(userId) }).toArray()
+        .find({ userId: objectId(userId) })
+        .toArray();
       resolve(orders);
     });
   },
@@ -311,7 +318,7 @@ module.exports = {
               as: "product",
             },
           },
-          { 
+          {
             $project: {
               item: 1,
               quantity: 1,
@@ -320,9 +327,9 @@ module.exports = {
               },
             },
           },
-         
-        ]).toArray()
-        
+        ])
+        .toArray();
+
       resolve(products);
     });
   },
@@ -332,10 +339,10 @@ module.exports = {
       let products = await db
         .get()
         .collection(collection.ORDER_COLLECTION)
-        .findOne({ userId: ObjectId(user) }).then((orderDetails) => {
-           resolve(orderDetails);
-        })
-        
+        .findOne({ userId: ObjectId(user) })
+        .then((orderDetails) => {
+          resolve(orderDetails);
+        });
     });
   },
 
@@ -344,12 +351,10 @@ module.exports = {
       let products = await db
         .get()
         .collection(collection.ORDER_COLLECTION)
-        .findOne({ _id: ObjectId(order) }).then((orderDetails) => {
-           resolve(orderDetails);
-        })
-        
+        .findOne({ _id: ObjectId(order) })
+        .then((orderDetails) => {
+          resolve(orderDetails);
+        });
     });
   },
-
-
 };
