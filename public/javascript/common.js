@@ -99,7 +99,7 @@ $("#coupon-form").submit((event) => {
       if (response[0].cExist) {
         let total = document.getElementById("total").innerHTML;
         console.log(total);
-        let discountPrice = (response[0].percentage * total) / 100;
+        let discountPrice = total-(response[0].percentage * total) / 100;
         console.log(discountPrice);
         document.getElementById("total").innerHTML = discountPrice;
        await swal("coupon applied successfully");

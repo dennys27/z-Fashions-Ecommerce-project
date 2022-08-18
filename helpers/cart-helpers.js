@@ -156,13 +156,19 @@ module.exports = {
     });
   },
   getDiscount: (userId) => {
+    console.log(userId);
     return new Promise(async (resolve, reject) => {
-      let coupon = await db
+      await db
         .get()
-        .collection(collection.COUPONS)
-        .findOne({ user: objectId(userId) });
-      console.log(coupon,"ohhoooooiiiii");
-      resolve({code:coupon});
+        .collection(collection.CART_COLLECTION)
+        .findOne({ user: objectId(userId) }).then((data) => {
+          resolve({
+            code: data.coupon,
+            couponDiscount: data.couponDiscount,
+          });
+        })
+      
+      
     });
   },
 

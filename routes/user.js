@@ -271,7 +271,13 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
   let user = req.session.user._id;
   let products = await cartHelpers.getCartProductList(req.body.userId);
   let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
-  let discountedPrice = await cartHelpers.getDiscount(user._id)
+ await cartHelpers.getDiscount(user).then((discountedPrice) => {
+   console.log(discountedPrice, "heyy im working on it.....");
+   if (discountedPrice) {
+     totalPrice = totalPrice-(discountedPrice.couponDiscount*totalPrice)/100
+   }
+ });
+  
   req.session.total = totalPrice
   if (totalPrice > 0) {
     
