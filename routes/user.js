@@ -265,6 +265,8 @@ router.get("/checkout", varifyLogin, async (req, res) => {
   }
 });
 
+
+
 //payment gateway
 
 router.post("/checkout-form", varifyLogin, async (req, res) => {
@@ -272,18 +274,17 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
   let products = await cartHelpers.getCartProductList(req.body.userId);
   let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
  await cartHelpers.getDiscount(user).then((discountedPrice) => {
-   console.log(discountedPrice, "heyy im working on it.....");
+  
    if (discountedPrice) {
      totalPrice = totalPrice-(discountedPrice.couponDiscount*totalPrice)/100
    }
  });
   
   req.session.total = totalPrice
-  if (totalPrice > 0) {
-    
+  if (totalPrice > 0){
      cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
        req.session.orderId = response.insertedId.toString();
-       
+
        if (req.body["PaymentMethod"] == "COD") {
          cartHelpers.deleteCart(req.session.user._id);
          
@@ -353,7 +354,7 @@ router.post("/verify-payment", varifyLogin, (req, res) => {
 //orders list
 
 router.get("/orders-list", varifyLogin, async (req, res) => {
-  userHelpers.deletePending();
+ await userHelpers.deletePending();
   let user = req.session.user;
   let orders = await cartHelpers.getUserOrders(user._id);
   const reversed = orders.reverse()

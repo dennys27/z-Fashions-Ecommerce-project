@@ -31,8 +31,17 @@ module.exports = {
     });
     },
   
-  applyCoupons: (cId, userId) => {
-    console.log(cId.toString());
+  applyCoupons: async(cId, userId) => {
+
+  let check = await db
+    .get()
+    .collection(collection.USER_COLLECTION)
+    .find({
+      _id: objectId(userId),
+      usedCoupon: { $in: [cId] },
+    }).toArray()
+    console.log("yaaaaaaayyyy",check);
+
     let response = {};
     return new Promise(async(resolve, reject) => {
      let coupons = await db
