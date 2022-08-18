@@ -95,8 +95,12 @@ $("#coupon-form").submit((event) => {
     method: "post",
     data: $("#coupon-form").serialize(),
     success:async (response) => {
-       console.log(response[0]);
-      if (response[0].cExist) {
+      console.log(response);
+       
+      if (response.status) {
+        swal("invalid coupon")
+      }
+      else if (response[0].cExist) {
         let total = document.getElementById("total").innerHTML;
         console.log(total);
         let discountPrice = total-(response[0].percentage * total) / 100;
@@ -104,8 +108,8 @@ $("#coupon-form").submit((event) => {
         document.getElementById("total").innerHTML = discountPrice;
        await swal("coupon applied successfully");
        
-      } else {
-        swal("something went wrong");
+      } else if (response.coupon == "already used coupon") {
+        swal("you have already used this coupon");
       }
     },
   });

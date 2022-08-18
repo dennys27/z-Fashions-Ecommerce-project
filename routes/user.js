@@ -6,6 +6,7 @@ const productHelpers = require("../helpers/product-management");
 const cartHelpers = require("../helpers/cart-helpers");
 const paypal = require("paypal-rest-sdk");
 const offerHelpers = require("../helpers/offerHelpers");
+const { Db } = require("mongodb");
 
 
 const varifyLogin = (req, res, next) => {
@@ -539,15 +540,33 @@ router.post("/test-1", varifyLogin, (req, res) => {
 });
 
 
-
+ 
 //coupons
 router.post("/apply-coupons", varifyLogin, async (req, res) => {
-  await offerHelpers.applyCoupons(req.body.couponCode,req.session.user._id).then((data) => {
-    req.session.discountedPrice = data[0].percentage;
-    console.log();
-    res.json(data);
+  await offerHelpers.checkCoupons(req.body.couponCode).then(async(coupon) => {
+    
+    if (coupon.length > 0) {
+      await offerHelpers.applyCoupons(req.body.couponCode, req.session.user._id).then((data) => {
+        
+    if (data.coupon != "already used coupon") {
+      req.session.discountedPrice = data[0].percentage;
+      res.json(data);
+    } else {
+      console.log(data);
+      res.json(data)
+    }
+        
+        
+        })
+      
+    } else {
+      res.json({ status: true });
+    }
+      
+   
+
   })
-  
+
 });
 
 
