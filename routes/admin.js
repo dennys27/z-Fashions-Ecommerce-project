@@ -287,11 +287,15 @@ router.post("/delete-coupons", varifyLogin, (req, res) => {
 
 
 
-router.get("/offers", varifyLogin,(req, res) => {
+router.get("/offers", varifyLogin,async (req, res) => {
   //let userId = req.session.user._id;
-  productManagement.getCategories().then((categories) => {
-    console.log(categories);
-    res.render("admin/offers", { admin: true,categories });
+  await productManagement.getCategories().then((categories) => {
+    offerHelpers.getOffers().then((offers) => {
+      categories.obj={...offers}
+        console.log(categories);
+        res.render("admin/offers", { admin: true, categories });
+    })
+   
 })
 });
 
