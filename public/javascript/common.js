@@ -47,10 +47,15 @@ $("#add-coupons").submit((event) => {
     method: "post",
     data: $("#add-coupons").serialize(),
     success: (response) => {
-      if (response.acknowledged) {
-        swal("updated successfully");
-        location.href = "/";
+      console.log(response);
+      if (response.warning) {
+        swal("the offer should be in between 10% - 80%")
+      } else {
+         swal("updated successfully");
+         location.href = "/admin/add-coupons";
       }
+       
+      
     },
   });
 });
@@ -96,6 +101,11 @@ $("#coupon-form").submit((event) => {
     data: $("#coupon-form").serialize(),
     success:async (response) => {
       console.log(response);
+      if (response.applied) {
+        swal("you can't use more than one coupon in a purchase")
+      } else if (response.Already) {
+        swal("you can't use a coupon more than once");
+      }
        
       if (response.status) {
         swal("invalid coupon")
@@ -107,10 +117,8 @@ $("#coupon-form").submit((event) => {
         console.log(discountPrice);
         document.getElementById("total").innerHTML = discountPrice;
        await swal("coupon applied successfully");
-       
-      } else if (response.coupon == "already used coupon") {
-        swal("you have already used this coupon");
-      }
+       document.getElementById("form-coupon").style.display = "none";
+      } 
     },
   });
 });

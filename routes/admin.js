@@ -272,6 +272,7 @@ router.get("/add-coupons",varifyLogin, (req, res) => {
 //coupons
 router.post("/add-coupons",varifyLogin, (req, res) => {
   offerHelpers.addCoupons(req.body).then((data) => {
+    res.json(data)
  })
 });
 

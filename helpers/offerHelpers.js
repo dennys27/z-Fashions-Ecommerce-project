@@ -5,11 +5,22 @@ var objectId = require("mongodb").ObjectId;
 module.exports = {
   addCoupons: (coupon) => {
     return new Promise((resolve, reject) => {
-      db.get()
-        .collection(collection.COUPONS)
-          .insertOne(coupon).then((data) => {
-            resolve(data)
-        })
+      console.log(parseInt(coupon.percentage));
+      if (
+        parseInt(coupon.percentage) > 10 ||
+        parseInt(coupon.percentage < 80)
+      ) {
+        db.get()
+          .collection(collection.COUPONS)
+          .insertOne(coupon)
+          .then((data) => {
+            resolve(data);
+          });
+      } else {
+        console.log("oooooooiiiii, im here......");
+        resolve({ warning: true });
+      }
+      
     });
   },
   getCoupons: () => {
@@ -42,6 +53,11 @@ module.exports = {
     },
   
   applyCoupons: async (cId, userId) => {
+    let used = await db.get().collection(collection.CART_COLLECTION).find({ user: objectId(userId) }).toArray()
+   
+    if (used[0].cDiscount) {
+      return {applied:true}
+    }
 
     let check = await db
       .get()
@@ -50,7 +66,7 @@ module.exports = {
         _id: objectId(userId),
         usedCoupon: { $in: [cId] },
       }).toArray()
-    console.log(check.length,"oooooooohoooooooiiii......");
+   
     if (check.length === 0) {
       let response = {};
       return new Promise(async (resolve, reject) => {
@@ -64,15 +80,15 @@ module.exports = {
         if (date <= ending || date >= starting) {
           coupons[0].cExist = true;
           db.get().collection(collection.CART_COLLECTION).updateOne({ user: objectId(userId) },
-            { $set: { coupon: cId, couponDiscount: coupons[0].percentage } }, { upsert: true }).then((data) => {
-              console.log(data);
+            { $set: { coupon: cId, couponDiscount: coupons[0].percentage, cDiscount:true } }, { upsert: true }).then((data) => {
+              
             })
           resolve(coupons)
         }
        
       })
     } else {
-      return {coupon:"already used coupon"}
+      return {Already:true}
     }
   },
 };

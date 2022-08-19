@@ -547,14 +547,20 @@ router.post("/apply-coupons", varifyLogin, async (req, res) => {
     
     if (coupon.length > 0) {
       await offerHelpers.applyCoupons(req.body.couponCode, req.session.user._id).then((data) => {
+        if (data.applied) {
+          res.json({applied:true})
+        } else {
+
+            if (data.Already!=true) {
+              req.session.discountedPrice = data[0].percentage;
+              res.json(data);
+            } else {
+              console.log(data);
+              res.json(data);
+            }
+        }
         
-    if (data.coupon != "already used coupon") {
-      req.session.discountedPrice = data[0].percentage;
-      res.json(data);
-    } else {
-      console.log(data);
-      res.json(data)
-    }
+  
         
         
         })
