@@ -51,6 +51,17 @@ module.exports = {
         
     });
     },
+  addOffer: (offer) => {
+    return new Promise(async(resolve, reject) => {
+     let coupons= await db.get()
+        .collection(collection.OFFERS_COLLECTION)
+         .insertOne(offer)
+       .then((data) => {
+          resolve(data)
+        })
+        
+    });
+    },
   
   applyCoupons: async (cId, userId) => {
     let used = await db.get().collection(collection.CART_COLLECTION).find({ user: objectId(userId) }).toArray()

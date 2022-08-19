@@ -122,3 +122,22 @@ $("#coupon-form").submit((event) => {
     },
   });
 });
+
+
+$("#add-offer").submit((event) => {
+  event.preventDefault();
+  $.ajax({
+    url: "/admin/add-category-offers",
+    method: "post",
+    data: $("#add-offer").serialize(),
+    success: (response) => {
+      console.log(response);
+      if (response.warning) {
+        swal("the offer should be in between 10% - 80%");
+      } else {
+        swal("updated successfully");
+        location.href = "/admin/add-coupons";
+      }
+    },
+  });
+});

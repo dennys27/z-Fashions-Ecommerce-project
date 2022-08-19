@@ -287,6 +287,27 @@ router.post("/delete-coupons", varifyLogin, (req, res) => {
 
 
 
+router.get("/offers", varifyLogin,(req, res) => {
+  //let userId = req.session.user._id;
+  productManagement.getCategories().then((categories) => {
+    console.log(categories);
+    res.render("admin/offers", { admin: true,categories });
+})
+});
+
+router.get("/add-offers", varifyLogin,(req, res) => {
+  //let userId = req.session.user._id;
+  productManagement.getCategories().then((categories) => {
+    console.log(categories);
+    res.render("admin/add-offers", { admin: true,categories });
+})
+});
+
+router.post("/add-category-offers", varifyLogin, (req, res) => {
+  //let userId = req.session.user._id;
+  console.log(req.body);
+ offerHelpers.addOffer(req.body)
+});
 
 
 router.get("/Block-user/:id", varifyLogin, (req, res) => {

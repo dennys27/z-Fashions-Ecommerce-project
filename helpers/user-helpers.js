@@ -36,18 +36,19 @@ module.exports = {
         response.status = true;
         resolve(response);
       } else if (phone) {
-        console.log("same phone number");
+        
         response.phone = true;
         resolve(response);
       } else {
         userData.Password = await bcrypt.hash(userData.Password, 10);
+        userData.wallet = 0;
         db.get()
           .collection(collection.USER_COLLECTION)
           .insertOne(userData)
           .then((data) => {
             resolve(data.insertedId);
           });
-        console.log("no same email");
+       
         resolve({ status: false });
       }
     });

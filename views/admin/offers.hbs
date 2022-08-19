@@ -1,0 +1,30 @@
+<div class="container mt-5">
+   <a href="/admin/add-offers"><button class="btn btn-primary float-right mb-3">Add offers</button></a> 
+    <table class="table">
+  <thead>
+    <tr>
+     
+      <th scope="col">sl</th>
+      <th scope="col">categories</th>
+      <th scope="col">offers</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+     {{#each categories}}
+    <tr>
+     
+      <td>*</td>
+      <td>{{this.category}}</td>
+      <td><select class="form-select" aria-label="Default select example">
+  <option selected>Open this select menu</option>
+  <option value="1">One</option>
+  <option value="2">Two</option>
+  <option value="3">Three</option>
+</select></td>
+    
+    </tr>
+      {{/each}}
+  </tbody>
+</table>
+</div>
