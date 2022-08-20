@@ -20,64 +20,160 @@ module.exports = {
         console.log("oooooooiiiii, im here......");
         resolve({ warning: true });
       }
-      
     });
   },
   getCoupons: () => {
-    return new Promise(async(resolve, reject) => {
-     let coupons= await db.get()
+    return new Promise(async (resolve, reject) => {
+      let coupons = await db
+        .get()
         .collection(collection.COUPONS)
-            .find().toArray()
-        resolve(coupons);
-        
+        .find()
+        .toArray();
+      resolve(coupons);
     });
   },
   checkCoupons: (cId) => {
-    return new Promise(async(resolve, reject) => {
-     let coupons= await db.get()
+    return new Promise(async (resolve, reject) => {
+      let coupons = await db
+        .get()
         .collection(collection.COUPONS)
-            .find({code:cId}).toArray()
-        resolve(coupons);
-        
+        .find({ code: cId })
+        .toArray();
+      resolve(coupons);
     });
   },
 
   deleteCoupon: (cId) => {
-    return new Promise(async(resolve, reject) => {
-     let coupons= await db.get()
+    return new Promise(async (resolve, reject) => {
+      let coupons = await db
+        .get()
         .collection(collection.COUPONS)
-         .deleteOne({ _id:objectId(cId) })
-        resolve(coupons)
-        
+        .deleteOne({ _id: objectId(cId) });
+      resolve(coupons);
     });
-    },
+  },
+
   addOffer: (offer) => {
-    return new Promise(async(resolve, reject) => {
-     let coupons= await db.get()
+    return new Promise(async (resolve, reject) => {
+      let coupons = await db
+        .get()
         .collection(collection.OFFERS_COLLECTION)
-         .insertOne(offer)
-       .then((data) => {
-          resolve(data)
-        })
+        .insertOne(offer)
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+  categoryoffer: (req) => {
+    return new Promise(async (resolve, reject) => {
+      let offers = await db
+        .get()
+        .collection(collection.OFFERS_COLLECTION)
+        .findOne({ _id: objectId(req.offerId) });
+      
+      console.log(offers.offer);
+      
+      let categories = await db
+        .get()
+        .collection(collection.PRODUCT_CATAGORY).findOne({ _id: objectId(req.categoryId) })
+      console.log(categories);
+      
+      if (categories) {
+          let products = await db
+            .get()
+            .collection(collection.PRODUCT_COLLECTIONS)
+            .find({ category: categories.category })
+            .toArray();
+        
+        
+        //changing the prices
+
+         products.map(async (prod) => {
+           
+           let price = parseInt(prod.price);
+          
+           discount = (price * offers.percentage) / 100;
+           console.log(discount);
+
+           price = parseInt(price - parseInt(discount));
+          //  console.log(discount,"thisis discount");
+          //  console.log(price,"this is price");
+           await db
+             .get()
+             .collection(collection.PRODUCT_COLLECTIONS)
+             .updateMany(
+               { _id: objectId(prod._id) },
+               {
+                 $set: {
+                   
+                    price: price,
+                   offername: offers.offer,
+                   discountprice: discount,
+                   categoryoffer: true,
+                 },
+               }
+             );
+           await db
+             .get()
+             .collection(collection.PRODUCT_CATAGORY)
+             .updateMany(
+               { _id: objectId(categories._id) },
+               {
+                 $set: {
+                   offername: offers.offer,
+                   offerpercentage: offers.percentage,
+                   categoryoffer: true,
+                 },
+               }
+             );
+
+           resolve();
+         });
+        //ending......
+
+        
+      } else {
+        resolve({err:"invalid operation"})
+      }
         
     });
-    },
+  },
+
   getOffers: () => {
-    return new Promise(async(resolve, reject) => {
-     let coupons= await db.get()
+    return new Promise(async (resolve, reject) => {
+      let coupons = await db
+        .get()
         .collection(collection.OFFERS_COLLECTION)
-       .find().toArray().then((data) => {
-           resolve(data)
-         })
-        
+        .find()
+        .toArray()
+        .then((data) => {
+          resolve(data);
+        });
     });
-    },
-  
+  },
+
+  resetCoupon: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      let coupons = await db
+        .get()
+        .collection(collection.CART_COLLECTION)
+        .updateOne(
+          { user: objectId(userId) },
+          { $unset: { coupon: "", couponDiscount:"" } } );
+    }).then((data) => {
+      console.log(data);
+    })
+  },
+
   applyCoupons: async (cId, userId) => {
-    let used = await db.get().collection(collection.CART_COLLECTION).find({ user: objectId(userId) }).toArray()
-   
+    let used = await db
+      .get()
+      .collection(collection.CART_COLLECTION)
+      .find({ user: objectId(userId) })
+      .toArray();
+
     if (used[0].cDiscount) {
-      return {applied:true}
+      return { applied: true };
     }
 
     let check = await db
@@ -86,30 +182,41 @@ module.exports = {
       .find({
         _id: objectId(userId),
         usedCoupon: { $in: [cId] },
-      }).toArray()
-   
+      })
+      .toArray();
+
     if (check.length === 0) {
       let response = {};
       return new Promise(async (resolve, reject) => {
         let coupons = await db
           .get()
           .collection(collection.COUPONS)
-          .find({ code: cId }).toArray()
+          .find({ code: cId })
+          .toArray();
         let date = new Date();
         let starting = new Date(coupons[0].starting);
         let ending = new Date(coupons[0].ending);
         if (date <= ending || date >= starting) {
           coupons[0].cExist = true;
-          db.get().collection(collection.CART_COLLECTION).updateOne({ user: objectId(userId) },
-            { $set: { coupon: cId, couponDiscount: coupons[0].percentage, cDiscount:true } }, { upsert: true }).then((data) => {
-              
-            })
-          resolve(coupons)
+          db.get()
+            .collection(collection.CART_COLLECTION)
+            .updateOne(
+              { user: objectId(userId) },
+              {
+                $set: {
+                  coupon: cId,
+                  couponDiscount: coupons[0].percentage,
+                  cDiscount: true,
+                },
+              },
+              { upsert: true }
+            )
+            .then((data) => {});
+          resolve(coupons);
         }
-       
-      })
+      });
     } else {
-      return {Already:true}
+      return { Already: true };
     }
   },
 };

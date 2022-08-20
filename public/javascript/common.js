@@ -136,8 +136,27 @@ $("#add-offer").submit((event) => {
         swal("the offer should be in between 10% - 80%");
       } else {
         swal("updated successfully");
-        location.href = "/admin/add-coupons";
+        location.href = "/admin/add-offers";
       }
     },
   });
 });
+
+function changeOffer(categoryId,offerId) {
+   $.ajax({
+     url: "/admin/apply-category-offer",
+     method: "post",
+     data: { categoryId, offerId },
+     success: (response) => {
+       console.log(response);
+       if (response.warning) {
+         swal("the offer should be in between 10% - 80%");
+       } else {
+         swal("updated successfully");
+         location.href = "/admin/add-offers";
+       }
+     },
+   });
+
+
+}

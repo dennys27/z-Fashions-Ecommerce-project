@@ -16,10 +16,10 @@
      
       <td>*</td>
       <td>{{this.category}}</td>
-      <td><select class="form-select" aria-label="Default select example">
- 
-  {{#each this.obj}}
-  <option value="1">{{this.offer}}</option>
+      <td><select class="form-select" aria-label="Default select " onchange="changeOffer('{{this._id}}',value)">
+ <option class="bg-primary">select</option>
+  {{#each ../offers}}
+  <option value='{{this._id}}'>{{this.offer}} - {{this.percentage}}%</option>
   {{/each}}
  
 </select></td>

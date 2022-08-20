@@ -1,4 +1,4 @@
-// require("dotenv").config();
+
 
 $("#check-out-form").submit((event) => {
   event.preventDefault();

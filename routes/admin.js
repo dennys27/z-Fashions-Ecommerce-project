@@ -47,10 +47,7 @@ router.get("/view-user/:id", varifyLogin, (req, res, next) => {
     console.log(user);
       res.render("admin/userprofile", { admin: true, user });
   })
-  
-  
 });
-
 
 
 router.get("/add-user", varifyLogin, function (req, res) {
@@ -175,8 +172,6 @@ router.post("/add-item", store.array("image", 4), (req, res) => {
 });
 
 
-
-
 router.get("/add-categories", varifyLogin, (req, res) => {
   res.render("admin/Add-category", { admin: true });
 });
@@ -285,15 +280,12 @@ router.post("/delete-coupons", varifyLogin, (req, res) => {
 });
 
 
-
-
 router.get("/offers", varifyLogin,async (req, res) => {
   //let userId = req.session.user._id;
   await productManagement.getCategories().then((categories) => {
     offerHelpers.getOffers().then((offers) => {
-      categories.obj={...offers}
-        console.log(categories);
-        res.render("admin/offers", { admin: true, categories });
+         
+        res.render("admin/offers", { admin: true, categories,offers });
     })
    
 })
@@ -310,7 +302,15 @@ router.get("/add-offers", varifyLogin,(req, res) => {
 router.post("/add-category-offers", varifyLogin, (req, res) => {
   //let userId = req.session.user._id;
   console.log(req.body);
- offerHelpers.addOffer(req.body)
+  offerHelpers.addOffer(req.body).then((data) => {
+   res.json(data)
+ })
+});
+router.post("/apply-category-offer", varifyLogin, (req, res) => {
+  console.log(req.body);
+  offerHelpers.categoryoffer(req.body).then((data) => {
+    
+  })
 });
 
 
