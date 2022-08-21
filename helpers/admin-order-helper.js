@@ -19,6 +19,18 @@ module.exports = {
     });
   },
 
+  getSalesReport: () => {
+    return new Promise(async (resolve, reject) => {
+   let data = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+      { $group: { _id: "$userId", count: { $sum: 1 } } },
+      { $match: { _id: { $ne: null }, count: { $gt: 1 } } },
+      { $project: { name: "$_id", _id: 0 } },
+   ]).toArray()
+      console.log(data);
+      resolve()
+    });
+  },
+
   changeOrderStatus: (orderId, status) => {
     return new Promise(async (resolve, reject) => {
       let Order = await db

@@ -359,7 +359,8 @@ router.get("/logout", varifyLogin, (req, res) => {
 
 
 //admin dashboard  
-router.get("/dashboard", varifyLogin, async(req, res) => {
+router.get("/dashboard", varifyLogin, async (req, res) => {
+  let report = await adminOrderHelper.getSalesReport()
   let cod =await adminOrderHelper.codTotal()
   let razorpay = await adminOrderHelper.razorTotal();
   let paypal = await adminOrderHelper.paypalTotal();

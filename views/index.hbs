@@ -14,6 +14,8 @@
 
 
 
+
+
 <div class="container-fluid mt-2 ">
   <div class="container"> 
     <h2 style="font-weight:800;" class="fs-5 pt-5 d-flex justify-content-center ">WOMEN'S FASHION</h2>
@@ -34,9 +36,11 @@
           <div  class="dress-card-head" style="width:284px; height: 254px;; overflow:hidden;">
             
             <div class="img-fluid image-container container-fluid d-flex justify-content-center"> 
-              <div class="ribbon-wrapper">
+                {{#if offername}}
+               <div class="ribbon-wrapper">
           <div class="ribbon">{{offername}}</div>
           </div>
+              {{/if}}
                <img class="dress-card-img-top" src="/{{this.Image.[0]}}" alt="">
             </div>
             <div class="surprise-bubble"><span class="dress-card-heart">
@@ -117,6 +121,31 @@
     </div>
   </div>
 </div>
+
+
+<!-- carousel -->
+<div style="height: 270px; overflow:hidden;" id="carouselExampleControls" class="carousel slide mt-4" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="http://crowninter.com/uploads/categories/fashion-wear_F6EF8A_cbanner.jpg" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="https://jacketpop.com/wp-content/uploads/2022/06/Black-Leather-Jackets-1-1400x448.webp" class=" image-responsive d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="https://ozonee.eu/data/include/cms/0-banerki/eu/5_-_ue_-_KURTKI_SKORZANE.jpg" class="d-block w-100" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+<!-- carousel end -->
 
 
 

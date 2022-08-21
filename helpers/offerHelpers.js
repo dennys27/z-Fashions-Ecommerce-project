@@ -70,9 +70,9 @@ module.exports = {
       let product = await db.get().collection(collection.PRODUCT_COLLECTIONS).find({ _id: objectId(data.prodId) }).toArray()
       console.log(product[0].cuttPrice);
       let discount =
-        (parseInt(product[0].cuttPrice) * parseInt(data.percentage)) / 100;
+        (parseInt(product[0].price) * parseInt(data.percentage)) / 100;
       console.log(discount);
-      let price = parseInt(product[0].cuttPrice - discount);
+      let price = parseInt(product[0].price - discount);
       console.log(price);
      await db
        .get()
