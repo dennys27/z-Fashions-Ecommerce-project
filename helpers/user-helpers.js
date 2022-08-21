@@ -41,7 +41,33 @@ module.exports = {
         resolve(response);
       } else {
         userData.Password = await bcrypt.hash(userData.Password, 10);
-        userData.wallet = 0;
+        console.log(userData.Refferal);
+        if (userData.Refferal) {
+          let user = await db.get()
+            .collection(collection.USER_COLLECTION)
+            .find({ refferalCode: userData.Refferal }).toArray()
+           let reward = user[0].wallet
+          if (user) {
+            reward+=500
+            console.log(user);
+            await db.get()
+              .collection(collection.USER_COLLECTION)
+              .updateOne(
+                { _id: objectId(user[0]._id) },
+                {
+                  $set: {
+                   wallet:reward
+                  },
+                }
+            );
+            userData.wallet = 500;
+          }
+           
+        } else {
+            userData.wallet = 0;
+        }
+        
+        
         db.get()
           .collection(collection.USER_COLLECTION)
           .insertOne(userData)

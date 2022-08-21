@@ -7,7 +7,7 @@ const cartHelpers = require("../helpers/cart-helpers");
 const paypal = require("paypal-rest-sdk");
 const offerHelpers = require("../helpers/offerHelpers");
 const { Db } = require("mongodb");
-
+const referralCodeGenerator = require("referral-code-generator");
 
 const varifyLogin = (req, res, next) => {
   if (req.session.user) {
@@ -126,6 +126,8 @@ router.post("/otp-matching", function (req, res) {
     });
 });
 
+//signup process
+
 router.get("/signup", function (req, res) {
   if (req.session.loggedIn) {
     res.redirect("/");
@@ -141,12 +143,14 @@ router.get("/signup", function (req, res) {
 });
 
 router.post("/signup", (req, res) => {
+  let rCode = referralCodeGenerator.alphaNumeric("uppercase", 2, 2);
+  req.body.refferalCode = rCode;
+
   let reqBody = req.body;
   reqBody.block = false;
-
   userHelpers.doSignup(reqBody).then((response) => {
     if (response.status) {
-      req.session.signErr = true;
+      req.session.signErr = true; 
       res.redirect("/signup");
     } else if (response.phone) {
       req.session.phnExists = true;
@@ -376,6 +380,7 @@ router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
 //user profile
 router.get("/my-account/:id", varifyLogin, (req, res) => { 
   let user = req.session.user;
+  
   // userHelpers.getUserDetails(user._id).then((data) => {
   //   res.render("user/user-account", { user, data });
   // });

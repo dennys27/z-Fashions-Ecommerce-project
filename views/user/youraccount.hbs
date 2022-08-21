@@ -64,6 +64,7 @@
     <a href="/change-password/{{userId}}" class="text-decoration-none">
       <div class="d-flex justify-content-evenly pt-3">
         <img
+       
           style="width: 66px; height: 49px"
           src="https://images-na.ssl-images-amazon.com/images/G/31/x-locale/cs/ya/images/sign-in-lock._CB485931504_.png"
           alt=""
@@ -114,15 +115,19 @@
       class="bg-white col-md-4 col-lg-3 bg-dark m-3"
     >
       <div class="d-flex justify-content-evenly pt-3">
-        <img
-          style="width: 66px; height: 44px"
-          src="https://images-na.ssl-images-amazon.com/images/G/31/x-locale/cs/ya/images/Payments._CB485926359_.png"
+        <div class="container d-flex justify-content-start">
+           <img
+          class="float-left"
+          style="width: 66px; height: 44px;"
+          src="https://assets.dryicons.com/uploads/icon/svg/6356/b5322cfb-f8fb-4cf5-a096-3c2dc5dde9a9.svg"
           alt=""
         />
-        <div class="ac-container">
-          <h3 class="h5">Payment options</h3>
+        </div>
+       
+        <div class="ac-container container" style="padding-right: 135px;">
+          <h3 class="h5">Wallet</h3>
           <p style="font-size: 14px" class="text-muted">
-            Edit or add payment methods
+            {{user.wallet}}
           </p>
         </div>
       </div>
