@@ -106,6 +106,8 @@ module.exports = {
         });
     });
   },
+
+
   //ADD-PRODUCT
   addItem: (userData) => {
     return new Promise(async (resolve, reject) => {
@@ -117,6 +119,7 @@ module.exports = {
         });
     });
   },
+  
 
   //ADD-CATEGORY
   addCategory: (userData) => {

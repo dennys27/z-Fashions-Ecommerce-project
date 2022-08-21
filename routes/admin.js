@@ -306,6 +306,24 @@ router.post("/add-category-offers", varifyLogin, (req, res) => {
    res.json(data)
  })
 });
+
+
+router.get("/specific-offer/:id", varifyLogin, (req, res) => {
+  let prodId = req.params.id;
+   res.render("admin/specificOffer",{admin:true,prodId})
+
+});
+
+
+router.post("/specific-Offer", varifyLogin, (req, res) => {
+  console.log(req.body);
+
+  offerHelpers.addProductOffer(req.body).then((data) => {
+    res.json(data)
+  })
+
+});
+
 router.post("/apply-category-offer", varifyLogin, (req, res) => {
   console.log(req.body);
   offerHelpers.categoryoffer(req.body).then((data) => {

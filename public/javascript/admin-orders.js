@@ -51,3 +51,14 @@ function changeOrderStatusAdmin(orderId,status) {
 }
 
 
+$("#specific-offer").submit((event) => {
+  event.preventDefault();
+  $.ajax({
+    url: "/admin/specific-Offer",
+    method: "post",
+    data: $("#specific-offer").serialize(),
+    success: (response) => {
+      console.log(response);
+    },
+  });
+});

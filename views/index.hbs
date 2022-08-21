@@ -32,7 +32,11 @@
         <div class="dress-card border">
           <a href="/view-product/{{this._id}}">
           <div  class="dress-card-head" style="width:284px; height: 254px;; overflow:hidden;">
+            
             <div class="img-fluid image-container container-fluid d-flex justify-content-center"> 
+              <div class="ribbon-wrapper">
+          <div class="ribbon">{{offername}}</div>
+          </div>
                <img class="dress-card-img-top" src="/{{this.Image.[0]}}" alt="">
             </div>
             <div class="surprise-bubble"><span class="dress-card-heart">
@@ -42,7 +46,7 @@
           <div class="dress-card-body">
             <h4 class="dress-card-title"></h4>
             <p class="dress-card-para">{{this.name}}</p>
-            <p class="dress-card-para"><span class="dress-card-price">₹{{this.price}} &ensp;</span><span class="dress-card-crossed">Rs.2099</span><span class="dress-card-off">&ensp;(60% OFF)</span></p>
+            <p class="dress-card-para"><span class="dress-card-price">₹{{this.price}} &ensp;</span><span class="dress-card-crossed">Rs.{{this.cuttPrice}}</span><span class="dress-card-off">&ensp;({{discountpercentage}}% OFF)</span></p>
             <div class="row">
               <div class="col-md-6 card-button"><div onClick="addToCart('{{this._id}}')" class="card-button-inner bag-button">Add to Bag</div></div>
               <div class="col-md-6 card-button"><a href="" class="text-decoration-none"><div style="cursor: pointer;" class="card-button-inner wish-button">Whishlist</div></a></div>
@@ -78,6 +82,12 @@
           <a href="/view-product/{{this._id}}">
           <div  class="dress-card-head" style="width:284px; height: 254px;; overflow:hidden;">
             <div class="img-fluid image-container container-fluid d-flex justify-content-center"> 
+              {{#if offername}}
+               <div class="ribbon-wrapper">
+          <div class="ribbon">{{offername}}</div>
+          </div>
+              {{/if}}
+               
                <img class="dress-card-img-top" src="/{{this.Image.[0]}}" alt="">
             </div>
             <div class="surprise-bubble"><span class="dress-card-heart">
@@ -87,7 +97,7 @@
           <div class="dress-card-body">
             <h4 class="dress-card-title"></h4>
             <p class="dress-card-para">{{this.name}}</p>
-            <p class="dress-card-para"><span class="dress-card-price">₹{{this.price}} &ensp;</span><span class="dress-card-crossed">Rs.2099</span><span class="dress-card-off">&ensp;(60% OFF)</span></p>
+            <p class="dress-card-para"><span class="dress-card-price">₹{{this.price}} &ensp;</span><span class="dress-card-crossed">Rs.{{this.cuttPrice}}</span><span class="dress-card-off">&ensp;({{discountpercentage}}% OFF)</span></p>
             <div class="row">
               <div class="col-md-6 card-button"><div onClick="addToCart('{{this._id}}')" class="card-button-inner bag-button">Add to Bag</div></div>
               <div class="col-md-6 card-button"><a href="" class="text-decoration-none"><div style="cursor: pointer;" class="card-button-inner wish-button">Whishlist</div></a></div>

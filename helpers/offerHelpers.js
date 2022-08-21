@@ -64,6 +64,33 @@ module.exports = {
         });
     });
   },
+  addProductOffer: (data) => {
+    return new Promise(async (resolve, reject) => {
+
+      let product = await db.get().collection(collection.PRODUCT_COLLECTIONS).find({ _id: objectId(data.prodId) }).toArray()
+      console.log(product[0].cuttPrice);
+      let discount =
+        (parseInt(product[0].cuttPrice) * parseInt(data.percentage)) / 100;
+      console.log(discount);
+      let price = parseInt(product[0].cuttPrice - discount);
+      console.log(price);
+     await db
+       .get()
+       .collection(collection.PRODUCT_COLLECTIONS)
+       .updateMany(
+         { _id: objectId(data.prodId) },
+         {
+           $set: {
+             price: price,
+             offername: data.offer,
+             discountprice: discount,
+             discountpercentage: data.percentage,
+             cuttPrice: product[0].price,
+           },
+         }
+       );
+    });
+  },
   categoryoffer: (req) => {
     return new Promise(async (resolve, reject) => {
       let offers = await db
@@ -109,6 +136,7 @@ module.exports = {
                     price: price,
                    offername: offers.offer,
                    discountprice: discount,
+                   discountpercentage: offers.percentage,
                    categoryoffer: true,
                  },
                }
