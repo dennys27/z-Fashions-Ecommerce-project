@@ -64,6 +64,7 @@ module.exports = {
         });
     });
   },
+
   addProductOffer: (data) => {
     return new Promise(async (resolve, reject) => {
 
@@ -91,6 +92,7 @@ module.exports = {
        );
     });
   },
+
   categoryoffer: (req) => {
     return new Promise(async (resolve, reject) => {
       let offers = await db
@@ -118,6 +120,7 @@ module.exports = {
          products.map(async (prod) => {
            
            let price = parseInt(prod.price);
+           let cutt = price;
           
            discount = (price * offers.percentage) / 100;
            console.log(discount);
@@ -132,12 +135,12 @@ module.exports = {
                { _id: objectId(prod._id) },
                {
                  $set: {
-                   
-                    price: price,
+                   price: price,
                    offername: offers.offer,
                    discountprice: discount,
                    discountpercentage: offers.percentage,
                    categoryoffer: true,
+                   cuttPrice: cutt,
                  },
                }
              );

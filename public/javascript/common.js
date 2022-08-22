@@ -99,13 +99,16 @@ $("#coupon-form").submit((event) => {
     url: "/apply-coupons",
     method: "post",
     data: $("#coupon-form").serialize(),
-    success:async (response) => {
+    success: async (response) => {
+      if (response.lessAmount) {
+        swal("you have purchase for minimum 1000 to apply coupons");
+      }
       console.log(response);
       if (response.applied) {
         swal("you can't use more than one coupon in a purchase")
       } else if (response.Already) {
         swal("you can't use a coupon more than once");
-      }
+      } 
        
       if (response.status) {
         swal("invalid coupon")

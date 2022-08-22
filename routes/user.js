@@ -549,30 +549,32 @@ router.post("/test-1", varifyLogin, (req, res) => {
 //coupons
 router.post("/apply-coupons", varifyLogin, async (req, res) => {
   await offerHelpers.checkCoupons(req.body.couponCode).then(async(coupon) => {
-    
-    if (coupon.length > 0) {
-      await offerHelpers.applyCoupons(req.body.couponCode, req.session.user._id).then((data) => {
-        if (data.applied) {
-          res.json({applied:true})
-        } else {
-
-            if (data.Already!=true) {
-              req.session.discountedPrice = data[0].percentage;
-              res.json(data);
-            } else {
-              console.log(data);
-              res.json(data);
-            }
-        }
-        
-  
-        
-        
-        })
-      
+    let amount = await cartHelpers.getTotalAmount(req.session.user._id)
+    if(amount<1000){
+       res.json({ lessAmount: true });
     } else {
-      res.json({ status: true });
+       console.log(amount);
+       if (coupon.length > 0) {
+         await offerHelpers
+           .applyCoupons(req.body.couponCode, req.session.user._id)
+           .then((data) => {
+             if (data.applied) {
+               res.json({ applied: true });
+             } else {
+               if (data.Already != true) {
+                 req.session.discountedPrice = data[0].percentage;
+                 res.json(data);
+               } else {
+                 console.log(data);
+                 res.json(data);
+               }
+             }
+           });
+       } else {
+         res.json({ status: true });
+       }
     }
+   
       
    
 
