@@ -219,12 +219,15 @@ router.get("/logout", (req, res) => {
 
 // cart section
 router.get("/cart", varifyLogin, async function (req, res) {
+
+  let coupDetails = await cartHelpers.getAppliedCoupn(req.session.user._id);
   let cartCount = 0;
+  let discoupn;
   await cartHelpers.getCount(req.session.user._id).then((cartCount) => {
      let user = req.session.user;
      cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
        let total = await cartHelpers.getTotalAmount(req.session.user._id);
-       res.render("user/Cart", { user, data, cartCount, total });
+       res.render("user/Cart", { user, data, cartCount, total,coupDetails });
      });
   })
  

@@ -367,4 +367,13 @@ module.exports = {
         });
     });
   },
+
+  getAppliedCoupn: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      let coupon = await db.get().collection(collection.CART_COLLECTION).find({ user: objectId(userId) }).toArray().then((data) =>{
+        console.log(data);
+        resolve(data)
+      })
+    })
+  }
 };

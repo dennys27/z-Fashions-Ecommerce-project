@@ -10,6 +10,12 @@ module.exports = {
         parseInt(coupon.percentage) > 10 ||
         parseInt(coupon.percentage < 80)
       ) {
+        let exp = coupon.ending;
+        let year = exp.slice(0, 4);
+        let month = exp.slice(5, 7);
+        let day = exp.slice(8, 10);
+        console.log(exp);
+        coupon.expireAt= new Date(`${year},${month},${day}`),
         db.get()
           .collection(collection.COUPONS)
           .insertOne(coupon)
@@ -70,10 +76,9 @@ module.exports = {
 
       let product = await db.get().collection(collection.PRODUCT_COLLECTIONS).find({ _id: objectId(data.prodId) }).toArray()
       console.log(product[0].cuttPrice);
-      let discount =
-        (parseInt(product[0].price) * parseInt(data.percentage)) / 100;
+      let discount = (parseInt(product[0].cuttPrice) * parseInt(data.percentage)) / 100;
       console.log(discount);
-      let price = parseInt(product[0].price - discount);
+      let price = parseInt(product[0].cuttPrice - discount);
       console.log(price);
      await db
        .get()
@@ -86,7 +91,7 @@ module.exports = {
              offername: data.offer,
              discountprice: discount,
              discountpercentage: data.percentage,
-             cuttPrice: product[0].price,
+             cuttPrice: product[0].cuttPrice,
            },
          }
        );
@@ -122,12 +127,10 @@ module.exports = {
            let price = parseInt(prod.price);
            let cutt = price;
           
-           discount = (price * offers.percentage) / 100;
+           discount = (prod.cuttPrice * offers.percentage) / 100;
            console.log(discount);
 
-           price = parseInt(price - parseInt(discount));
-          //  console.log(discount,"thisis discount");
-          //  console.log(price,"this is price");
+           price = parseInt(prod.cuttPrice - parseInt(discount));
            await db
              .get()
              .collection(collection.PRODUCT_COLLECTIONS)
@@ -140,7 +143,7 @@ module.exports = {
                    discountprice: discount,
                    discountpercentage: offers.percentage,
                    categoryoffer: true,
-                   cuttPrice: cutt,
+                   cuttPrice: prod.cuttPrice,
                  },
                }
              );
