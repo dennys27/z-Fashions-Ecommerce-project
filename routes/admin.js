@@ -17,7 +17,8 @@ const varifyLogin = (req, res, next) => {
   if (req.session.users) {
     next();
   } else {
-    res.render("admin/admin-login", { admin: true, errout: req.session.err });
+    //res.render("admin/admin-login", { admin: true, errout: req.session.err });
+    res.redirect("/admin")
     req.session.err = false;
   }
 };
@@ -25,7 +26,7 @@ const varifyLogin = (req, res, next) => {
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
-  if (req.session.users) {
+  if (req.session.users) {   
     res.redirect("/admin/view-users");
   } else {
     res.render("admin/admin-login", { admin: false, errout: req.session.err });

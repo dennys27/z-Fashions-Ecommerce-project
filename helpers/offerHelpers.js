@@ -94,8 +94,10 @@ module.exports = {
              cuttPrice: product[0].cuttPrice,
            },
          }
-       );
+      );
+       resolve({ status: true });
     });
+   
   },
 
   categoryoffer: (req) => {

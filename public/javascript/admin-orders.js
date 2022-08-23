@@ -59,6 +59,11 @@ $("#specific-offer").submit((event) => {
     data: $("#specific-offer").serialize(),
     success: (response) => {
       console.log(response);
+      if (response.status) {
+        swal("offer added successfully.")
+      } else {
+        swal("something went wrong.")
+      }
     },
   });
 });

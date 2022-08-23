@@ -213,7 +213,7 @@ router.post("/login", (req, res) => {
 
 router.get("/logout", (req, res) => {
   req.session.loggedIn = null;
-  req.session.user = null;
+  req.session.user = null; 
   res.redirect("/");
 });
 
