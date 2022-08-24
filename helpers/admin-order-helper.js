@@ -119,6 +119,14 @@ module.exports = {
     });
   },
 
+  getSales: () => {
+    return new Promise(async (resolve, reject) => {
+        
+    });
+  },
+
+  
+
   paypalTotal: () => {
     return new Promise(async (resolve, reject) => {
       var codTotal = await db
@@ -144,6 +152,14 @@ module.exports = {
       resolve(codTotal[0]);
     });
   },
+
+
+
+
+
+
+
+
 
   test: async () => {
     let data = await db

@@ -13,17 +13,37 @@
          },
          method: "post",
          success: (response) => {
-           console.log(response);
+           console.log(response.productId);
+          //  if (response.hitmin) {
+          //    location.reload()
+          //  } else { 
+           
            if (response.removeProduct) {
              swal("Product Removed from cart");
              location.reload();
            } else {
              document.getElementById(proId).innerHTML = quantity + count;
              document.getElementsByClassName(proId).innerHTML = quantity + count;
+
              document.getElementById("total").innerHTML = response.total;
+             if (response.discounted) {
+               document.getElementById("secondPrice").innerHTML =
+                 response.firstTotal;
+             }
+             
+
+             console.log(response.subtotal);
              document.getElementById(`ID${response.productId}`).innerHTML = response.subtotal;
+             if (response.discounted) {
+               document.getElementById("discounted").innerHTML =
+                 response.discounted;
+             } else {
+               
+             }
+             
              
            }
+         
          },
        });
 }

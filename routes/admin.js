@@ -281,6 +281,16 @@ router.post("/delete-coupons", varifyLogin, (req, res) => {
 });
 
 
+router.get("/sales-report", varifyLogin,async (req, res) => {
+  //let userId = req.session.user._id;
+  
+    
+         
+      res.render("admin/sales-report", { admin: true,});
+   
+   
+
+});
 router.get("/offers", varifyLogin,async (req, res) => {
   //let userId = req.session.user._id;
   await productManagement.getCategories().then((categories) => {

@@ -195,7 +195,7 @@ module.exports = {
         .collection(collection.CART_COLLECTION)
         .updateOne(
           { user: objectId(userId) },
-          { $set: { coupon: "", couponDiscount: "", cDiscount: "" } })
+          { $unset: { coupon: "", couponDiscount: "", cDiscount: "" } })
        resolve();
     }).then((data) => {
       console.log(data);

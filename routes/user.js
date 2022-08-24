@@ -257,16 +257,34 @@ router.post("/add-to-cart/:id", varifyLogin, (req, res) => {
   });
 });
 
+
 router.post("/change-product-quantity", varifyLogin, (req, res) => {
   cartHelpers.changeProductQuantity(req.body).then(async (response) => {
     let total = await cartHelpers.getTotalAmount(req.session.user._id);
-
+    if (total < 1000) {
+      console.log(req.session.user._id,"fshgsfkgggggggggggggfgggggg");
+      await offerHelpers.resetCoupon(req.session.user._id);
+      response.hitmin = true
+    }
+ 
     if (total > 0) {
       response.total = total;
-    }
+     
+    } 
 
     let details = await cartHelpers.getCartProducts(req.session.user._id)
- 
+    let coupon = await cartHelpers.getAppliedCoupn(req.session.user._id);
+    let cartAmount = await cartHelpers.getTotalAmount(req.session.user._id);
+    
+    let discountPrice;
+    if (coupon[0]) {
+      discountPrice =  (parseInt(coupon[0].couponDiscount) * cartAmount) / 100;
+      console.log(discountPrice);
+      response.discounted = discountPrice;
+      response.firstTotal = response.total;
+      response.total = response.total - discountPrice;
+    }
+    
     for (i = 0; i < details.length; i++) {
       if (details[i].product._id == req.body.product) {
         response.productId = req.body.product;
@@ -274,10 +292,11 @@ router.post("/change-product-quantity", varifyLogin, (req, res) => {
         response.subtotal = details[i].product.price * details[i].quantity;
       }
     }
-    console.log(response);
+      console.log(response, "ooooohiiiiii");
     res.json(response);
   });
 }); 
+
 
 router.get("/checkout", varifyLogin, async (req, res) => {
   let user = req.session.user;
@@ -428,7 +447,6 @@ router.post("/user-address-update", varifyLogin, (req, res) => {
   req.body.uId = uniqueId;
   req.body.default = false;
   userHelpers.updateAddressDetails(user._id, req.body).then((response) => {
-   
     res.json(response);
   });
 });
