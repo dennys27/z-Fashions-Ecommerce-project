@@ -219,14 +219,27 @@ router.get("/logout", (req, res) => {
 
 // cart section
 router.get("/cart", varifyLogin, async function (req, res) {
-
+  //await offerHelpers.resetCoupon(req.session.user._id);
   let coupDetails = await cartHelpers.getAppliedCoupn(req.session.user._id);
-  let cartCount = 0;
-  let discoupn;
   await cartHelpers.getCount(req.session.user._id).then((cartCount) => {
      let user = req.session.user;
-     cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
+    cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
+      for (i = 0; i < data.length; i++){
+        data[i].subtotal = data[i].quantity * data[i].product.price;
+      }
+      
        let total = await cartHelpers.getTotalAmount(req.session.user._id);
+
+       let actual = total;
+       if (coupDetails.cpn) {
+         //console.log(coupDetails[0].couponDiscount);
+         let discount =(parseInt(total) * parseInt(coupDetails[0].couponDiscount)) / 100;
+         total = parseInt(total - discount);
+        
+       } else if (coupDetails.ncpn) {
+         
+       }
+        
        res.render("user/Cart", { user, data, cartCount, total,coupDetails });
      });
   })
@@ -246,6 +259,17 @@ router.post("/change-product-quantity", varifyLogin, (req, res) => {
     if (total > 0) {
       response.total = total;
     }
+
+    let details = await cartHelpers.getCartProducts(req.session.user._id)
+ 
+    for (i = 0; i < details.length; i++) {
+      if (details[i].product._id == req.body.product) {
+        response.productId = req.body.product;
+        response.quantity = details[i].quantity;
+        response.subtotal = details[i].product.price * details[i].quantity;
+      }
+    }
+    console.log(response);
     res.json(response);
   });
 }); 
@@ -253,7 +277,6 @@ router.post("/change-product-quantity", varifyLogin, (req, res) => {
 router.get("/checkout", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let defaultAddress;
-  
   let total = await cartHelpers.getTotalAmount(req.session.user._id);
   let totalPrice = await cartHelpers.getTotalAmount(req.session.user._id);
   if (totalPrice > 0) {
@@ -281,10 +304,10 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
   let user = req.session.user._id;
   let products = await cartHelpers.getCartProductList(req.body.userId);
   let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
- await cartHelpers.getDiscount(user).then((discountedPrice) => {
   
-   if (discountedPrice) {
-     totalPrice = totalPrice-(discountedPrice.couponDiscount*totalPrice)/100
+ await cartHelpers.getDiscount(user).then((discountedPrice) => {
+   if (discountedPrice.code) {
+     totalPrice = totalPrice - (discountedPrice.couponDiscount * totalPrice) / 100
    }
  });
   
@@ -301,10 +324,8 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
        
          cartHelpers.getOrderId(user).then((orderDetails) => {
            req.session.uniqueOrder=orderDetails._id
-           userHelpers
-             .generateRazorPay(response.insertedId.toString(), totalPrice)
+           userHelpers.generateRazorPay(response.insertedId.toString(), totalPrice)
              .then((data) => {
-           
                data.razorpay = true;
                res.json(data);
              });
@@ -547,6 +568,11 @@ router.post("/test-1", varifyLogin, (req, res) => {
     
 });
 
+router.post("/delete-coupon-cart/:id", varifyLogin, (req, res) => {
+  offerHelpers.resetCoupon(req.params.id).then(() => {
+    res.json({ deleted: true });
+  });
+});
 
  
 //coupons
@@ -578,12 +604,13 @@ router.post("/apply-coupons", varifyLogin, async (req, res) => {
        }
     }
    
-      
-   
 
   })
 
 });
+
+
+
 
 
 

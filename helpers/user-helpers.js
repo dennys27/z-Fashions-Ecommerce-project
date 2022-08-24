@@ -34,7 +34,7 @@ module.exports = {
       if (email) {
         console.log("same email");
         response.status = true;
-        resolve(response);
+        resolve(response); 
       } else if (phone) {
         
         response.phone = true;
@@ -45,11 +45,12 @@ module.exports = {
         if (userData.Refferal) {
           let user = await db.get()
             .collection(collection.USER_COLLECTION)
-            .find({ refferalCode: userData.Refferal }).toArray()
+            .find({ refferalCode: userData.Refferal.toString() }).toArray()
+          console.log(user); 
            let reward = user[0].wallet
           if (user) {
             reward+=500
-            console.log(user);
+            console.log(user);  
             await db.get()
               .collection(collection.USER_COLLECTION)
               .updateOne(

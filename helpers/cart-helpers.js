@@ -136,6 +136,7 @@ module.exports = {
             }
           )
           .then((response) => {
+          
             resolve(response);
           });
       }
@@ -165,10 +166,8 @@ module.exports = {
               .collection(collection.USER_COLLECTION)
               .updateOne(
                 { _id: objectId(userId) },
-                { $push: { usedCoupon: data.coupon } }
-                
-              )
-          resolve({
+                { $push: { usedCoupon: data.coupon }})
+            resolve({
             code: data.coupon,
             couponDiscount: data.couponDiscount,
           });
@@ -371,8 +370,16 @@ module.exports = {
   getAppliedCoupn: (userId) => {
     return new Promise(async (resolve, reject) => {
       let coupon = await db.get().collection(collection.CART_COLLECTION).find({ user: objectId(userId) }).toArray().then((data) =>{
-        console.log(data);
-        resolve(data)
+    
+        if (data[0].couponDiscount) {
+         
+          data[0].cpn=true
+          resolve(data);
+        } else {
+          
+          resolve({ncpn:true})
+        }
+        
       })
     })
   }

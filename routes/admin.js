@@ -357,8 +357,6 @@ router.get("/logout", varifyLogin, (req, res) => {
 });
 
 
-
-
 //admin dashboard  
 router.get("/dashboard", varifyLogin, async (req, res) => {
   let report = await adminOrderHelper.getSalesReport()
@@ -422,6 +420,8 @@ router.get("/dashboard", varifyLogin, async (req, res) => {
 
 
 }),
+  
+  
   
 
 

@@ -13,6 +13,7 @@
          },
          method: "post",
          success: (response) => {
+           console.log(response);
            if (response.removeProduct) {
              swal("Product Removed from cart");
              location.reload();
@@ -20,6 +21,7 @@
              document.getElementById(proId).innerHTML = quantity + count;
              document.getElementsByClassName(proId).innerHTML = quantity + count;
              document.getElementById("total").innerHTML = response.total;
+             document.getElementById(`ID${response.productId}`).innerHTML = response.subtotal;
              
            }
          },
@@ -44,7 +46,7 @@ function addToCart(proId) {
              location.href="/login"
            }
          },
-       });
+       })
 }
      
 
@@ -139,3 +141,18 @@ function cancelOrder(orderId) {
      }
 
  
+ function deleteCoupon(userId) {
+       console.log("im working you know");
+
+       $.ajax({
+         url: "/delete-coupon-cart/" + userId,
+         method: "post",
+         success: (response) => {
+           if (response.deleted) {
+             document.getElementById("c-deleted").style.display="none;"
+             swal("coupon removed from cart");
+             location.reload()
+           }
+         },
+       });
+     }

@@ -36,7 +36,7 @@
                     <div class="col-md-3 col-lg-3 col-xl-3">
                       <h6 class="text-muted">{{this.product.name}}</h6>
                       <h6 class="text-black mb-0">{{this.product.category}}</h6>
-                      <p class="{{this.product._id}}"> 1 x {{this.quantity}}</p>
+                        <h6 class="mb-0 text-muted mt-2">Each - ₹ {{this.product.price}}</h6>
                     </div>
                     <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                       <button
@@ -53,8 +53,8 @@
                         type="number"
                         class="form-control form-control-sm">
                            {{this.quantity}}
-                        </span>
-           <!-- ,'{{../user._id}}' -->         
+                          
+                        </span>        
 
                       <button
                       style="height:30px;"
@@ -65,7 +65,7 @@
                       </button>
                     </div>
                     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                      <h6 class="mb-0">₹ {{this.product.price}}</h6>
+                    <span class="d-felx">₹<i id="ID{{this.product._id}}">{{this.subtotal}}</i></span> 
                     </div>
                     <div class="col-md-1 col-lg-1 col-xl-1 text-end mr-4">
                       <button   onclick="deleteProduct('{{this._id}}','{{this.product._id}}')"   class="btn btn-danger btn-md">Remove</button>
@@ -105,6 +105,7 @@
                         type="text"
                         id="form3Examplea2"
                         class="form-control form-control-lg"
+                       
                       />
                       <input name="userId" value="{{user._id}}" type="text" hidden>
                       <label class="form-label" for="form3Examplea2">Enter your
@@ -134,11 +135,20 @@
                     <h6 class="text-uppercase">Shipping</h6>
                      <h6 id="shipping-fee">free</h6>
                   </div>
-                  <div class="d-flex justify-content-between mb-3">
+                  {{#if coupDetails.[0].couponDiscount}}
+                  <div class="d-flex justify-content-between mb-4">
+                    
+                    <h6 class="">total</h6>
+                     <h6 id="shipping-fee">{{actual}}</h6>
+                  </div>
+                  {{/if}}
+               
+                  <div id="c-deleted" class="d-flex justify-content-between mb-3" style="visibility:hidden;">
                     
                     <h6 class="text-uppercase">Coupon</h6>
-                     <h6 id="shipping-fee">{{coupDetails.[0].couponDiscount}}% Off</h6>
+                    <span class="d-flex "> <h6 id="c-off" >% Off </h6> <i onclick="deleteCoupon('{{user._id}}')" class="fi fi-br-cross-circle text-danger" style="padding-left:10px;"></i> </span>
                   </div>
+                   
                   <div class="d-flex justify-content-between mb-5">
                     
                     <h5 class="text-uppercase">Total price</h5>
@@ -161,3 +171,4 @@
     </div>
   </div>
 </section>
+

@@ -119,12 +119,19 @@ $("#coupon-form").submit((event) => {
         let discountPrice = total-(response[0].percentage * total) / 100;
         console.log(discountPrice);
         document.getElementById("total").innerHTML = discountPrice;
+        document.getElementById("c-deleted").style.visibility = "visible";
+       
+        document.getElementById("c-off").innerHTML = response[0].percentage; 
+
        await swal("coupon applied successfully");
-       document.getElementById("form-coupon").style.display = "none";
+       
+        
       } 
     },
   });
 });
+
+
 
 
 $("#add-offer").submit((event) => {
@@ -144,6 +151,8 @@ $("#add-offer").submit((event) => {
     },
   });
 });
+
+
 
 function changeOffer(categoryId,offerId) {
    $.ajax({

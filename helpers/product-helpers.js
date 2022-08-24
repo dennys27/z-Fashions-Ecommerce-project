@@ -5,13 +5,6 @@ const bcrypt = require('bcrypt')
 var objectId=require('mongodb').ObjectId
 module.exports={
 
-    // addUser:(product,callback)=>{
-        
-    //     db.get().collection('user').insertOne(product).then((data)=>{
-
-    //         callback(data)
-    //     })
-    // },
     getAlluser:(prodId)=>{
         return new Promise(async(resolve,reject)=>{
             let user=await db.get().collection(collection.USER_COLLECTION).find().toArray()
@@ -22,8 +15,8 @@ module.exports={
         return new Promise((resolve,reject)=>{
             db.get().collection(collection.USER_COLLECTION).deleteOne({_id:objectId(prodId)}).then((response)=>{
                 resolve(response)
-            })
-        })
+            }) 
+        }) 
     },
     getProductDetails:(prodId)=>{
         return new Promise((resolve,reject)=>{
