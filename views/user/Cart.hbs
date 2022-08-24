@@ -136,22 +136,42 @@
                      <h6 id="shipping-fee">free</h6>
                   </div>
                   {{#if coupDetails.[0].couponDiscount}}
-                  <div class="d-flex justify-content-between mb-4">
-                    
-                    <h6 class="">total</h6>
-                     <h6 id="shipping-fee">{{actual}}</h6>
-                  </div>
-                  {{/if}}
-               
-                  <div id="c-deleted" class="d-flex justify-content-between mb-3" style="visibility:hidden;">
+              <div id="cOne-deleted" class="d-flex justify-content-between mb-3">
                     
                     <h6 class="text-uppercase">Coupon</h6>
-                    <span class="d-flex "> <h6 id="c-off" >% Off </h6> <i onclick="deleteCoupon('{{user._id}}')" class="fi fi-br-cross-circle text-danger" style="padding-left:10px;"></i> </span>
+                    <span class="d-flex "> <h6 id="c-off" >{{coupDetails.[0].couponDiscount}}% Off </h6> <i onclick="deleteCoupon('{{user._id}}')" class="fi fi-br-cross-circle text-danger" style="padding-left:10px;"></i> </span>
+                  </div>
+                  {{/if}}
+                  {{#if coupDetails.[0].couponDiscount}}
+              <div id="cOne-deleted" class="d-flex justify-content-between mb-3">
+                    
+                    <h6 class="text-uppercase">Item total -</h6>
+                    <span class="d-flex text-danger"> ₹<h6 class="text-danger fw-bold" id="c-off" >{{beforDisc}} </h6> </span>
+                  </div>
+                  {{/if}}
+
+                  
+
+                  {{#if coupDetails.[0].couponDiscount}}
+              <div id="cOne-deleted" class="d-flex justify-content-between mb-3">
+                    
+                    <h6 class="text-uppercase"> Coupon discount - </h6>
+                    <span class="d-flex "> <h6 id="c-off" >- ₹{{actual}} </h6> </span>
+                  </div>
+                  {{/if}}
+
+                  
+
+                   <hr class="my-4" />
+                   <div id="c-deleted" class="d-flex justify-content-between mb-3" style="visibility:hidden;">
+                    
+                    <h6 class="text-uppercase">Coupon</h6>
+                    <span class="d-flex "> <h6 id="c-off" >{{coupDetails.[0].couponDiscount}} </h6>% Off <i onclick="deleteCoupon('{{user._id}}')" class="fi fi-br-cross-circle text-danger" style="padding-left:10px;"></i> </span>
                   </div>
                    
                   <div class="d-flex justify-content-between mb-5">
                     
-                    <h5 class="text-uppercase">Total price</h5>
+                    <h5 class="text-uppercase fw-bold">Grand total</h5>
                    <span class="d-flex">₹ <h5 id="total">{{total}}</h5></span>  
                   </div>
                    

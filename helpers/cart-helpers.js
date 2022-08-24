@@ -369,16 +369,18 @@ module.exports = {
 
   getAppliedCoupn: (userId) => {
     return new Promise(async (resolve, reject) => {
-      let coupon = await db.get().collection(collection.CART_COLLECTION).find({ user: objectId(userId) }).toArray().then((data) =>{
-    
-        if (data[0].couponDiscount) {
-         
-          data[0].cpn=true
-          resolve(data);
-        } else {
-          
-          resolve({ncpn:true})
-        }
+       await db.get().collection(collection.CART_COLLECTION).find({ user: objectId(userId) }).toArray().then((data) =>{
+         if (data[0]) {
+            if (data[0].couponDiscount) {
+              data[0].cpn = true;
+              resolve(data);
+            } else {
+              resolve({ ncpn: true });
+            }
+         } else {
+           resolve()
+         }
+       
         
       })
     })

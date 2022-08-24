@@ -120,10 +120,9 @@ $("#coupon-form").submit((event) => {
         console.log(discountPrice);
         document.getElementById("total").innerHTML = discountPrice;
         document.getElementById("c-deleted").style.visibility = "visible";
-       
         document.getElementById("c-off").innerHTML = response[0].percentage; 
-
-       await swal("coupon applied successfully");
+        location.reload()
+        await swal("coupon applied successfully");
        
         
       } 

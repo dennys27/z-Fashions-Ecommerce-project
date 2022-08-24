@@ -221,6 +221,7 @@ router.get("/logout", (req, res) => {
 router.get("/cart", varifyLogin, async function (req, res) {
   //await offerHelpers.resetCoupon(req.session.user._id);
   let coupDetails = await cartHelpers.getAppliedCoupn(req.session.user._id);
+  console.log(coupDetails);
   await cartHelpers.getCount(req.session.user._id).then((cartCount) => {
      let user = req.session.user;
     cartHelpers.getCartProducts(req.session.user._id).then(async (data) => {
@@ -228,19 +229,23 @@ router.get("/cart", varifyLogin, async function (req, res) {
         data[i].subtotal = data[i].quantity * data[i].product.price;
       }
       
-       let total = await cartHelpers.getTotalAmount(req.session.user._id);
+      let total = await cartHelpers.getTotalAmount(req.session.user._id);
+      let beforDisc = total;
 
-       let actual = total;
-       if (coupDetails.cpn) {
-         //console.log(coupDetails[0].couponDiscount);
-         let discount =(parseInt(total) * parseInt(coupDetails[0].couponDiscount)) / 100;
-         total = parseInt(total - discount);
+      let actual ;
+      if (coupDetails[0]) {
+         if (coupDetails[0].cpn) {
+           //console.log(coupDetails[0].couponDiscount);
+           let discount =
+             (parseInt(total) * parseInt(coupDetails[0].couponDiscount)) / 100;
+           actual = discount;
+           total = parseInt(total - discount);
+         } else if (coupDetails.ncpn) {
+         }
+      }
         
-       } else if (coupDetails.ncpn) {
-         
-       }
         
-       res.render("user/Cart", { user, data, cartCount, total,coupDetails });
+       res.render("user/Cart", { user, data, cartCount,actual,beforDisc,total,coupDetails });
      });
   })
  
