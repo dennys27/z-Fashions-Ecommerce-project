@@ -136,7 +136,6 @@ module.exports = {
             }
           )
           .then((response) => {
-          
             resolve(response);
           });
       }
@@ -161,13 +160,16 @@ module.exports = {
       await db
         .get()
         .collection(collection.CART_COLLECTION)
-        .findOne({ user: objectId(userId) }).then(async(data) => {
-           await db.get()
-              .collection(collection.USER_COLLECTION)
-              .updateOne(
-                { _id: objectId(userId) },
-                { $push: { usedCoupon: data.coupon }})
-            resolve({
+        .findOne({ user: objectId(userId) })
+        .then(async (data) => {
+          await db
+            .get()
+            .collection(collection.USER_COLLECTION)
+            .updateOne(
+              { _id: objectId(userId) },
+              { $push: { usedCoupon: data.coupon } }
+            );
+          resolve({
             code: data.coupon,
             couponDiscount: data.couponDiscount,
           });
@@ -230,8 +232,7 @@ module.exports = {
     });
   },
 
-
-  placeOrder: (order, products, total) => {
+  placeOrder: (order, products, total, coupon, discounted, secondTotal) => {
     return new Promise(async (resolve, reject) => {
       let status = order.PaymentMethod === "COD" ? "placed" : "pending";
       let orderObj = {
@@ -247,7 +248,11 @@ module.exports = {
           country: order.Country,
           totalAmount: total,
         },
+        coupon: coupon.code,
+        couponDiscount: coupon.couponDiscount,
+        couponDiscounted: discounted,
         totalAmount: total,
+        secondTotalAmount: secondTotal,
         userId: objectId(order.userId),
         paymentMethod: order.PaymentMethod,
         products: products,
@@ -369,20 +374,23 @@ module.exports = {
 
   getAppliedCoupn: (userId) => {
     return new Promise(async (resolve, reject) => {
-       await db.get().collection(collection.CART_COLLECTION).find({ user: objectId(userId) }).toArray().then((data) =>{
-         if (data[0]) {
+      await db
+        .get()
+        .collection(collection.CART_COLLECTION)
+        .find({ user: objectId(userId) })
+        .toArray()
+        .then((data) => {
+          if (data[0]) {
             if (data[0].couponDiscount) {
               data[0].cpn = true;
               resolve(data);
             } else {
               resolve({ ncpn: true });
             }
-         } else {
-           resolve()
-         }
-       
-        
-      })
-    })
-  }
+          } else {
+            resolve();
+          }
+        });
+    });
+  },
 };

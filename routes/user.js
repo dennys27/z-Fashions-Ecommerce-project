@@ -217,6 +217,7 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+
 // cart section
 router.get("/cart", varifyLogin, async function (req, res) {
   //await offerHelpers.resetCoupon(req.session.user._id);
@@ -232,17 +233,22 @@ router.get("/cart", varifyLogin, async function (req, res) {
       let total = await cartHelpers.getTotalAmount(req.session.user._id);
       let beforDisc = total;
 
-      let actual ;
-      if (coupDetails[0]) {
-         if (coupDetails[0].cpn) {
-           //console.log(coupDetails[0].couponDiscount);
-           let discount =
-             (parseInt(total) * parseInt(coupDetails[0].couponDiscount)) / 100;
-           actual = discount;
-           total = parseInt(total - discount);
-         } else if (coupDetails.ncpn) {
+      let actual;
+      if (coupDetails) {
+         
+       
+         if (coupDetails[0]) {
+           if (coupDetails[0].cpn) {
+             //console.log(coupDetails[0].couponDiscount);
+             let discount =
+               (parseInt(total) * parseInt(coupDetails[0].couponDiscount)) /
+               100;
+             actual = discount;
+             total = parseInt(total - discount);
+           } else if (coupDetails.ncpn) {
+           }
          }
-      }
+         }
         
         
        res.render("user/Cart", { user, data, cartCount,actual,beforDisc,total,coupDetails });
@@ -257,7 +263,7 @@ router.post("/add-to-cart/:id", varifyLogin, (req, res) => {
   });
 });
 
-
+//product quantity and subtotal
 router.post("/change-product-quantity", varifyLogin, (req, res) => {
   cartHelpers.changeProductQuantity(req.body).then(async (response) => {
     let total = await cartHelpers.getTotalAmount(req.session.user._id);
@@ -292,7 +298,6 @@ router.post("/change-product-quantity", varifyLogin, (req, res) => {
         response.subtotal = details[i].product.price * details[i].quantity;
       }
     }
-      console.log(response, "ooooohiiiiii");
     res.json(response);
   });
 }); 
@@ -328,55 +333,65 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
   let user = req.session.user._id;
   let products = await cartHelpers.getCartProductList(req.body.userId);
   let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
+  let coupon; 
+  let discounted;
+  let secondTotal = totalPrice;
+  await cartHelpers.getDiscount(user).then((discountedPrice) => {
+    coupon = discountedPrice;
   
- await cartHelpers.getDiscount(user).then((discountedPrice) => {
-   if (discountedPrice.code) {
+    if (discountedPrice.code) {
+     discounted = (discountedPrice.couponDiscount * totalPrice) / 100;
      totalPrice = totalPrice - (discountedPrice.couponDiscount * totalPrice) / 100
    }
  });
   
   req.session.total = totalPrice
   if (totalPrice > 0){
-     cartHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
-       req.session.orderId = response.insertedId.toString();
+     cartHelpers
+       .placeOrder(
+         req.body,
+         products,
+         totalPrice,
+         coupon,
+         discounted,
+         secondTotal
+       )
+       .then((response) => {
+         req.session.orderId = response.insertedId.toString();
 
-       if (req.body["PaymentMethod"] == "COD") {
-         cartHelpers.deleteCart(req.session.user._id);
-         
-         res.json({ codSuccess: true });
-       } else if (req.body["PaymentMethod"] == "RazorPay") {
-       
-         cartHelpers.getOrderId(user).then((orderDetails) => {
-           req.session.uniqueOrder=orderDetails._id
-           userHelpers.generateRazorPay(response.insertedId.toString(), totalPrice)
-             .then((data) => {
-               data.razorpay = true;
-               res.json(data);
-             });
-         });
-       } else if (req.body["PaymentMethod"] == "PayPal") {
-         userHelpers.converter(totalPrice).then((price) => {
-           let converted = parseInt(price)
+         if (req.body["PaymentMethod"] == "COD") {
+           cartHelpers.deleteCart(req.session.user._id);
+
+           res.json({ codSuccess: true });
+         } else if (req.body["PaymentMethod"] == "RazorPay") {
            cartHelpers.getOrderId(user).then((orderDetails) => {
-              
-              userHelpers
-                .generatePayPal(orderDetails._id.toString(), converted)
-                .then((data) => {
-                 
-                  res.json(data);
-                });
-            });
-         })
-        
-       }
-     }); 
+             req.session.uniqueOrder = orderDetails._id;
+             userHelpers
+               .generateRazorPay(response.insertedId.toString(), totalPrice)
+               .then((data) => {
+                 data.razorpay = true;
+                 res.json(data);
+               });
+           });
+         } else if (req.body["PaymentMethod"] == "PayPal") {
+           userHelpers.converter(totalPrice).then((price) => {
+             let converted = parseInt(price);
+             cartHelpers.getOrderId(user).then((orderDetails) => {
+               userHelpers
+                 .generatePayPal(orderDetails._id.toString(), converted)
+                 .then((data) => {
+                   res.json(data);
+                 });
+             });
+           });
+         }
+       }); 
 
   } else {
      res.json({cempty:true});
   }
  
 
-  //res.render("user/checkout", { user,total });
 });
 
 
@@ -420,8 +435,10 @@ router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let products = await cartHelpers.getOrderProducts(req.params.id);
   let orderDetails = await cartHelpers.getInvoice(req.params.id);
- // console.log(req.params.id);
-  console.log(orderDetails);
+   for (i = 0; i < products.length; i++) {
+     products[i].product.subtotal =
+       products[i].quantity * products[i].product.price;
+   }
   res.render("user/invoice", { user, products,orderDetails });
 });
 

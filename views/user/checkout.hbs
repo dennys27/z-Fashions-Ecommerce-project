@@ -1,5 +1,5 @@
 
-<div class="bg-gray-300 pt-5 row container-fluid row mt-5">
+<div style="margin-left: 0; margin-right:0;" class="bg-gray-300 pt-5 row container-fluid mt-5">
 
   <div class="col-lg-8">
     <div
@@ -89,8 +89,14 @@
               placeholder="Phone Number*"
               required
             />
+            <select id="payment" class="form-select mt-4 w-50"  name="PaymentMethod" aria-label="Default select example ">
+            <option  name="COD" value="COD">COD</option>
+            <option  name="RazorPay" value="RazorPay">RazorPay</option>
+            <option  name="PayPal" value="PayPal">PayPal</option>
+            </select>
+            
 
-            <div class="form-check m-2">
+            {{!-- <div class="form-check m-2">
               <input
                 class="form-check-input"
                 type="radio"
@@ -102,8 +108,8 @@
               <label class="form-check-label" for="flexRadioDefault1">
                 Cash on delivery
               </label>
-            </div>
-            <div class="form-check m-2">
+            </div> --}}
+            {{!-- <div class="form-check m-2">
               <input
                 class="form-check-input"
                 type="radio"
@@ -114,8 +120,8 @@
               <label class="form-check-label" for="flexRadioDefault2">
                 via razor pay
               </label>
-            </div>
-            <div class="form-check m-2">
+            </div> --}}
+            {{!-- <div class="form-check m-2">
               <input
                 class="form-check-input"
                 type="radio"
@@ -126,7 +132,7 @@
               <label class="form-check-label" for="flexRadioDefault3">
                 via paypal
               </label>
-            </div>
+            </div> --}}
             <div class="flex justify-between items-center pt-2">
               <button
                 type="button"
@@ -256,13 +262,6 @@
             required hidden
              value="{{defaultAddress.deliveryPhone}}"
           />
-
-        <select name="PaymentMethod" class="form-select" aria-label="Default select example" style="width: 120px;">
-  
-  <option value="COD">COD</option>
-  <option value="RazorPay">RazorPay</option>
-  <option value="PayPal">PayPal</option>
-</select>
 
        
         <button class="btn btn-primary mt-2" style="font-size: 13px;" type="submit">Deliver to this address</button>

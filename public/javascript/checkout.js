@@ -28,12 +28,15 @@ $("#check-out-form").submit((event) => {
   });
 });
 
-$("#Default-Address").submit((event) => {
+$("#Default-Address").submit(async(event) => {
+  let method = await document.getElementById("payment").value;
+  console.log(method,"yyyyyyyyyyyyyyyyyyyoooooooooooooyyyyyyyyy");
   event.preventDefault();
   $.ajax({
     url: "/checkout-form",
     method: "post",
-    data: $("#Default-Address").serialize(),
+    data: $("#Default-Address").serialize() + "&" + `PaymentMethod=${method}`,
+
     success: (response) => {
       console.log(response);
       if (response.codSuccess) {

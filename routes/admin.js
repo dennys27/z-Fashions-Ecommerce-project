@@ -223,6 +223,7 @@ router.get("/edit-categories/:id", varifyLogin, (req, res) => {
 
 router.get("/admin-orders", varifyLogin, (req, res) => {
   adminOrderHelper.getOrders().then((Items) => {
+   
     const reversed = Items.reverse()
     Items = reversed;
       res.render("admin/admin-orders", { admin: true,Items });
@@ -240,6 +241,12 @@ router.post("/change-order-status/:id", varifyLogin, (req, res) => {
 router.get("/admin-view-order-details/:id", varifyLogin, async (req, res) => {
   let products = await cartHelpers.getOrderProducts(req.params.id);
   let orderDetails = await cartHelpers.getInvoice(req.params.id);
+   for (i = 0; i < products.length; i++) {
+     products[i].product.subtotal = products[i].quantity * products[i].product.price;
+   }
+  //console.log(products);
+ // console.log(products, "productsjhhdetailstestttttttstststs");
+  console.log(orderDetails,"ordeerdetailstestttttttstststs");
   res.render("admin/invoice", { admin: true, products, orderDetails });
 });
 

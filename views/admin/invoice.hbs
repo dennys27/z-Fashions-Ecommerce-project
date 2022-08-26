@@ -80,18 +80,19 @@
             <p class="mb-1">
               <span class="text-muted me-2">Size:</span><span>xl</span>
             </p>
-            <p>
-              <span class="text-muted me-2">Color:</span><span>Gray</span>
+            <p class="mb-1">
+              <span class="text-muted me-2">price:</span><span>₹ {{this.product.price}}</span>
             </p>
+            
             <p>
               <span class="text-muted me-2">Quantity:</span><span>{{this.quantity}}</span>
             </p>
           </div>
           <div class="col-md-3 mb-4 mb-md-0">
             <h5 class="mb-2">
-              <s class="text-muted me-2 small align-middle">₹1050</s><span
+              <i class="text-muted me-2 small align-middle">SubTotal:</i><span
                 class="align-middle"
-              >₹ {{this.product.price}}</span>
+              >₹ {{this.product.subtotal}}</span>
             </h5>
            
           </div>
@@ -108,13 +109,18 @@
             <ul class="list-unstyled">
               <li class="text-muted ms-3"><span
                   class="text-black me-4"
-                >SubTotal</span>{{orderDetails.deliveryDetails.totalAmount}}</li>
+                >total</span> ₹ {{orderDetails.secondTotalAmount}}</li>
+                {{#if orderDetails.couponDiscounted }}
+              <li class="text-muted ms-3"><span
+                  class="text-black me-4"
+                >coupon</span>- ₹ {{orderDetails.couponDiscounted}}</li>
+                {{/if}}
               <li class="text-muted ms-3 mt-2"><span
                   class="text-black me-4"
                 >Shipping</span>free</li>
             </ul>
             <p class="text-black float-start"><span class="text-black me-3">
-                Total Amount</span><span
+                Grand total</span><span
                 style="font-size: 25px;"
               >₹ {{orderDetails.deliveryDetails.totalAmount}}</span></p>
           </div>
