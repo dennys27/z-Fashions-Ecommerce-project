@@ -9,7 +9,7 @@
         <div class="w-full p-4 px-5 py-5">
           <div class="flex flex-row">
             <h2 class="text-3xl font-semibold">Z</h2>
-            <h2 class="text-3xl text-green-400 font-semibold">- Fashions</h2>
+            <h2 class="text-3xl text-green-400 font-semibold text-primary">- Fashions</h2>
           </div>
 
           <form  id="check-out-form">
@@ -93,47 +93,11 @@
             <option  name="COD" value="COD">COD</option>
             <option  name="RazorPay" value="RazorPay">RazorPay</option>
             <option  name="PayPal" value="PayPal">PayPal</option>
-            <option  name="Wallet" value="Wallet">Wallet</option>
+            <option  name="Wallet" value="Wallet">Wallet(₹{{userAd.wallet}})</option>
             </select>
             
 
-            {{!-- <div class="form-check m-2">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="PaymentMethod"
-                value="COD"
-                id="flexRadioDefault1"
-                checked
-              />
-              <label class="form-check-label" for="flexRadioDefault1">
-                Cash on delivery
-              </label>
-            </div> --}}
-            {{!-- <div class="form-check m-2">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="PaymentMethod"
-                value="RazorPay"
-                id="flexRadioDefault2"
-              />
-              <label class="form-check-label" for="flexRadioDefault2">
-                via razor pay
-              </label>
-            </div> --}}
-            {{!-- <div class="form-check m-2">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="PaymentMethod"
-                value="PayPal"
-                id="flexRadioDefault3"
-              />
-              <label class="form-check-label" for="flexRadioDefault3">
-                via paypal
-              </label>
-            </div> --}}
+        
             <div class="flex justify-between items-center pt-2">
               <button
                 type="button"

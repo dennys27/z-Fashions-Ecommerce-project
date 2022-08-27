@@ -398,7 +398,7 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
                    res.json({ wallet: true });
                  });
              } else if (data.wallet <= totalPrice || data.wallet > 0) {
-               
+                res.json({ wallet: false });
              } else {
                res.json({ wallet: false });
              }

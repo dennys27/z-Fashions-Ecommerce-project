@@ -51,6 +51,9 @@ $("#Default-Address").submit(async(event) => {
         console.log(response, "yyyaaaaaaaaaaayyyy");
         await swal("order placed successfully");
         location.href = "/orders-list";
+      } else if (response.wallet==false) {
+        await swal("insuficiet balance");
+        //location.href = "/checkout";
       } else if (response.payer.payment_method == "paypal") {
         for (let i = 0; i < response.links.length; i++) {
           if (response.links[i].rel === "approval_url") {
