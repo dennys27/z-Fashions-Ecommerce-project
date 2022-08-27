@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const collections = require("../config/collections");
 var objectId = require("mongodb").ObjectId;
 
-
+ let reportData =[];
 module.exports = {
   getOrders: () => {
     return new Promise(async (resolve, reject) => {
@@ -19,17 +19,17 @@ module.exports = {
     });
   },
 
-  getSalesReport: () => {
-    return new Promise(async (resolve, reject) => {
-   let data = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
-      { $group: { _id: "$userId", count: { $sum: 1 } } },
-      { $match: { _id: { $ne: null }, count: { $gt: 1 } } },
-      { $project: { name: "$_id", _id: 0 } },
-   ]).toArray()
-      console.log(data);
-      resolve()
-    });
-  },
+  // getSalesReport: () => {
+  //   return new Promise(async (resolve, reject) => {
+  //  let data = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+  //     { $group: { _id: "$userId", count: { $sum: 1 } } },
+  //     { $match: { _id: { $ne: null }, count: { $gt: 1 } } },
+  //     { $project: { name: "$_id", _id: 0 } },
+  //  ]).toArray()
+  //     console.log(data);
+  //     resolve()
+  //   });
+  // },
 
   changeOrderStatus: (orderId, status) => {
     return new Promise(async (resolve, reject) => {
@@ -119,11 +119,204 @@ module.exports = {
     });
   },
 
-  getSales: () => {
+  //sales data testing
+  
+
+
+
+ //////
+
+fetchMonthlyData: async () => {
+    reportData = [];
+     
     return new Promise(async (resolve, reject) => {
-        
-    });
+        await db.get().collection(collection.CATAGORY_COLLECTION).aggregate([{
+            $project: {
+                category: 1,
+                _id: 0
+            }
+        }]).toArray().then((catagory) => {
+            resolve(catagory)
+        })
+
+    })
+},
+   
+  fetchData: async (selectedYR) => {
+  
+      let selectedYear = parseInt(selectedYR)
+  
+  let category = await db.get().collection(collections.PRODUCT_CATAGORY).find().toArray()
+  //console.log(category);
+        return new Promise(async (resolve, reject) => {
+
+
+            await category.map(async (element) => {
+      
+                return new Promise(async (resolve, reject) => {
+                    await db
+                      .get()
+                      .collection(collection.ORDER_COLLECTION)
+                      .aggregate([
+                        {
+                          $project: {
+                            status: 1,
+                            totalAmount: 1,
+                            products: 1,
+                            year: {
+                              $year: "$timeStamp",
+                            },
+                            timeStamp: 1,
+                          },
+                        },
+                        {
+                          $match: {
+                            status: "placed",
+                            year: selectedYear,
+                          },
+                        },
+                        {
+                          $unwind: "$products",
+                        },
+                        {
+                          $project: {
+                            productId: "$products.item",
+                            productQuantity: "$products.quantity",
+                            totalAmount: 1,
+                            timeStamp: 1,
+                            year: 1,
+                            _id: 1,
+                          },
+                        },
+                        {
+                          $lookup: {
+                            from: collections.PRODUCT_COLLECTIONS,
+                            localField: "productId",
+                            foreignField: "_id",
+                            as: "product",
+                          },
+                        },
+                        {
+                          $project: {
+                            category: "$product.category",
+                           
+                            month: {
+                              $month: "$timeStamp",
+                            },
+                            productQuantity: 1,
+                            totalAmount: 1,
+                            timeStamp: 1,
+                            year: 1,
+                          },
+                        },
+                        {
+                          $match: {
+                            category: element.category,
+                          },
+                        },
+                        {
+                          $group: {
+                            _id: {
+                              month: {
+                                $month: "$timeStamp",
+                              },
+                            },
+                            totalAmount: {
+                              $sum: "$totalAmount",
+                            },
+                            productQuantity: {
+                              $sum: "$productQuantity",
+                            },
+                          },
+                        },
+                        {
+                          $sort: {
+                            _id: 1,
+                          },
+                        },
+                        {
+                          $project: {
+                            month: "$_id.month",
+                            totalAmount: 1,
+                            productQuantity: 1,
+                            _id: 0,
+                          },
+                        },
+                      ])
+                      .toArray() 
+
+                      .then((data) => {
+                        if (data.length < 12) {
+                          for (let i = 1; i <= 12; i++) {
+                            let datain = true;
+                            for (let j = 0; j < data.length; j++) {
+                              if (data[j].month === i) {
+                                datain = null;
+                              }
+                            }
+
+                            if (datain) {
+                              data.push({
+                                totalAmount: 0,
+                                productQuantity: 0,
+                                month: i,
+                              });
+                            }
+                          }
+                        }
+                        return data;
+                      })
+                      .then(async (data) => {
+                        await data.sort(function (a, b) {
+                          return a.month - b.month;
+                        });
+                        return data;
+                      })
+                      .then(async (data) => {
+                        reportData.push({
+                          category: element.category,
+                          data: data,
+                        });
+
+                        return reportData;
+                      });
+
+                })
+
+            })
+            setTimeout(() => {
+                resolve(reportData)
+            }, 1000); 
+           reportData = [];
+        }
+        )
   },
+ 
+ //sales test ends here
+
+  // getSales: () => {
+  //   return new Promise(async (resolve, reject) => {
+  //     await db
+  //       .get()
+  //       .collection(collections.ORDER_COLLECTION)
+  //       .aggregate([
+  //         {
+  //           $group: {
+  //             _id: {
+  //               $week: "$timeStamp",
+  //             },
+  //             total: {
+  //               $sum: {
+  //                 $sum: "$products.quantity",
+  //               },
+  //             },
+  //           },
+  //         },
+  //       ]).toArray().then((data) => {
+  //         console.log(data);
+  //       })
+  //   });
+  // },
 
   
 

@@ -358,7 +358,7 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
        )
        .then((response) => {
          req.session.orderId = response.insertedId.toString();
-
+         console.log(req.body["PaymentMethod"],"teessssssssstiiiiiinggg");
          if (req.body["PaymentMethod"] == "COD") {
            cartHelpers.deleteCart(req.session.user._id);
 
@@ -374,6 +374,7 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
                });
            });
          } else if (req.body["PaymentMethod"] == "PayPal") {
+           console.log("why am i being hitttttttt.....");
            userHelpers.converter(totalPrice).then((price) => {
              let converted = parseInt(price);
              cartHelpers.getOrderId(user).then((orderDetails) => {
@@ -383,6 +384,24 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
                    res.json(data);
                  });
              });
+           });
+         } else if (req.body["PaymentMethod"] == "Wallet") {
+          
+           userHelpers.getUserDetails(req.session.user._id).then((data) => {
+             if (data.wallet >= totalPrice) {
+               let amount = data.wallet - totalPrice;
+               userHelpers.useWallet(req.session.user._id, amount);
+               cartHelpers.deleteCart(req.session.user._id);
+               userHelpers
+                 .changePaymentStatus(req.session.orderId)
+                 .then((data) => {
+                   res.json({ wallet: true });
+                 });
+             } else if (data.wallet <= totalPrice || data.wallet > 0) {
+               
+             } else {
+               res.json({ wallet: false });
+             }
            });
          }
        }); 
@@ -434,6 +453,7 @@ router.get("/orders-list", varifyLogin, async (req, res) => {
 router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
   let user = req.session.user;
   let products = await cartHelpers.getOrderProducts(req.params.id);
+  console.log(products);
   let orderDetails = await cartHelpers.getInvoice(req.params.id);
    for (i = 0; i < products.length; i++) {
      products[i].product.subtotal =

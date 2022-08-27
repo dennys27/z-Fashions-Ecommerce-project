@@ -163,7 +163,7 @@ module.exports = {
                }
              );
 
-           resolve();
+           resolve({success:true});
          });
         //ending......
 

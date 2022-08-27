@@ -160,10 +160,10 @@ function changeOffer(categoryId,offerId) {
      data: { categoryId, offerId },
      success: (response) => {
        console.log(response);
-       if (response.warning) {
-         swal("the offer should be in between 10% - 80%");
+       if (response.success) {
+         swal("Offer added successfully");
        } else {
-         swal("updated successfully");
+         swal("something went wrong...");
          location.href = "/admin/add-offers";
        }
      },

@@ -21,7 +21,7 @@
                 <span style="color:#8f8061 ;">{{orderDetails.deliveryDetails.firstName}} {{orderDetails.deliveryDetails.lastName}}</span></li>
               <li class="text-muted">{{orderDetails.deliveryDetails.address}}</li>
               <li class="text-muted">{{orderDetails.deliveryDetails.state}}, {{orderDetails.deliveryDetails.country}}</li>
-              <li class="text-muted"><i class="fas fa-phone"></i>
+              <li class="text-muted"><i class="fas fa-phone"></i> +91 
                 {{orderDetails.deliveryDetails.mobile}}</li>
             </ul>
           </div>
@@ -83,6 +83,12 @@
             <p class="mb-1">
               <span class="text-muted me-2">price:</span><span>₹ {{this.product.price}}</span>
             </p>
+              <p class="mb-1">
+                <span class="text-muted me-2">MRP:</span><span> ₹<s> {{this.product.cuttPrice}}</s> </span>
+              </p>
+               <p class="mb-1">
+                <span class="text-muted me-2">offer:</span><span>{{this.product.offername}}</span>
+              </p>
             
             <p>
               <span class="text-muted me-2">Quantity:</span><span>{{this.quantity}}</span>

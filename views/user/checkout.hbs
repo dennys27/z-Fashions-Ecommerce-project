@@ -1,5 +1,5 @@
 
-<div style="margin-left: 0; margin-right:0;" class="bg-gray-300 pt-5 row container-fluid mt-5">
+<div style="margin-left: 0; margin-right:0; height:100%;" class="bg-gray-300 pt-5 row container-fluid mt-5">
 
   <div class="col-lg-8">
     <div
@@ -93,6 +93,7 @@
             <option  name="COD" value="COD">COD</option>
             <option  name="RazorPay" value="RazorPay">RazorPay</option>
             <option  name="PayPal" value="PayPal">PayPal</option>
+            <option  name="Wallet" value="Wallet">Wallet</option>
             </select>
             
 
@@ -156,17 +157,14 @@
   {{#if defaultAddress}}
   <div
     class="container col-lg-4  mx-auto bg-white shadow-lg rounded-lg"
-    style="height: 300px;"
+    style="height: 230px;"
   >
     <div class="container-fluid mt-3">
       <h5 class="fw-bold">Default-Address</h5>
 
       <div class="container-fluid">
          <label for="">{{defaultAddress.FirstName}} {{defaultAddress.LastName}}</label>
-         <label for="">{{defaultAddress.Address}}</label>
-          <br>
-         <label for="">{{defaultAddress.Apartment}}</label>
-         <br>
+         <label for="">{{defaultAddress.Address}},{{defaultAddress.Apartment}}</label>
          <label for="">{{defaultAddress.Zipcode}}</label>
          <label for="">{{defaultAddress.City}}</label>
          <label for="">{{defaultAddress.State}}</label>
@@ -275,6 +273,8 @@
         
     </div>
   {{/if}}
+
+  
   
   </div>
 

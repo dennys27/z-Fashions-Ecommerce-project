@@ -118,7 +118,7 @@ module.exports = {
   //user checking
 
   isExist: (isuser) => {
-    var user = { ...isuser.user };
+    var user = { ...isuser.user }; 
     async function nameGetter(user) {
       let email = await db
         .get()
@@ -127,7 +127,7 @@ module.exports = {
       var Uemail = { ...email };
       if (Uemail.Email !== user.Email) {
         isuser.destroy();
-      }
+      } 
     }
     nameGetter(user);
   },
@@ -198,6 +198,21 @@ module.exports = {
         .then((user) => {
           resolve(user);
         });
+    });
+  },
+
+ useWallet: (userId,amount) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .updateOne(
+          { _id: objectId(userId) },
+          {
+            $set: {
+              wallet: amount,
+            },
+          }
+        );
     });
   },
   // userDefaultAddress: (userId) => {

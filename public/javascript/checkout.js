@@ -7,11 +7,11 @@ $("#check-out-form").submit((event) => {
     method: "post",
     data: $("#check-out-form").serialize(),
     success: (response) => {
-      // console.log(response);
+      
       if (response.codSuccess) {
         location.href = "/cart";
       } else if(response.razorpay==true) {
-        console.log(response);
+       
         razorpayPayment(response); 
       }else if (response.payer.payment_method == "paypal") {
         for (let i = 0; i < response.links.length; i++) {
@@ -19,6 +19,9 @@ $("#check-out-form").submit((event) => {
             location.href = response.links[i].href;
           }
         }
+      } else if (response.order) {
+        swal("order placed successfully");
+        location.href = "/orders-list";
       } else if (response.cempty) {
         swal("Here's the title!", "your cart is empty");
         location.href = "/cart";
@@ -30,20 +33,24 @@ $("#check-out-form").submit((event) => {
 
 $("#Default-Address").submit(async(event) => {
   let method = await document.getElementById("payment").value;
-  console.log(method,"yyyyyyyyyyyyyyyyyyyoooooooooooooyyyyyyyyy");
+ // console.log(method,"yyyyyyyyyyyyyyyyyyyoooooooooooooyyyyyyyyy");
   event.preventDefault();
   $.ajax({
     url: "/checkout-form",
     method: "post",
     data: $("#Default-Address").serialize() + "&" + `PaymentMethod=${method}`,
 
-    success: (response) => {
-      console.log(response);
+    success: async(response) => {
+      //console.log(response);
       if (response.codSuccess) {
         location.href = "/orders-list";
       } else if (response.razorpay == true) {
         console.log(response);
         razorpayPayment(response);
+      } else if (response.wallet) {
+        console.log(response, "yyyaaaaaaaaaaayyyy");
+        await swal("order placed successfully");
+        location.href = "/orders-list";
       } else if (response.payer.payment_method == "paypal") {
         for (let i = 0; i < response.links.length; i++) {
           if (response.links[i].rel === "approval_url") {

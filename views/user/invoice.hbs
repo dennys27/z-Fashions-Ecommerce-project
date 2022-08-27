@@ -50,7 +50,7 @@
                   style="color:#8f8061;"
                 ></i>
                 <span class="me-1 fw-bold">Status:</span><span
-                  class="badge bg-warning text-black fw-bold"
+                  class="badge bg-primary text-black fw-bold"
                 >
                   {{orderDetails.status}}</span></li>
             </ul>
@@ -89,7 +89,13 @@
                 <span class="text-muted me-2">price:</span><span>₹
                   {{this.product.price}}</span>
               </p>
-
+             
+              <p class="mb-1">
+                <span class="text-muted me-2">MRP:</span><span> ₹<s> {{this.product.cuttPrice}}</s> </span>
+              </p>
+               <p class="mb-1">
+                <span class="text-muted me-2">offer:</span><span>{{this.product.offername}}</span>
+              </p>
               <p>
                 <span class="text-muted me-2">Quantity:</span><span
                 >{{this.quantity}}</span>
@@ -129,7 +135,7 @@
                   class="text-black me-4"
                 >Shipping</span>free</li>
             </ul>
-            <p class="text-black float-start"><span class="text-black me-3">
+            <p class="text-black float-start"><span class="text-black me-3 fw-bold">
                 Grand total</span><span style="font-size: 25px;">₹
                 {{orderDetails.deliveryDetails.totalAmount}}</span></p>
           </div>

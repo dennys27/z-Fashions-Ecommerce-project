@@ -244,8 +244,7 @@ router.get("/admin-view-order-details/:id", varifyLogin, async (req, res) => {
    for (i = 0; i < products.length; i++) {
      products[i].product.subtotal = products[i].quantity * products[i].product.price;
    }
-  //console.log(products);
- // console.log(products, "productsjhhdetailstestttttttstststs");
+
   console.log(orderDetails,"ordeerdetailstestttttttstststs");
   res.render("admin/invoice", { admin: true, products, orderDetails });
 });
@@ -291,9 +290,12 @@ router.post("/delete-coupons", varifyLogin, (req, res) => {
 router.get("/sales-report", varifyLogin,async (req, res) => {
   //let userId = req.session.user._id;
   
-    
+  adminOrderHelper.fetchData(2022).then((report) => {
+     
+     res.render("admin/sales-report", { admin: true,report });
+    })
          
-      res.render("admin/sales-report", { admin: true,});
+     
    
    
 
@@ -345,7 +347,7 @@ router.post("/specific-Offer", varifyLogin, (req, res) => {
 router.post("/apply-category-offer", varifyLogin, (req, res) => {
   console.log(req.body);
   offerHelpers.categoryoffer(req.body).then((data) => {
-    
+    res.json(data)
   })
 });
 
@@ -376,7 +378,7 @@ router.get("/logout", varifyLogin, (req, res) => {
 
 //admin dashboard  
 router.get("/dashboard", varifyLogin, async (req, res) => {
-  let report = await adminOrderHelper.getSalesReport()
+  //let report = await adminOrderHelper.getSalesReport()
   let cod =await adminOrderHelper.codTotal()
   let razorpay = await adminOrderHelper.razorTotal();
   let paypal = await adminOrderHelper.paypalTotal();
