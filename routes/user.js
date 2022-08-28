@@ -8,7 +8,7 @@ const paypal = require("paypal-rest-sdk");
 const offerHelpers = require("../helpers/offerHelpers");
 const { Db } = require("mongodb");
 const referralCodeGenerator = require("referral-code-generator");
-
+let wallet;
 const varifyLogin = (req, res, next) => {
   if (req.session.user) {
     next();
@@ -324,6 +324,10 @@ router.get("/checkout", varifyLogin, async (req, res) => {
     res.render("user/Cart", { user, emptyCart: true });
   }
 });
+
+router.post("/wallet", varifyLogin, (req, res) => {
+  
+})
 
 
 

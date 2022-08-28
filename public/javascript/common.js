@@ -171,3 +171,7 @@ function changeOffer(categoryId,offerId) {
 
 
 }
+
+function onWallet() {
+  
+}
