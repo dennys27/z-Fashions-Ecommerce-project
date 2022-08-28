@@ -162,15 +162,18 @@ module.exports = {
         .collection(collection.CART_COLLECTION)
         .findOne({ user: objectId(userId) })
         .then(async (data) => {
-          if (data.coupon) {
-             await db
-               .get()
-               .collection(collection.USER_COLLECTION)
-               .updateOne(
-                 { _id: objectId(userId) },
-                 { $push: { usedCoupon: data.coupon } }
-               );
+          if (data) {
+            if (data.coupon) {
+              await db
+                .get()
+                .collection(collection.USER_COLLECTION)
+                .updateOne(
+                  { _id: objectId(userId) },
+                  { $push: { usedCoupon: data.coupon } }
+                );
+            }
           }
+          
            
           resolve({
             code: data.coupon,

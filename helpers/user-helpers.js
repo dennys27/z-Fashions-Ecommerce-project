@@ -196,6 +196,7 @@ module.exports = {
         .collection(collection.USER_COLLECTION)
         .findOne({ _id: objectId(userId) })
         .then((user) => {
+          console.log(user);
           resolve(user);
         });
     });

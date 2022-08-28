@@ -8,7 +8,7 @@ const paypal = require("paypal-rest-sdk");
 const offerHelpers = require("../helpers/offerHelpers");
 const { Db } = require("mongodb");
 const referralCodeGenerator = require("referral-code-generator");
-let wallet;
+let walletStatus;
 const varifyLogin = (req, res, next) => {
   if (req.session.user) {
     next();
@@ -317,9 +317,9 @@ router.get("/checkout", varifyLogin, async (req, res) => {
     if (userAd.deliveryAddress) {
       userAd.deliveryAddress.map((data) => {
         if (data.default == true) {
-          defaultAddress = data;
+          defaultAddress = data
         }
-      }); 
+      })
     }
 
      await cartHelpers
@@ -333,6 +333,7 @@ router.get("/checkout", varifyLogin, async (req, res) => {
              total - (discountedPrice.couponDiscount * total) / 100;
          }
        });
+    req.session.walletCompare = total;
 
     res.render("user/checkout", { user,userAd, defaultAddress,discounted,totalPrice, total, Empty: false });
   } else {
@@ -340,9 +341,20 @@ router.get("/checkout", varifyLogin, async (req, res) => {
   }
 });
 
-router.post("/wallet", varifyLogin,async (req, res) => {
-  let total = await cartHelpers.getTotalAmount(req.session.user._id);
+router.post("/wallet", varifyLogin, async (req, res) => {
   console.log(req.body);
+  let amount = req.session.walletCompare;
+  console.log(amount);
+  let wallet = await userHelpers.getUserDetails(req.session.user._id);
+  if (wallet.wallet >= amount) {
+    res.json({ walletPayment: true })
+    walletStatus = true;
+  } else {
+    res.json({ walletPayment: false })
+     walletStatus = false;
+  }
+  
+  
 })
 
 
@@ -350,7 +362,9 @@ router.post("/wallet", varifyLogin,async (req, res) => {
 //payment gateway
 
 router.post("/checkout-form", varifyLogin, async (req, res) => {
+  
   let user = req.session.user._id;
+  let wallet = await userHelpers.getUserDetails(user)
   let products = await cartHelpers.getCartProductList(req.body.userId);
   let totalPrice = await cartHelpers.getTotalAmount(req.body.userId);
   let coupon; 
@@ -363,71 +377,115 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
      discounted = (discountedPrice.couponDiscount * totalPrice) / 100;
      totalPrice = totalPrice - (discountedPrice.couponDiscount * totalPrice) / 100
    }
- });
-  
-  req.session.total = totalPrice
-  if (totalPrice > 0){
-     cartHelpers
-       .placeOrder(
-         req.body,
-         products,
-         totalPrice,
-         coupon,
-         discounted,
-         secondTotal
-       )
-       .then((response) => {
-         req.session.orderId = response.insertedId.toString();
-         console.log(req.body["PaymentMethod"],"teessssssssstiiiiiinggg");
-         if (req.body["PaymentMethod"] == "COD") {
-           cartHelpers.deleteCart(req.session.user._id);
+  });
+  var greater = false;
+  if (req.body.wallet === "true" || req.body.walletStatus) {
+    req.body.PaymentMethod = "wallet";
+    req.session.walletStatus = true;
+    req.session.walletAmount = wallet.wallet;
+    //console.log(wallet);
+    if (wallet.wallet > totalPrice) {
+      greater = true;
+      let amount = wallet.wallet - totalPrice; 
+      userHelpers.useWallet(req.session.user._id, amount);
+    
+    } else {
+      totalPrice = totalPrice - wallet.wallet;
+      let amount = wallet.wallet - totalPrice;
+      if (amount < 0) {
+        amount = 0;
+      }
+       userHelpers.useWallet(req.session.user._id, amount);
+      console.log(amount);
+      
+     
+    }
+  }
 
-           res.json({ codSuccess: true });
-         } else if (req.body["PaymentMethod"] == "RazorPay") {
-           cartHelpers.getOrderId(user).then((orderDetails) => {
-             req.session.uniqueOrder = orderDetails._id;
-             userHelpers
-               .generateRazorPay(response.insertedId.toString(), totalPrice)
-               .then((data) => {
-                 data.razorpay = true;
-                 res.json(data);
-               });
-           });
-         } else if (req.body["PaymentMethod"] == "PayPal") {
-           console.log("why am i being hitttttttt.....");
-           userHelpers.converter(totalPrice).then((price) => {
-             let converted = parseInt(price);
-             cartHelpers.getOrderId(user).then((orderDetails) => {
-               userHelpers
-                 .generatePayPal(orderDetails._id.toString(), converted)
-                 .then((data) => {
-                   res.json(data);
-                 });
-             });
-           });
-         } else if (req.body["PaymentMethod"] == "Wallet") {
-          
-           userHelpers.getUserDetails(req.session.user._id).then((data) => {
-             if (data.wallet >= totalPrice) {
-               let amount = data.wallet - totalPrice;
-               userHelpers.useWallet(req.session.user._id, amount);
-               cartHelpers.deleteCart(req.session.user._id);
-               userHelpers
-                 .changePaymentStatus(req.session.orderId)
-                 .then((data) => {
-                   res.json({ wallet: true });
-                 });
-             } else if (data.wallet <= totalPrice || data.wallet > 0) {
-                res.json({ wallet: false });
-             } else {
-               res.json({ wallet: false });
-             }
-           });
-         }
-       }); 
-
+  if (greater === true) {
+      console.log("im working you know.........");
+    cartHelpers.placeOrder(
+      req.body,
+      products,
+      totalPrice,
+      coupon,
+      discounted,
+      secondTotal
+    ).then(() => {
+      cartHelpers.deleteCart(req.session.user._id);
+      res.json({ walletPayment: true })
+    })
   } else {
-     res.json({cempty:true});
+    
+  console.log("oiiiiiiiiiiii");
+  
+    req.session.total = totalPrice
+    if (totalPrice > 0) {
+      cartHelpers
+        .placeOrder(
+          req.body,
+          products,
+          totalPrice,
+          coupon,
+          discounted,
+          secondTotal
+        )
+        .then((response) => {
+          req.session.orderId = response.insertedId.toString();
+          console.log(req.body["PaymentMethod"], "teessssssssstiiiiiinggg");
+          if (req.body["walletStatus"] == "true") {
+            cartHelpers.deleteCart(req.session.user._id);
+
+            res.json({ codSuccess: true });
+          } else if (req.body["PaymentMethod"] == "COD") {
+            cartHelpers.deleteCart(req.session.user._id);
+
+            res.json({ codSuccess: true });
+          } else if (req.body["PaymentMethod"] == "RazorPay") {
+            cartHelpers.getOrderId(user).then((orderDetails) => {
+              req.session.uniqueOrder = orderDetails._id;
+              userHelpers
+                .generateRazorPay(response.insertedId.toString(), totalPrice)
+                .then((data) => {
+                  data.razorpay = true;
+                  res.json(data);
+                });
+            });
+          } else if (req.body["PaymentMethod"] == "PayPal") {
+            console.log("why am i being hitttttttt.....");
+            userHelpers.converter(totalPrice).then((price) => {
+              let converted = parseInt(price);
+              cartHelpers.getOrderId(user).then((orderDetails) => {
+                userHelpers
+                  .generatePayPal(orderDetails._id.toString(), converted)
+                  .then((data) => {
+                    res.json(data);
+                  });
+              });
+            });
+          } else if (req.body["PaymentMethod"] == "Wallet") {
+            userHelpers.getUserDetails(req.session.user._id).then((data) => {
+              if (data.wallet >= totalPrice) {
+                let amount = data.wallet - totalPrice;
+                userHelpers.useWallet(req.session.user._id, amount);
+                cartHelpers.deleteCart(req.session.user._id);
+                userHelpers
+                  .changePaymentStatus(req.session.orderId)
+                  .then((data) => {
+                    res.json({ wallet: true });
+                  });
+              } else if (data.wallet <= totalPrice || data.wallet > 0) {
+                res.json({ wallet: false });
+              } else {
+                res.json({ wallet: false });
+              }
+            });
+          }
+        });
+
+    } else {
+      res.json({ cempty: true });
+    }
   }
  
 
@@ -483,14 +541,11 @@ router.get("/view-order-details/:id", varifyLogin, async (req, res) => {
 });
 
 //user profile
-router.get("/my-account/:id", varifyLogin, (req, res) => { 
+router.get("/my-account/:id", varifyLogin, async (req, res) => { 
   let user = req.session.user;
-  
-  // userHelpers.getUserDetails(user._id).then((data) => {
-  //   res.render("user/user-account", { user, data });
-  // });
+  let wallet = await userHelpers.getUserDetails(user._id)
   let userId = req.params.id;
-  res.render("user/youraccount",{user,userId})
+  res.render("user/youraccount",{user,userId,wallet})
 });
 
 router.get("/user-profile-update", varifyLogin, (req, res) => {

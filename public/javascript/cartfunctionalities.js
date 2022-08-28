@@ -81,7 +81,7 @@ function deleteProduct(cartId, proId) {
   }).then((willDelete) => {
     if (willDelete) {
 
-       console.log("im workinnnnggg");
+      
        $.ajax({
          url: "/delete-cart-product",
          data: {

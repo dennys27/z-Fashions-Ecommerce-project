@@ -174,25 +174,39 @@ function changeOffer(categoryId,offerId) {
 
 
 $("#walletCheck").change(function (event) {
+  let status = this.checked
+  console.log(this.checked);
   if (this.checked) {
     let userID = event.target.value
-    console.log(event);
+    //console.log(event);
       $.ajax({
         url: "/wallet",
         method: "post",
-        data: { userID },
+        data: { userID,status },
         success: (response) => {
-          console.log(response);
-          if (response.success) {
+         console.log(response);
+          if (response.walletPayment) {
+            document.getElementById("payment").style.display = "none";
+           
             swal("Deducted from wallet successfully");
-          } else {
-            swal("something went wrong...");
-            location.href = "/checkout";
+          } else if (response.walletPayment==false) {
+            swal("partial payment enabled...");
+            // location.href = "/checkout";
           }
         },
       });
   } else {
-    
+
+      $.ajax({
+        url: "/wallet",
+        method: "post",
+        data: {  status },
+        success: (response) => {
+           document.getElementById("payment").style.display = "block";
+          console.log(response);
+        },
+      });
+     
   }
 });
 

@@ -7,13 +7,14 @@ $("#check-out-form").submit((event) => {
     method: "post",
     data: $("#check-out-form").serialize(),
     success: (response) => {
-      
-      if (response.codSuccess) {
-        location.href = "/cart";
-      } else if(response.razorpay==true) {
-       
-        razorpayPayment(response); 
-      }else if (response.payer.payment_method == "paypal") {
+      console.log(response);
+      if (response.walletPayment) {
+       location.href = "/orders-list";
+      } else if (response.codSuccess) {
+        location.href = "/orders-list";
+      } else if (response.razorpay == true) {
+        razorpayPayment(response);
+      } else if (response.payer.payment_method == "paypal") {
         for (let i = 0; i < response.links.length; i++) {
           if (response.links[i].rel === "approval_url") {
             location.href = response.links[i].href;
@@ -33,25 +34,32 @@ $("#check-out-form").submit((event) => {
 
 $("#Default-Address").submit(async(event) => {
   let method = await document.getElementById("payment").value;
- // console.log(method,"yyyyyyyyyyyyyyyyyyyoooooooooooooyyyyyyyyy");
+  let wallet = await document.getElementById("walletCheck");
+  let walletStatus = wallet.checked;
+  console.log(wallet.checked);
   event.preventDefault();
   $.ajax({
     url: "/checkout-form",
     method: "post",
-    data: $("#Default-Address").serialize() + "&" + `PaymentMethod=${method}`,
+    data:
+      $("#Default-Address").serialize() +
+      "&" +
+      `PaymentMethod=${method}` +
+      "&" +
+      `walletStatus=${walletStatus}`,
 
-    success: async(response) => {
+    success: async (response) => {
       //console.log(response);
       if (response.codSuccess) {
         location.href = "/orders-list";
       } else if (response.razorpay == true) {
         console.log(response);
         razorpayPayment(response);
-      } else if (response.wallet) {
+      } else if (response.walletPayment) {
         console.log(response, "yyyaaaaaaaaaaayyyy");
         await swal("order placed successfully");
         location.href = "/orders-list";
-      } else if (response.wallet==false) {
+      } else if (response.wallet == false) {
         await swal("insuficiet balance");
         //location.href = "/checkout";
       } else if (response.payer.payment_method == "paypal") {
@@ -100,7 +108,7 @@ function razorpayPayment(order) {
 }
 
 function verifyPayment(payment, order) {
-   //console.log(payment,"payment ajax is workinggggg..............55668877");
+//console.log(payment,"payment ajax is workinggggg..............55668877");
   $.ajax({
     url: "/verify-payment",
     data: {

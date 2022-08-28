@@ -96,15 +96,15 @@
             <option  name="Wallet" value="Wallet">Wallet(₹{{userAd.wallet}})</option>
             </select>
             
-             
+              {{#if userAd.wallet}}
               <div class="form-check m-3">
-                <input  name="userId" value="{{user._id}}" type="text" hidden>
-       <input class="form-check-input" type="checkbox" value="{{user._id}}" id="walletCheck">
+               
+       <input class="form-check-input" name="wallet" type="checkbox" value="true" id="walletCheck">
        <label class="form-check-label" for="flexCheckDefault">
         Wallet ₹{{userAd.wallet}}
        </label>
        </div>
-            
+            {{/if}}
         
             <div class="flex justify-between items-center pt-2">
               <button
@@ -258,12 +258,15 @@
       <h5 class="fw-bold">Payment details</h5>
 
       <div class="container-fluid">
-         <label class="fw-bold" for="">Item total: ₹ {{totalPrice}}</label>
+         
           {{#if discounted}}
+          <label class="fw-bold" for="">Item total: ₹ {{totalPrice}}</label>
          <br>
          <label class="fw-bold" for="">coupon:  -₹  {{discounted}}</label>
          <br>
          {{/if}}
+         <label class="fw-bold" for="">Shipping : free</label>
+         <br>
          <label class="fw-bold" for="">Grand Total: ₹ {{total}}</label>
          
 
