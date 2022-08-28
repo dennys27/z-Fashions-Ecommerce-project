@@ -304,6 +304,9 @@ router.post("/change-product-quantity", varifyLogin, (req, res) => {
 
 
 router.get("/checkout", varifyLogin, async (req, res) => {
+  
+  let discounted;
+  ///testing
   let user = req.session.user;
   let defaultAddress;
   let total = await cartHelpers.getTotalAmount(req.session.user._id);
@@ -316,17 +319,30 @@ router.get("/checkout", varifyLogin, async (req, res) => {
         if (data.default == true) {
           defaultAddress = data;
         }
-      });
+      }); 
     }
 
-    res.render("user/checkout", { user,userAd, defaultAddress, total, Empty: false });
+     await cartHelpers
+       .getDiscount(req.session.user._id)
+       .then((discountedPrice) => {
+         coupon = discountedPrice;
+
+         if (discountedPrice.code) {
+           discounted = (discountedPrice.couponDiscount * total) / 100;
+           total =
+             total - (discountedPrice.couponDiscount * total) / 100;
+         }
+       });
+
+    res.render("user/checkout", { user,userAd, defaultAddress,discounted,totalPrice, total, Empty: false });
   } else {
     res.render("user/Cart", { user, emptyCart: true });
   }
 });
 
-router.post("/wallet", varifyLogin, (req, res) => {
-  
+router.post("/wallet", varifyLogin,async (req, res) => {
+  let total = await cartHelpers.getTotalAmount(req.session.user._id);
+  console.log(req.body);
 })
 
 

@@ -172,6 +172,31 @@ function changeOffer(categoryId,offerId) {
 
 }
 
-function onWallet() {
-  
+
+$("#walletCheck").change(function (event) {
+  if (this.checked) {
+    let userID = event.target.value
+    console.log(event);
+      $.ajax({
+        url: "/wallet",
+        method: "post",
+        data: { userID },
+        success: (response) => {
+          console.log(response);
+          if (response.success) {
+            swal("Deducted from wallet successfully");
+          } else {
+            swal("something went wrong...");
+            location.href = "/checkout";
+          }
+        },
+      });
+  } else {
+    
+  }
+});
+
+function onWallet(userId,total) {
+  swal("im working you know.....")
+ 
 }
