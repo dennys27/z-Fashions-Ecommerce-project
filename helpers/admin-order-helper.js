@@ -126,6 +126,47 @@ module.exports = {
 
  //////
 
+fetchTopUsers: async () => {
+    return new Promise(async (resolve, reject) => {
+        await db
+          .get()
+          .collection(collections.ORDER_COLLECTION)
+          .aggregate([
+            {
+              $group: {
+                _id: "$userId",
+                title: {
+                  $first: "$userId",
+                },
+                topuser: {
+                  $sum: 1,
+                },
+              },
+            },
+            {
+              $sort: {
+                topuser: -1,
+              },
+            },
+            {
+              $limit: 5,
+            },
+            {
+              $lookup: {
+                from: collection.USER_COLLECTION,
+                localField: "_id",
+                foreignField: "_id",
+                as: "users",
+              },
+            },
+          ])
+          .toArray()
+          .then((data) => {
+            resolve(data.sort());
+          });
+
+    })
+  },
 fetchTopSold: async () => {
     return new Promise(async (resolve, reject) => {
         await db

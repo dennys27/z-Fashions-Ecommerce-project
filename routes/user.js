@@ -470,7 +470,7 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
                 .then((data) => {
                   data.razorpay = true;
                   res.json(data);
-                });
+                }); 
             });
           } else if (req.body["PaymentMethod"] == "PayPal") {
             console.log("why am i being hitttttttt.....");

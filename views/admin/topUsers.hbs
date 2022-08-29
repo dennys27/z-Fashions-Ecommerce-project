@@ -1,0 +1,32 @@
+<div class="container mt-5 pb-5">
+  <div class="container-fluid pb-5 d-flex justify-content-center">
+    <h1>Top Users</h1>
+  </div>
+  <table id="example" class="ui celled table" style="width:100%">
+    <thead>
+      <tr>
+        <th>*</th>
+        <th>user</th>
+        <th>phone</th>
+        <th>refferal code</th>
+        <th>total no.of orders</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      {{#each topUsers}}
+        <tr>
+
+          <td>*</td>
+
+          <td>{{this.users.[0].Email}}</td>
+          <td>{{this.users.[0].phone}}</td>
+          <td>{{this.users.[0].refferalCode}}</td>
+          <td>{{this.topuser}}</td>
+
+        </tr>
+      {{/each}}
+
+    </tbody>
+  </table>
+</div>

@@ -271,6 +271,11 @@ router.get("/most-sold", varifyLogin, async (req, res) => {
      res.render("admin/top-sold", { admin: true, topSold });
   })
 });
+router.get("/top-users", varifyLogin, async (req, res) => {
+  adminOrderHelper.fetchTopUsers().then((topUsers) => {
+     res.render("admin/topUsers", { admin: true, topUsers });
+  })
+});
 
 router.get("/sales-report", varifyLogin, async (req, res) => {
   adminOrderHelper.fetchData(2022).then((report) => {
