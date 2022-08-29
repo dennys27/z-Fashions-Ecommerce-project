@@ -342,27 +342,43 @@ router.get("/checkout", varifyLogin, async (req, res) => {
 });
 
 router.post("/wallet", varifyLogin, async (req, res) => {
-  console.log(req.body);
-  let amount = req.session.walletCompare;
-  console.log(amount);
-  let wallet = await userHelpers.getUserDetails(req.session.user._id);
-  if (wallet.wallet >= amount) {
-    res.json({ walletPayment: true })
-    walletStatus = true;
-  } else {
-    res.json({ walletPayment: false })
-     walletStatus = false;
+  try {
+
+    console.log(req.body);
+    let amount = req.session.walletCompare;
+    console.log(amount);
+    let wallet = await userHelpers.getUserDetails(req.session.user._id);
+    if (wallet.wallet >= amount) {
+      res.json({
+        walletPayment: true,
+        fullWallet: true,
+        amount: wallet.wallet,
+      });
+      walletStatus = true;
+    } else {
+      res.json({
+        walletPayment: false,
+        partialPayment: true,
+        amount: wallet.wallet,
+      });
+      console.log("what are you doing.....");
+      walletStatus = false;
+    }
+    
+  } catch {
+    res.send("something went wromg..")
   }
+ 
   
   
-})
+});
 
 
 
 //payment gateway
 
 router.post("/checkout-form", varifyLogin, async (req, res) => {
-  
+  console.log(req.body,"tocheck............");
   let user = req.session.user._id;
   let wallet = await userHelpers.getUserDetails(user)
   let products = await cartHelpers.getCartProductList(req.body.userId);
@@ -370,40 +386,46 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
   let coupon; 
   let discounted;
   let secondTotal = totalPrice;
+
   await cartHelpers.getDiscount(user).then((discountedPrice) => {
     coupon = discountedPrice;
-  
     if (discountedPrice.code) {
      discounted = (discountedPrice.couponDiscount * totalPrice) / 100;
      totalPrice = totalPrice - (discountedPrice.couponDiscount * totalPrice) / 100
    }
   });
+
   var greater = false;
   if (req.body.wallet === "true" || req.body.walletStatus) {
-    req.body.PaymentMethod = "wallet";
+    console.log(req.body.wallet);
+
+    //req.body.PaymentMethod = "wallet";
     req.session.walletStatus = true;
     req.session.walletAmount = wallet.wallet;
-    //console.log(wallet);
+
     if (wallet.wallet > totalPrice) {
+      console.log("wallet checking.....");
       greater = true;
-      let amount = wallet.wallet - totalPrice; 
+      let amount = wallet.wallet - totalPrice;
       userHelpers.useWallet(req.session.user._id, amount);
-    
     } else {
+      console.log("this is partial payment.....");
       totalPrice = totalPrice - wallet.wallet;
+
       let amount = wallet.wallet - totalPrice;
       if (amount < 0) {
         amount = 0;
       }
-       userHelpers.useWallet(req.session.user._id, amount);
-      console.log(amount);
-      
-     
+
+      userHelpers.useWallet(req.session.user._id, amount);
     }
   }
 
-  if (greater === true) {
-      console.log("im working you know.........");
+
+
+
+  if (greater == true) {
+     
     cartHelpers.placeOrder(
       req.body,
       products,
@@ -411,16 +433,18 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
       coupon,
       discounted,
       secondTotal
-    ).then(() => {
+    ).then((data) => {
+      console.log(data,"jgdfgkdhgdfgfgkf");
       cartHelpers.deleteCart(req.session.user._id);
       res.json({ walletPayment: true })
     })
   } else {
     
-  console.log("oiiiiiiiiiiii");
+ 
   
     req.session.total = totalPrice
     if (totalPrice > 0) {
+       console.log("oiiiiiiiiiiii");
       cartHelpers
         .placeOrder(
           req.body,
@@ -432,16 +456,13 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
         )
         .then((response) => {
           req.session.orderId = response.insertedId.toString();
-          console.log(req.body["PaymentMethod"], "teessssssssstiiiiiinggg");
-          if (req.body["walletStatus"] == "true") {
+          console.log(req.body["PaymentMethod"],"PAYMENT METHOD........");
+        
+           if (req.body["PaymentMethod"] == "COD") {
             cartHelpers.deleteCart(req.session.user._id);
-
-            res.json({ codSuccess: true });
-          } else if (req.body["PaymentMethod"] == "COD") {
-            cartHelpers.deleteCart(req.session.user._id);
-
             res.json({ codSuccess: true });
           } else if (req.body["PaymentMethod"] == "RazorPay") {
+             console.log("random runner.........");
             cartHelpers.getOrderId(user).then((orderDetails) => {
               req.session.uniqueOrder = orderDetails._id;
               userHelpers
@@ -464,22 +485,22 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
               });
             });
           } else if (req.body["PaymentMethod"] == "Wallet") {
-            userHelpers.getUserDetails(req.session.user._id).then((data) => {
-              if (data.wallet >= totalPrice) {
-                let amount = data.wallet - totalPrice;
-                userHelpers.useWallet(req.session.user._id, amount);
-                cartHelpers.deleteCart(req.session.user._id);
-                userHelpers
-                  .changePaymentStatus(req.session.orderId)
-                  .then((data) => {
-                    res.json({ wallet: true });
-                  });
-              } else if (data.wallet <= totalPrice || data.wallet > 0) {
-                res.json({ wallet: false });
-              } else {
-                res.json({ wallet: false });
-              }
-            });
+            // userHelpers.getUserDetails(req.session.user._id).then((data) => {
+            //   if (data.wallet >= totalPrice) {
+            //     let amount = data.wallet - totalPrice;
+            //     userHelpers.useWallet(req.session.user._id, amount);
+            //     cartHelpers.deleteCart(req.session.user._id);
+            //     userHelpers
+            //       .changePaymentStatus(req.session.orderId)
+            //       .then((data) => {
+            //         res.json({ wallet: true });
+            //       });
+            //   } else if (data.wallet <= totalPrice || data.wallet > 0) {
+            //     res.json({ wallet: false });
+            //   } else {
+            //     res.json({ wallet: false });
+            //   }
+            // });
           }
         });
 

@@ -1,0 +1,34 @@
+<div class="container mt-5 pb-5">
+  <div class="container-fluid pb-5 d-flex justify-content-center">
+    <h1>Top Sold Products</h1>
+  </div>
+  <table id="example" class="ui celled table" style="width:100%">
+    <thead>
+      <tr>
+        <th>*</th>
+        <th>product</th>
+        <th>category</th>
+        <th>price</th>
+        <th>No.of products sold</th>
+     
+
+      </tr>
+    </thead>
+    <tbody>
+      {{#each topSold }}
+        <tr>
+
+          <td>*</td>
+          
+            <td>{{this.product.[0].name}}</td>
+            <td>{{this.product.[0].category}}</td>
+            <td>₹ {{this.product.[0].cuttPrice}}</td>
+            <td>{{this.totalSold}}</td>
+        
+
+        </tr>
+      {{/each}}
+
+    </tbody>
+  </table>
+</div>

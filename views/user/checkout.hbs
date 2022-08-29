@@ -93,7 +93,6 @@
             <option  name="COD" value="COD">COD</option>
             <option  name="RazorPay" value="RazorPay">RazorPay</option>
             <option  name="PayPal" value="PayPal">PayPal</option>
-            <option  name="Wallet" value="Wallet">Wallet(₹{{userAd.wallet}})</option>
             </select>
             
               {{#if userAd.wallet}}
@@ -252,22 +251,27 @@
 
      <div
     class="container col-lg-12  mx-auto bg-white shadow-lg rounded-lg"
-    style="height: 200px;"
+    style="height: 250px;"
   >
     <div class="container-fluid mt-3 p-4">
       <h5 class="fw-bold">Payment details</h5>
 
       <div class="container-fluid">
-         
+           <label class="fw-bold" for="">Shipping : free</label>
+           <br>
           {{#if discounted}}
           <label class="fw-bold" for="">Item total: ₹ {{totalPrice}}</label>
          <br>
-         <label class="fw-bold" for="">coupon:  -₹  {{discounted}}</label>
+         <label class="fw-bold" for="">coupon:  -₹{{discounted}}</label>
          <br>
+         {{else}}
+          <label class="fw-bold" for="">Item total:  ₹{{totalPrice}}</label>
+          <br>
          {{/if}}
-         <label class="fw-bold" for="">Shipping : free</label>
+          
+         <label style="display: none;" class="fw-bold" id="walletLabel" for="">wallet </label><label class="ml-4 fw-bold" for="" id="walletDeduction" style="display: none;"> - ₹</label>
          <br>
-         <label class="fw-bold" for="">Grand Total: ₹ {{total}}</label>
+         <label class="fw-bold" for="">Grand Total: ₹  <i id="grandtotal">{{total}}</i></label>
          
 
   

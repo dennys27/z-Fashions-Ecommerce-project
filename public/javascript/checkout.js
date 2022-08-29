@@ -32,11 +32,15 @@ $("#check-out-form").submit((event) => {
   });
 });
 
-$("#Default-Address").submit(async(event) => {
+$("#Default-Address").submit(async (event) => {
+  let walletStatus = false;
   let method = await document.getElementById("payment").value;
-  let wallet = await document.getElementById("walletCheck");
-  let walletStatus = wallet.checked;
-  console.log(wallet.checked);
+  wallet = await document.getElementById("walletCheck");
+  if (wallet) {
+     walletStatus = wallet.checked;
+  }
+  
+ 
   event.preventDefault();
   $.ajax({
     url: "/checkout-form",

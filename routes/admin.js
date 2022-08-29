@@ -11,22 +11,19 @@ const store = require("../multer/multer");
 const productManagement = require("../helpers/product-management");
 const offerHelpers = require("../helpers/offerHelpers");
 
-
-
 const varifyLogin = (req, res, next) => {
   if (req.session.users) {
     next();
   } else {
     //res.render("admin/admin-login", { admin: true, errout: req.session.err });
-    res.redirect("/admin")
+    res.redirect("/admin");
     req.session.err = false;
   }
 };
 
-
 /* GET users listing. */
 router.get("/", function (req, res, next) {
-  if (req.session.users) {   
+  if (req.session.users) {
     res.redirect("/admin/view-users");
   } else {
     res.render("admin/admin-login", { admin: false, errout: req.session.err });
@@ -40,16 +37,13 @@ router.get("/view-users", varifyLogin, (req, res, next) => {
   });
 });
 
-
-
 //admin- user full details
 router.get("/view-user/:id", varifyLogin, (req, res, next) => {
   productHelpers.getProductDetails(req.params.id).then((user) => {
     console.log(user);
-      res.render("admin/userprofile", { admin: true, user });
-  })
+    res.render("admin/userprofile", { admin: true, user });
+  });
 });
-
 
 router.get("/add-user", varifyLogin, function (req, res) {
   res.render("admin/add-user", { admin: true });
@@ -60,7 +54,6 @@ router.post("/add-user", (req, res) => {
     res.redirect("/admin");
   });
 });
-
 
 router.post("/view-users", (req, res) => {
   const { Email, Password } = req.body;
@@ -77,7 +70,6 @@ router.post("/view-users", (req, res) => {
     res.redirect("/admin");
   }
 });
-
 
 //user delete
 router.get("/delete-product/:id", varifyLogin, (req, res) => {
@@ -120,28 +112,32 @@ router.get("/edit-product/:id", varifyLogin, async (req, res) => {
 });
 
 //edit-product-post
-router.post("/product-edit/:id", varifyLogin,store.array("image", 4), async (req, res) => {
- 
-   const files = req.files;
-   if (!files) {
-     const err = new Error("please choose the images");
-     res.redirect("/add-products", err);
-   }
-  
-   //res.render("admin/add-products", { admin: true });
-   var filenames = req.files.map(function (file) {
-     return file.filename;
-   });
+router.post(
+  "/product-edit/:id",
+  varifyLogin,
+  store.array("image", 4),
+  async (req, res) => {
+    const files = req.files;
+    if (!files) {
+      const err = new Error("please choose the images");
+      res.redirect("/add-products", err);
+    }
 
-   req.body.Image = filenames;
+    //res.render("admin/add-products", { admin: true });
+    var filenames = req.files.map(function (file) {
+      return file.filename;
+    });
 
-  let editProduct = await itemHelpers.updateProduct(req.params.id, req.body);
-  res.render("admin/edit-product", {
-    editProduct,
-    admin: true,
-    adminHead: true,
-  });
-});
+    req.body.Image = filenames;
+
+    let editProduct = await itemHelpers.updateProduct(req.params.id, req.body);
+    res.render("admin/edit-product", {
+      editProduct,
+      admin: true,
+      adminHead: true,
+    });
+  }
+);
 
 //adding products
 
@@ -152,13 +148,11 @@ router.get("/add-products", varifyLogin, (req, res) => {
 });
 
 router.post("/add-item", store.array("image", 4), (req, res) => {
- 
   const files = req.files;
   if (!files) {
     const err = new Error("please choose the images");
     res.redirect("/add-products", err);
   }
-
 
   //res.render("admin/add-products", { admin: true });
   var filenames = req.files.map(function (file) {
@@ -172,18 +166,15 @@ router.post("/add-item", store.array("image", 4), (req, res) => {
   });
 });
 
-
 router.get("/add-categories", varifyLogin, (req, res) => {
   res.render("admin/Add-category", { admin: true });
 });
 
-router.get("/view-products", varifyLogin, (req, res) => { 
+router.get("/view-products", varifyLogin, (req, res) => {
   itemHelpers.getAllproducts().then((products) => {
     res.render("admin/view-products", { admin: true, products });
   });
 });
-
-
 
 //categories
 router.get("/categories", varifyLogin, (req, res) => {
@@ -192,22 +183,17 @@ router.get("/categories", varifyLogin, (req, res) => {
   });
 });
 
-
 router.get("/delete-category/:id", varifyLogin, (req, res) => {
   itemHelpers.deleteCategory(req.params.id).then((categories) => {
-    res.redirect("/admin/categories",);
+    res.redirect("/admin/categories");
   });
 });
-
-
 
 router.post("/add-category", (req, res) => {
   console.log(req.body);
   itemHelpers.addCategory(req.body);
   res.redirect("/admin/add-categories");
 });
-
-
 
 router.get("/edit-categories/:id", varifyLogin, (req, res) => {
   itemHelpers.getCategory(req.params.id).then((category) => {
@@ -215,45 +201,40 @@ router.get("/edit-categories/:id", varifyLogin, (req, res) => {
   });
 });
 
-
-
-
-
 //admin-orders-listing
 
 router.get("/admin-orders", varifyLogin, (req, res) => {
   adminOrderHelper.getOrders().then((Items) => {
-   
-    const reversed = Items.reverse()
+    const reversed = Items.reverse();
     Items = reversed;
-      res.render("admin/admin-orders", { admin: true,Items });
- })
+    res.render("admin/admin-orders", { admin: true, Items });
+  });
 });
 
 router.post("/change-order-status/:id", varifyLogin, (req, res) => {
-  adminOrderHelper.changeOrderStatus(req.params.id, req.body.status).then((data) => {
-      res.json({data})
-    })
+  adminOrderHelper
+    .changeOrderStatus(req.params.id, req.body.status)
+    .then((data) => {
+      res.json({ data });
+    });
 });
-
 
 //admin-view - order details
 router.get("/admin-view-order-details/:id", varifyLogin, async (req, res) => {
   let products = await cartHelpers.getOrderProducts(req.params.id);
   let orderDetails = await cartHelpers.getInvoice(req.params.id);
-   for (i = 0; i < products.length; i++) {
-     products[i].product.subtotal = products[i].quantity * products[i].product.price;
-   }
+  for (i = 0; i < products.length; i++) {
+    products[i].product.subtotal =
+      products[i].quantity * products[i].product.price;
+  }
 
-  console.log(orderDetails,"ordeerdetailstestttttttstststs");
+  console.log(orderDetails, "ordeerdetailstestttttttstststs");
   res.render("admin/invoice", { admin: true, products, orderDetails });
 });
 
-
-
 router.post("/edit-category/:id", (req, res) => {
   itemHelpers.updateCategory(req.params.id, req.body);
- res.redirect("/admin/categories");
+  res.redirect("/admin/categories");
 });
 
 router.post("/add-category", (req, res) => {
@@ -261,96 +242,85 @@ router.post("/add-category", (req, res) => {
   res.redirect("/admin/add-categories");
 });
 
-router.get("/coupons-management",varifyLogin, async(req, res) => {
+router.get("/coupons-management", varifyLogin, async (req, res) => {
   await offerHelpers.getCoupons().then((coupons) => {
-     res.render("admin/coupons", { admin: true,coupons });
-  })
+    res.render("admin/coupons", { admin: true, coupons });
+  });
 });
 
-router.get("/add-coupons",varifyLogin, (req, res) => {
+router.get("/add-coupons", varifyLogin, (req, res) => {
   res.render("admin/add-coupons", { admin: true });
 });
 
 //coupons
-router.post("/add-coupons",varifyLogin, (req, res) => {
+router.post("/add-coupons", varifyLogin, (req, res) => {
   offerHelpers.addCoupons(req.body).then((data) => {
-    res.json(data)
- })
+    res.json(data);
+  });
 });
 
 router.post("/delete-coupons", varifyLogin, (req, res) => {
   offerHelpers.deleteCoupon(req.body.uId).then((data) => {
     console.log(data);
-    res.json(data)
+    res.json(data);
+  });
+});
+
+router.get("/most-sold", varifyLogin, async (req, res) => {
+  adminOrderHelper.fetchTopSold().then((topSold) => {
+     res.render("admin/top-sold", { admin: true, topSold });
   })
- 
 });
 
-
-router.get("/sales-report", varifyLogin,async (req, res) => {
-  //let userId = req.session.user._id;
-  
+router.get("/sales-report", varifyLogin, async (req, res) => {
   adminOrderHelper.fetchData(2022).then((report) => {
-     
-     res.render("admin/sales-report", { admin: true,report });
-    })
-         
-     
-   
-   
-
+    res.render("admin/sales-report", { admin: true, report });
+  });
 });
-router.get("/offers", varifyLogin,async (req, res) => {
+router.get("/offers", varifyLogin, async (req, res) => {
   //let userId = req.session.user._id;
   await productManagement.getCategories().then((categories) => {
     offerHelpers.getOffers().then((offers) => {
-         
-        res.render("admin/offers", { admin: true, categories,offers });
-    })
-   
-})
+      res.render("admin/offers", { admin: true, categories, offers });
+    });
+  });
 });
 
-router.get("/add-offers", varifyLogin,(req, res) => {
+router.get("/add-offers", varifyLogin, (req, res) => {
   //let userId = req.session.user._id;
   productManagement.getCategories().then((categories) => {
     console.log(categories);
-    res.render("admin/add-offers", { admin: true,categories });
-})
+    res.render("admin/add-offers", { admin: true, categories });
+  });
 });
 
 router.post("/add-category-offers", varifyLogin, (req, res) => {
   //let userId = req.session.user._id;
   console.log(req.body);
   offerHelpers.addOffer(req.body).then((data) => {
-   res.json(data)
- })
+    res.json(data);
+  });
 });
-
 
 router.get("/specific-offer/:id", varifyLogin, (req, res) => {
   let prodId = req.params.id;
-   res.render("admin/specificOffer",{admin:true,prodId})
-
+  res.render("admin/specificOffer", { admin: true, prodId });
 });
-
 
 router.post("/specific-Offer", varifyLogin, (req, res) => {
   console.log(req.body);
 
   offerHelpers.addProductOffer(req.body).then((data) => {
-    res.json(data)
-  })
-
+    res.json(data);
+  });
 });
 
 router.post("/apply-category-offer", varifyLogin, (req, res) => {
   console.log(req.body);
   offerHelpers.categoryoffer(req.body).then((data) => {
-    res.json(data)
-  })
+    res.json(data);
+  });
 });
-
 
 router.get("/Block-user/:id", varifyLogin, (req, res) => {
   let userId = req.params.id;
@@ -368,58 +338,53 @@ router.get("/Un-Block-user/:id", varifyLogin, (req, res) => {
     req.session.loggedIn = null;
     res.redirect("/admin/view-users");
   });
-}); 
+});
 
 router.get("/logout", varifyLogin, (req, res) => {
   req.session.users = null;
   res.redirect("/admin");
 });
 
-
-//admin dashboard  
+//admin dashboard
 router.get("/dashboard", varifyLogin, async (req, res) => {
   //let report = await adminOrderHelper.getSalesReport()
-  let cod =await adminOrderHelper.codTotal()
+  let cod = await adminOrderHelper.codTotal();
   let razorpay = await adminOrderHelper.razorTotal();
   let paypal = await adminOrderHelper.paypalTotal();
   let orders = await adminOrderHelper.getOrders();
-  let total = orders.length
+  let total = orders.length;
   let clients = await productHelpers.getAlluser();
   let users = clients.length;
   let weekly = 0;
   let monthly = 0;
   let yearly = 0;
-  productManagement.getGraphDetails().then(async(data) => {
+  productManagement.getGraphDetails().then(async (data) => {
     let temp = data;
     // console.log(temp);
     await temp.map((det) => {
-     
       if (det.status != "cancelled") {
         weekly = weekly + det.totalAmount;
       }
     });
 
     productManagement.getMonthDetails().then(async (msales) => {
-    let temp2 = msales
+      let temp2 = msales;
       await temp2.map((det) => {
-       
         if (det.status != "cancelled") {
           monthly = monthly + det.totalAmount;
         }
       });
-      
-    })
+    });
     productManagement.getYearDetails().then(async (ysales) => {
-      let temp3 = ysales; 
+      let temp3 = ysales;
       await temp3.map((det) => {
         if (det.status != "cancelled") {
           yearly = yearly + det.totalAmount;
         }
       });
-      
     });
 
-    console.log(await adminOrderHelper.test()); 
+    console.log(await adminOrderHelper.test());
 
     //first try
     await adminOrderHelper.getLastweekOrders().then((response) => {
@@ -436,13 +401,5 @@ router.get("/dashboard", varifyLogin, async (req, res) => {
       });
     });
   });
-
-
 }),
-  
-  
-  
-
-
-
-module.exports = router;
+  (module.exports = router);

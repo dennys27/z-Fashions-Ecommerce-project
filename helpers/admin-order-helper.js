@@ -126,6 +126,56 @@ module.exports = {
 
  //////
 
+fetchTopSold: async () => {
+    return new Promise(async (resolve, reject) => {
+        await db
+          .get()
+          .collection(collections.ORDER_COLLECTION)
+          .aggregate([
+            {
+              $unwind: {
+                path: "$products",
+              },
+            },
+            {
+              $group: {
+                _id: "$products.item",
+                title: {
+                  $first: "$products.item",
+                },
+                totalSold: {
+                  $sum: 1,
+                },
+              },
+            },
+            {
+              $sort: {
+                totalSold: -1,
+              },
+            },
+            {
+              $limit: 10,
+            },
+            {
+              $lookup: {
+                from: collection.PRODUCT_COLLECTIONS,
+                localField: "_id",
+                foreignField: "_id",
+                as: "product",
+              },
+            },
+          ])
+          .toArray()
+          .then((data) => {
+            resolve(data);
+          });
+
+    })
+  },
+
+
+
+
 fetchMonthlyData: async () => {
     reportData = [];
      

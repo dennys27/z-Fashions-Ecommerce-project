@@ -1,3 +1,5 @@
+
+
 function removeAddress(uId) {
     console.log(uId);
     
@@ -175,37 +177,51 @@ function changeOffer(categoryId,offerId) {
 
 $("#walletCheck").change(function (event) {
   let status = this.checked
-  console.log(this.checked);
+ 
   if (this.checked) {
     let userID = event.target.value
-    //console.log(event);
+   
       $.ajax({
         url: "/wallet",
         method: "post",
         data: { userID,status },
         success: (response) => {
+       
          console.log(response);
           if (response.walletPayment) {
             document.getElementById("payment").style.display = "none";
+            document.getElementById("walletDeduction").innerHTML = "sample";
            
             swal("Deducted from wallet successfully");
-          } else if (response.walletPayment==false) {
+          } else if (response.walletPayment == false) {
+           
+            document.getElementById("walletDeduction").style.display = "inline";
+            document.getElementById("walletLabel").style.display="inline"
+            document.getElementById("walletDeduction").innerHTML = `-₹ ${response.amount}`;
+            let amount = document.getElementById("grandtotal").innerHTML;
+            let walletAmount =
+              document.getElementById("walletDeduction").innerHTML;
+            parseInt(amount);
+            parseInt(walletAmount);
+             document.getElementById("grandtotal").innerHTML = amount - response.amount;
             swal("partial payment enabled...");
+
             // location.href = "/checkout";
           }
         },
       });
   } else {
 
-      $.ajax({
-        url: "/wallet",
-        method: "post",
-        data: {  status },
-        success: (response) => {
-           document.getElementById("payment").style.display = "block";
-          console.log(response);
-        },
-      });
+    document.getElementById("walletDeduction").style.display = "none";
+    document.getElementById("walletLabel").style.display = "none";
+    document.getElementById("grandtotal").innerHTML = response.amount;
+    
+     
+    
+     console.log(amount);
+     console.log(walletAmount);
+  
+      
      
   }
 });
