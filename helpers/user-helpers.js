@@ -37,46 +37,46 @@ module.exports = {
         response.status = true;
         resolve(response);
       } else if (phone) {
-        
         response.phone = true;
         resolve(response);
       } else {
         userData.Password = await bcrypt.hash(userData.Password, 10);
         console.log(userData.Refferal);
         if (userData.Refferal) {
-          let user = await db.get()
+          let user = await db
+            .get()
             .collection(collection.USER_COLLECTION)
-            .find({ refferalCode: userData.Refferal.toString() }).toArray()
+            .find({ refferalCode: userData.Refferal.toString() })
+            .toArray();
           console.log(user);
-          let reward = user[0].wallet
+          let reward = user[0].wallet;
           if (user) {
-            reward += 500
+            reward += 500;
             console.log(user);
-            await db.get()
+            await db
+              .get()
               .collection(collection.USER_COLLECTION)
               .updateOne(
                 { _id: objectId(user[0]._id) },
                 {
                   $set: {
-                    wallet: reward
+                    wallet: reward,
                   },
                 }
               );
             userData.wallet = 500;
           }
-           
         } else {
           userData.wallet = 0;
         }
-        
-        
+
         db.get()
           .collection(collection.USER_COLLECTION)
           .insertOne(userData)
           .then((data) => {
             resolve(data.insertedId);
           });
-       
+
         resolve({ status: false });
       }
     });
@@ -333,14 +333,11 @@ module.exports = {
       let Order = await db
         .get()
         .collection(collection.ORDER_COLLECTION)
-        .deleteMany(
-          { status: "pending" },
-        )
+        .deleteMany({ status: "pending" })
         .then((data) => {
           resolve(data);
         });
-     
-    })
+    });
   },
 
   verifyPayment: (details) => {
@@ -349,8 +346,8 @@ module.exports = {
       let hmac = crypto.createHmac("sha256", process.env.KEY_SECRET);
       hmac.update(
         details["payment[razorpay_order_id]"] +
-        "|" +
-        details["payment[razorpay_payment_id]"]
+          "|" +
+          details["payment[razorpay_payment_id]"]
       );
       hmac = hmac.digest("hex");
       if (hmac == details["payment[razorpay_signature]"]) {
@@ -399,7 +396,7 @@ module.exports = {
           }
         )
         .then((data) => {
-          console.log(data, "im trying to change the status")
+          console.log(data, "im trying to change the status");
           resolve();
         });
     });
@@ -418,7 +415,6 @@ module.exports = {
 
   converter: (price) => {
     return new Promise((resolve, reject) => {
-      
       let currencyConverter = new CC({
         from: "INR",
         to: "USD",
@@ -426,15 +422,12 @@ module.exports = {
         isDecimalComma: false,
       });
       currencyConverter.convert().then((response) => {
-        resolve(response)
+        resolve(response);
       });
-       
     });
   },
 
   generatePayPal: (orderId, totalPrice) => {
-    
-   
     return new Promise((resolve, reject) => {
       const create_payment_json = {
         intent: "sale",
@@ -494,7 +487,6 @@ module.exports = {
   },
 
   addressDefault: (uniqueId, userobjId) => {
-   
     let unId = parseFloat(uniqueId);
     console.log(unId);
     return new Promise((resolve, reject) => {
@@ -502,9 +494,9 @@ module.exports = {
         .collection(collection.USER_COLLECTION)
         .update(
           { "deliveryAddress.default": true },
-          { $set: { "deliveryAddress.$.default": false } })
+          { $set: { "deliveryAddress.$.default": false } }
+        )
         .then(() => {
-
           db.get()
             .collection(collection.USER_COLLECTION)
             .findOneAndUpdate(
@@ -517,47 +509,98 @@ module.exports = {
               }
             )
             .then((data) => {
-              resolve(data)
+              resolve(data);
             });
-       
-        
-        })
-      
-    
+        });
     });
   },
 
-  setWalletHistory: (userId, orderId, amount,credit,debit) => {
+  getWalletHistory: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      await db
+        .get()
+        .collection(collection.WALLET_COLLECTION)
+        .find({ user: objectId(userId) })
+        .toArray()
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
+  setWallet: (userId, orderId, amount, credit, debit) => {
     console.log(userId, orderId, amount);
     return new Promise(async (resolve, reject) => {
       let walletDetails = {
+        date: new Date().toDateString(),
         orderId: orderId,
         amount: amount,
-        debit:true
-      }
-      let user = await db.get().collection(collection.WALLET_COLLECTION).find({ user: objectId(userId) }).toArray()
+        debit: true,
+      };
+      let user = await db
+        .get()
+        .collection(collection.WALLET_COLLECTION)
+        .find({ user: objectId(userId) })
+        .toArray();
       let walletHistory = {
         user: objectId(userId),
         transactions: [walletDetails],
       };
-      if (user.length===0) {
-        db.get().collection(collection.WALLET_COLLECTION).insertOne(walletHistory).then((data) => {
-          console.log(data);
-        })
+      if (user.length === 0) {
+        db.get()
+          .collection(collection.WALLET_COLLECTION)
+          .insertOne(walletHistory)
+          .then((data) => {});
       }
-      if (user.length>0) {
-        db.get().collection(collection.WALLET_COLLECTION).updateOne({ user: objectId(userId) },
-          {
-            $push: { transactions: walletDetails },
-          }).then((data) => {
-          console.log(data);
-        })
+      if (user.length > 0) {
+        db.get()
+          .collection(collection.WALLET_COLLECTION)
+          .updateOne(
+            { user: objectId(userId) },
+            {
+              $push: { transactions: walletDetails },
+            }
+          )
+          .then((data) => {});
       }
-         
-    
-    
-
-    
-    })
+    });
   },
-}
+
+  setWalletHistory: (userId, orderId, amount, credit, debit) => {
+    console.log(userId, orderId, amount);
+    return new Promise(async (resolve, reject) => {
+      let walletDetails = {
+        date: new Date().toDateString(),
+        orderId: orderId,
+        amount: amount,
+        debit: true,
+      };
+      let user = await db
+        .get()
+        .collection(collection.WALLET_COLLECTION)
+        .find({ user: objectId(userId) })
+        .toArray();
+      let walletHistory = {
+        user: objectId(userId),
+        transactions: [walletDetails],
+      };
+      if (user.length === 0) {
+        db.get()
+          .collection(collection.WALLET_COLLECTION)
+          .insertOne(walletHistory)
+          .then((data) => {});
+      }
+      if (user.length > 0) {
+        db.get()
+          .collection(collection.WALLET_COLLECTION)
+          .updateOne(
+            { user: objectId(userId) },
+            {
+              $push: { transactions: walletDetails },
+            }
+          )
+          .then((data) => {});
+      }
+    });
+  },
+};

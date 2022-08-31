@@ -402,8 +402,8 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
      req.body.wallet = false;
   }
   var greater = false;
-       console.log(req.body.wallet);
-       console.log(req.body.walletStatus);
+      //  console.log(req.body.wallet);
+      //  console.log(req.body.walletStatus);
     if (req.body.wallet === true || req.body.walletStatus==="true") {
       
 
@@ -419,12 +419,12 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
          req.body.PaymentMethod = "wallet";
         
       } else {
-       
+       console.log("yyyyooooooyyyyyyyyyyy");
        
         totalPrice = totalPrice - wallet.wallet;
         let amount = wallet.wallet - totalPrice;
         walletAmount = wallet.wallet;
-        console.log("yyyyooooooyyyyyyyyyyy");
+        
         if (amount < 0) {
           amount = 0;
         }
@@ -455,14 +455,13 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
          data.insertedId.toString(),
          walletAmount
        ).then((data) => {
-         console.log(data);
+         //console.log(data);
        })
       cartHelpers.deleteCart(req.session.user._id);
       res.json({ walletPayment: true })
     })
   } else {
     
- 
   
     req.session.total = totalPrice
     if (totalPrice > 0) {
@@ -478,7 +477,12 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
         )
         .then((response) => {
           req.session.orderId = response.insertedId.toString();
-          console.log(req.body["PaymentMethod"],"PAYMENT METHOD........");
+          userHelpers.setWalletHistory(
+            req.session.user._id,
+            response.insertedId.toString(),
+            walletAmount
+          );
+          //console.log(req.body["PaymentMethod"],"PAYMENT METHOD........");
         
            if (req.body["PaymentMethod"] == "COD") {
             cartHelpers.deleteCart(req.session.user._id);
@@ -562,9 +566,11 @@ router.post("/verify-payment", varifyLogin, (req, res) => {
 
 router.get("/wallet-history", varifyLogin, (req, res) => {
   let user = req.session.user;
-
-    res.render("user/wallet-history", {user});
- 
+  userHelpers.getWalletHistory(user._id).then((data) => {
+    console.log(data[0].transactions,"data is  here............");
+      res.render("user/wallet-history", { user ,data});
+   })
+   
 });
 
 

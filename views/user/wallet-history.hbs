@@ -14,15 +14,13 @@
       </tr>
     </thead>
     <tbody>
-      {{#each topSold}}
+      {{#each data.[0].transactions}}
         <tr>
 
           <td>*</td>
-
-          <td>{{this.product.0.name}}</td>
-          <td>{{this.product.0.category}}</td>
-          <td>₹ {{this.product.0.cuttPrice}}</td>
-          <td>{{this.totalSold}}</td>
+          <td>{{this.date}}</td>
+          <td>{{this.orderId}}</td>
+          <td>{{#if this.debit}} - ₹{{this.amount}}{{/if}}</td>
 
         </tr>
       {{/each}}
