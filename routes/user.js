@@ -9,6 +9,7 @@ const offerHelpers = require("../helpers/offerHelpers");
 const { Db } = require("mongodb");
 const referralCodeGenerator = require("referral-code-generator");
 let walletStatus;
+let walletAmount;
 const varifyLogin = (req, res, next) => {
   if (req.session.user) {
     next();
@@ -410,26 +411,25 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
       req.session.walletAmount = wallet.wallet;
 
       if (wallet.wallet > totalPrice) {
-        console.log("wallet checking.....");
-       
-        userHelpers.setWalletHistory(req.session.user._id,req.session.orderId,amount)
-
+     
         greater = true;
         let amount = wallet.wallet - totalPrice;
         userHelpers.useWallet(req.session.user._id, amount);
+        walletAmount=totalPrice
          req.body.PaymentMethod = "wallet";
-        console.log("im stealing from your wallet idiot...............");
+        
       } else {
-        console.log("this is partial payment.....");
+       
        
         totalPrice = totalPrice - wallet.wallet;
         let amount = wallet.wallet - totalPrice;
+        walletAmount = wallet.wallet;
+        console.log("yyyyooooooyyyyyyyyyyy");
         if (amount < 0) {
           amount = 0;
         }
         req.body.walletMinus = (amount + totalPrice )- (amount + totalPrice-wallet.wallet);
-        console.log(req.body.walletMinus,"wallet minus.........");
-
+       
         userHelpers.useWallet(req.session.user._id, amount);
       }
     }
@@ -448,7 +448,15 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
       discounted,
       secondTotal
     ).then((data) => {
-      console.log(data,"jgdfgkdhgdfgfgkf");
+      console.log((walletAmount ,"fjjjjjjjjjjjjjjjjjjjjjjjjjj"));
+      
+       userHelpers.setWalletHistory(
+         req.session.user._id,
+         data.insertedId.toString(),
+         walletAmount
+       ).then((data) => {
+         console.log(data);
+       })
       cartHelpers.deleteCart(req.session.user._id);
       res.json({ walletPayment: true })
     })

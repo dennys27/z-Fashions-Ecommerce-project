@@ -527,25 +527,31 @@ module.exports = {
     });
   },
 
-  setWalletHistory: (userId, orderId, amount) => {
+  setWalletHistory: (userId, orderId, amount,credit,debit) => {
+    console.log(userId, orderId, amount);
     return new Promise(async (resolve, reject) => {
       let walletDetails = {
         orderId: orderId,
-        transaction: [proObj],
+        amount: amount,
+        debit:true
       }
-      let user = await db.get().collection(collection.USER_COLLECTION).find({ _id: objectId(userId) })
+      let user = await db.get().collection(collection.WALLET_COLLECTION).find({ user: objectId(userId) }).toArray()
       let walletHistory = {
         user: objectId(userId),
         transactions: [walletDetails],
       };
-      if (!user) {
-        db.get().collection(collection.WALLET_COLLECTION).insertOne(walletHistory);
+      if (user.length===0) {
+        db.get().collection(collection.WALLET_COLLECTION).insertOne(walletHistory).then((data) => {
+          console.log(data);
+        })
       }
-      if (user) {
+      if (user.length>0) {
         db.get().collection(collection.WALLET_COLLECTION).updateOne({ user: objectId(userId) },
           {
             $push: { transactions: walletDetails },
-          })
+          }).then((data) => {
+          console.log(data);
+        })
       }
          
     
