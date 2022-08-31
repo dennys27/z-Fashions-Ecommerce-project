@@ -6,6 +6,7 @@ const Razorpay = require("razorpay");
 const paypal = require("paypal-rest-sdk");
 require("dotenv").config();
  const CC = require("currency-converter-lt");
+const { resolve } = require("path");
 
 var instance = new Razorpay({
   key_id: process.env.KEY_ID,
@@ -34,7 +35,7 @@ module.exports = {
       if (email) {
         console.log("same email");
         response.status = true;
-        resolve(response); 
+        resolve(response);
       } else if (phone) {
         
         response.phone = true;
@@ -46,26 +47,26 @@ module.exports = {
           let user = await db.get()
             .collection(collection.USER_COLLECTION)
             .find({ refferalCode: userData.Refferal.toString() }).toArray()
-          console.log(user); 
-           let reward = user[0].wallet
+          console.log(user);
+          let reward = user[0].wallet
           if (user) {
-            reward+=500
-            console.log(user);  
+            reward += 500
+            console.log(user);
             await db.get()
               .collection(collection.USER_COLLECTION)
               .updateOne(
                 { _id: objectId(user[0]._id) },
                 {
                   $set: {
-                   wallet:reward
+                    wallet: reward
                   },
                 }
-            );
+              );
             userData.wallet = 500;
           }
            
         } else {
-            userData.wallet = 0;
+          userData.wallet = 0;
         }
         
         
@@ -118,7 +119,7 @@ module.exports = {
   //user checking
 
   isExist: (isuser) => {
-    var user = { ...isuser.user }; 
+    var user = { ...isuser.user };
     async function nameGetter(user) {
       let email = await db
         .get()
@@ -127,7 +128,7 @@ module.exports = {
       var Uemail = { ...email };
       if (Uemail.Email !== user.Email) {
         isuser.destroy();
-      } 
+      }
     }
     nameGetter(user);
   },
@@ -202,7 +203,7 @@ module.exports = {
     });
   },
 
- useWallet: (userId,amount) => {
+  useWallet: (userId, amount) => {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.USER_COLLECTION)
@@ -329,18 +330,18 @@ module.exports = {
 
   deletePending: () => {
     return new Promise(async (resolve, reject) => {
-        let Order = await db
-          .get()
-          .collection(collection.ORDER_COLLECTION)
-          .deleteMany(
-            { status: "pending" },
-          )
-          .then((data) => {
-            resolve(data);
-          });
+      let Order = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .deleteMany(
+          { status: "pending" },
+        )
+        .then((data) => {
+          resolve(data);
+        });
      
     })
-    },
+  },
 
   verifyPayment: (details) => {
     return new Promise((resolve, reject) => {
@@ -348,12 +349,12 @@ module.exports = {
       let hmac = crypto.createHmac("sha256", process.env.KEY_SECRET);
       hmac.update(
         details["payment[razorpay_order_id]"] +
-          "|" +
-          details["payment[razorpay_payment_id]"]
+        "|" +
+        details["payment[razorpay_payment_id]"]
       );
       hmac = hmac.digest("hex");
       if (hmac == details["payment[razorpay_signature]"]) {
-        resolve({pay:true});
+        resolve({ pay: true });
       } else {
         reject({ pay: false });
       }
@@ -385,7 +386,7 @@ module.exports = {
   // },
 
   changePaymentStatus: (orderId) => {
-     console.log(orderId);
+    console.log(orderId);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -398,7 +399,7 @@ module.exports = {
           }
         )
         .then((data) => {
-          console.log(data,"im trying to change the status")
+          console.log(data, "im trying to change the status")
           resolve();
         });
     });
@@ -413,22 +414,22 @@ module.exports = {
           resolve(response);
         });
     });
-  }, 
+  },
 
   converter: (price) => {
-     return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       
-         let currencyConverter = new CC({
-           from: "INR",
-           to: "USD",
-           amount: price,
-           isDecimalComma: false,
-         });
-       currencyConverter.convert().then((response) => {
+      let currencyConverter = new CC({
+        from: "INR",
+        to: "USD",
+        amount: price,
+        isDecimalComma: false,
+      });
+      currencyConverter.convert().then((response) => {
         resolve(response)
-       });
+      });
        
-     });
+    });
   },
 
   generatePayPal: (orderId, totalPrice) => {
@@ -437,7 +438,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const create_payment_json = {
         intent: "sale",
-        payer: { 
+        payer: {
           payment_method: "paypal",
         },
         redirect_urls: {
@@ -492,10 +493,10 @@ module.exports = {
     });
   },
 
-  addressDefault: (uniqueId,userobjId) => {
+  addressDefault: (uniqueId, userobjId) => {
    
     let unId = parseFloat(uniqueId);
-     console.log(unId);
+    console.log(unId);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.USER_COLLECTION)
@@ -504,26 +505,53 @@ module.exports = {
           { $set: { "deliveryAddress.$.default": false } })
         .then(() => {
 
-            db.get()
-              .collection(collection.USER_COLLECTION)
-              .findOneAndUpdate(
-                {
-                  _id: objectId(userobjId),
-                  "deliveryAddress.uId": unId,
-                },
-                {
-                  $set: { "deliveryAddress.$.default": true },
-                }
-              )
-              .then((data) => {
+          db.get()
+            .collection(collection.USER_COLLECTION)
+            .findOneAndUpdate(
+              {
+                _id: objectId(userobjId),
+                "deliveryAddress.uId": unId,
+              },
+              {
+                $set: { "deliveryAddress.$.default": true },
+              }
+            )
+            .then((data) => {
               resolve(data)
-              });
+            });
        
         
-      })
+        })
       
     
     });
   },
-};
 
+  setWalletHistory: (userId, orderId, amount) => {
+    return new Promise(async (resolve, reject) => {
+      let walletDetails = {
+        orderId: orderId,
+        transaction: [proObj],
+      }
+      let user = await db.get().collection(collection.USER_COLLECTION).find({ _id: objectId(userId) })
+      let walletHistory = {
+        user: objectId(userId),
+        transactions: [walletDetails],
+      };
+      if (!user) {
+        db.get().collection(collection.WALLET_COLLECTION).insertOne(walletHistory);
+      }
+      if (user) {
+        db.get().collection(collection.WALLET_COLLECTION).updateOne({ user: objectId(userId) },
+          {
+            $push: { transactions: walletDetails },
+          })
+      }
+         
+    
+    
+
+    
+    })
+  },
+}

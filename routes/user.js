@@ -411,6 +411,9 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
 
       if (wallet.wallet > totalPrice) {
         console.log("wallet checking.....");
+       
+        userHelpers.setWalletHistory(req.session.user._id,req.session.orderId,amount)
+
         greater = true;
         let amount = wallet.wallet - totalPrice;
         userHelpers.useWallet(req.session.user._id, amount);
@@ -546,6 +549,15 @@ router.post("/verify-payment", varifyLogin, (req, res) => {
   }
  
 );
+
+
+
+router.get("/wallet-history", varifyLogin, (req, res) => {
+  let user = req.session.user;
+
+    res.render("user/wallet-history", {user});
+ 
+});
 
 
 //orders list
