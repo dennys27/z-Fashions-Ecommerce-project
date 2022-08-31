@@ -291,6 +291,13 @@ router.get("/offers", varifyLogin, async (req, res) => {
   });
 });
 
+router.get("/wallet-history", varifyLogin, (req, res) => {
+  //let userId = req.session.user._id;
+  productManagement.getCategories().then((categories) => {
+    console.log(categories);
+    res.render("admin/wallet-history", { admin: true, categories });
+  });
+});
 router.get("/add-offers", varifyLogin, (req, res) => {
   //let userId = req.session.user._id;
   productManagement.getCategories().then((categories) => {
@@ -389,7 +396,7 @@ router.get("/dashboard", varifyLogin, async (req, res) => {
       });
     });
 
-    console.log(await adminOrderHelper.test());
+    //console.log(await adminOrderHelper.test());
 
     //first try
     await adminOrderHelper.getLastweekOrders().then((response) => {

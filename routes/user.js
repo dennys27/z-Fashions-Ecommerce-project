@@ -378,7 +378,7 @@ router.post("/wallet", varifyLogin, async (req, res) => {
 //payment gateway
 
 router.post("/checkout-form", varifyLogin, async (req, res) => {
-  console.log(req.body,"tocheck............");
+ // console.log(req.body,"tocheck............");
   let user = req.session.user._id;
   let wallet = await userHelpers.getUserDetails(user)
   let products = await cartHelpers.getCartProductList(req.body.userId);
@@ -395,31 +395,42 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
    }
   });
 
-  var greater = false;
-  if (req.body.wallet === "true" || req.body.walletStatus) {
-    console.log(req.body.wallet);
-
-    //req.body.PaymentMethod = "wallet";
-    req.session.walletStatus = true;
-    req.session.walletAmount = wallet.wallet;
-
-    if (wallet.wallet > totalPrice) {
-      console.log("wallet checking.....");
-      greater = true;
-      let amount = wallet.wallet - totalPrice;
-      userHelpers.useWallet(req.session.user._id, amount);
-    } else {
-      console.log("this is partial payment.....");
-      totalPrice = totalPrice - wallet.wallet;
-
-      let amount = wallet.wallet - totalPrice;
-      if (amount < 0) {
-        amount = 0;
-      }
-
-      userHelpers.useWallet(req.session.user._id, amount);
-    }
+  console.log(req.body.wallet,"TO CHECK WHATS GOING WRONG WITH MY CODE");
+  //req.body.wallet === undefined ? req.body.wallet = false : req.body.wallet;
+  if (req.body.wallet === undefined) {
+     req.body.wallet = false;
   }
+  var greater = false;
+       console.log(req.body.wallet);
+       console.log(req.body.walletStatus);
+    if (req.body.wallet === true || req.body.walletStatus==="true") {
+      
+
+      req.session.walletStatus = true;
+      req.session.walletAmount = wallet.wallet;
+
+      if (wallet.wallet > totalPrice) {
+        console.log("wallet checking.....");
+        greater = true;
+        let amount = wallet.wallet - totalPrice;
+        userHelpers.useWallet(req.session.user._id, amount);
+         req.body.PaymentMethod = "wallet";
+        console.log("im stealing from your wallet idiot...............");
+      } else {
+        console.log("this is partial payment.....");
+       
+        totalPrice = totalPrice - wallet.wallet;
+        let amount = wallet.wallet - totalPrice;
+        if (amount < 0) {
+          amount = 0;
+        }
+        req.body.walletMinus = (amount + totalPrice )- (amount + totalPrice-wallet.wallet);
+        console.log(req.body.walletMinus,"wallet minus.........");
+
+        userHelpers.useWallet(req.session.user._id, amount);
+      }
+    }
+
 
 
 

@@ -445,74 +445,77 @@ fetchMonthlyData: async () => {
 
 
 
-  test: async () => {
-    let data = await db
-      .get()
-      .collection(collections.ORDER_COLLECTION)
-      .aggregate([
-        { $match: { status: "delivered" } },
-        {
-          $group: {
-            _id: { 
-              truncatedOrderDate: {
-                $dateTrunc: { 
-                  date: "$timeStamp",
-                  unit: "year",
-                  binSize: 1,
-                },
-              },
-            },
-            sumQuantity: { $sum: "$totalAmount" },
-          },
-        },
-        {
-          $project: {
-            year: { $year: "$_id.truncatedOrderDate" },
-            sumQuantity: 1,
-          },
-        },
-        { $sort: { year: 1 } },
-      ])
-      .toArray();
+  // test: async () => {
+  //   let data = await db
+  //     .get()
+  //     .collection(collections.ORDER_COLLECTION)
+  //     .aggregate([
+  //       { $match: { status: "delivered" } },
+  //       {
+  //         $group: {
+  //           _id: { 
+  //             truncatedOrderDate: {
+  //               $dateTrunc: { 
+  //                 date: "$timeStamp",
+  //                 unit: "year",
+  //                 binSize: 1,
+  //               },
+  //             },
+  //           },
+  //           sumQuantity: { $sum: "$totalAmount" },
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           year: { $year: "$_id.truncatedOrderDate" },
+  //           sumQuantity: 1,
+  //         },
+  //       },
+  //       { $sort: { year: 1 } },
+  //     ])
+  //     .toArray();
 
     
-    let len = data.length;
-    baseyear = data[0].year;
-    let linechartData = {};
-    for (let i = 0; i < data.length; i++) {
-      if (baseyear == data[len - 1].year) break;
-      console.log(i);
-      if (baseyear == data[i].year) {
-        baseyear++;
-      } else {
-        let a = { sumQuantity: 0, year: baseyear };
-        data.push(a);
-        baseyear++;
-        i--;
-        if (i == len - 1) break;
-
-        console.log(i);
-      }
-    }
-    data.sort(function (a, b) {
-      return a.year - b.year;
-    });
+  //   let len = data.length;
+  //   if (data[0]) {
+  //     baseyear = data[0].year;
+  //   }
    
-    let linechartYear = [];
-    let linechartSum = [];
-    data.forEach((element) => {
-      let a = element.year;
-      linechartYear.push(a);
-    });
-    data.forEach((element) => {
-      let a = element.sumQuantity;
-      linechartSum.push(a);
-    });
+  //   let linechartData = {};
+  //   for (let i = 0; i < data.length; i++) {
+  //     if (baseyear == data[len - 1].year) break;
+  //     console.log(i);
+  //     if (baseyear == data[i].year) {
+  //       baseyear++;
+  //     } else {
+  //       let a = { sumQuantity: 0, year: baseyear };
+  //       data.push(a);
+  //       baseyear++;
+  //       i--;
+  //       if (i == len - 1) break;
 
-    linechartData.year = linechartYear;
-    linechartData.sum = linechartSum;
+  //       console.log(i);
+  //     }
+  //   }
+  //   data.sort(function (a, b) {
+  //     return a.year - b.year;
+  //   });
+   
+  //   let linechartYear = [];
+  //   let linechartSum = [];
+  //   data.forEach((element) => {
+  //     let a = element.year;
+  //     linechartYear.push(a);
+  //   });
+  //   data.forEach((element) => {
+  //     let a = element.sumQuantity;
+  //     linechartSum.push(a);
+  //   });
+
+  //   linechartData.year = linechartYear;
+  //   linechartData.sum = linechartSum;
   
-    return linechartData;
-  },
+  //   return linechartData;
+  // },
 };
 

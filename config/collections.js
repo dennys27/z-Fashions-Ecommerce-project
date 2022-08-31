@@ -3,6 +3,7 @@ module.exports={
     PRODUCT_COLLECTIONS: 'products',
     CART_COLLECTION:"user-cart",
     PRODUCT_CATAGORY: 'product-category',
+    OFFERS_COLLECTION: 'wallet-history',
     OFFERS_COLLECTION: 'offers',
     COUPONS: 'coupons',
     ORDER_COLLECTION:"order"

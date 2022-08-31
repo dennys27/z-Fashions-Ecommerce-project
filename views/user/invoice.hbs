@@ -117,6 +117,7 @@
         <div class="row">
           <div class="col-xl-8">
             <p class="ms-3">PaymentMethod : {{orderDetails.paymentMethod}}</p>
+             
           </div>
           <div class="col-xl-3">
             <ul class="list-unstyled">
@@ -131,6 +132,13 @@
                   >coupon</span>- ₹
                   {{orderDetails.couponDiscounted}}</li>
               {{/if}}
+               {{#if orderDetails.walletDeducted}}
+                <li class="text-muted ms-3"><span
+                    class="text-black me-4"
+                  >wallet</span> -₹
+                  {{orderDetails.walletDeducted}}</li>
+              {{/if}}
+            
               <li class="text-muted ms-3 mt-2"><span
                   class="text-black me-4"
                 >Shipping</span>free</li>

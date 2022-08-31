@@ -1,6 +1,6 @@
 <div class="container mt-5 pb-5">
   <div class="container-fluid pb-5 d-flex justify-content-center">
-    <h1>Top Sold Products</h1>
+    <h1>wallet history</h1>
   </div>
   <table id="example" class="ui celled table" style="width:100%">
     <thead>
@@ -10,21 +10,19 @@
         <th>category</th>
         <th>price</th>
         <th>No.of units sold</th>
-     
 
       </tr>
     </thead>
     <tbody>
-      {{#each topSold }}
+      {{#each topSold}}
         <tr>
 
           <td>*</td>
-          
-            <td>{{this.product.[0].name}}</td>
-            <td>{{this.product.[0].category}}</td>
-            <td>₹ {{this.product.[0].cuttPrice}}</td>
-            <td>{{this.totalSold}}</td>
-        
+
+          <td>{{this.product.0.name}}</td>
+          <td>{{this.product.0.category}}</td>
+          <td>₹ {{this.product.0.cuttPrice}}</td>
+          <td>{{this.totalSold}}</td>
 
         </tr>
       {{/each}}

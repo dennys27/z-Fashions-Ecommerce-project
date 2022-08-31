@@ -241,6 +241,10 @@ module.exports = {
   placeOrder: (order, products, total, coupon, discounted, secondTotal) => {
     return new Promise(async (resolve, reject) => {
       let status = order.PaymentMethod === "COD" ? "placed" : "pending";
+      if (order.PaymentMethod === "wallet") {
+        status = order.PaymentMethod === "wallet" ? "placed" : "pending";
+      }
+       
       let orderObj = {
         deliveryDetails: {
           firstName: order.FirstName,
@@ -254,6 +258,7 @@ module.exports = {
           country: order.Country,
           totalAmount: total,
         },
+        walletDeducted:order.walletMinus,
         coupon: coupon.code,
         couponDiscount: coupon.couponDiscount,
         couponDiscounted: discounted,
