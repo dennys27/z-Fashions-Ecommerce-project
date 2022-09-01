@@ -2,7 +2,9 @@
   <div class="container-fluid pb-5 d-flex justify-content-center">
     <h1 class="mt-4">wallet history</h1>
   </div>
+  <p class="fw-bold">  Wallet: ₹{{wallet.wallet}}</p>
   <table id="example" class="ui celled table" style="width:100%">
+  
     <thead>
       <tr>
         <th>*</th>
@@ -20,7 +22,7 @@
           <td>*</td>
           <td>{{this.date}}</td>
           <td>{{this.orderId}}</td>
-          <td>{{#if this.debit}} - ₹{{this.amount}}{{/if}}</td>
+          <td>{{#if this.debit}} - ₹{{this.amount}}{{/if}} {{#if this.credit}} + ₹{{this.amount}} {{/if}} </td>
 
         </tr>
       {{/each}}

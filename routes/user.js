@@ -396,7 +396,7 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
    }
   });
 
-  console.log(req.body.wallet,"TO CHECK WHATS GOING WRONG WITH MY CODE");
+  
   //req.body.wallet === undefined ? req.body.wallet = false : req.body.wallet;
   if (req.body.wallet === undefined) {
      req.body.wallet = false;
@@ -419,11 +419,11 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
          req.body.PaymentMethod = "wallet";
         
       } else {
-       console.log("yyyyooooooyyyyyyyyyyy");
-       
-        totalPrice = totalPrice - wallet.wallet;
         let amount = wallet.wallet - totalPrice;
+        totalPrice = totalPrice - wallet.wallet;
+        
         walletAmount = wallet.wallet;
+       console.log(amount,"testing.......................");
         
         if (amount < 0) {
           amount = 0;
@@ -433,8 +433,6 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
         userHelpers.useWallet(req.session.user._id, amount);
       }
     }
-
-
 
 
 
@@ -448,7 +446,7 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
       discounted,
       secondTotal
     ).then((data) => {
-      console.log((walletAmount ,"fjjjjjjjjjjjjjjjjjjjjjjjjjj"));
+     
       
        userHelpers.setWalletHistory(
          req.session.user._id,
@@ -564,11 +562,12 @@ router.post("/verify-payment", varifyLogin, (req, res) => {
 
 
 
-router.get("/wallet-history", varifyLogin, (req, res) => {
+router.get("/wallet-history", varifyLogin, async (req, res) => {
   let user = req.session.user;
+  let wallet = await userHelpers.getUserDetails(user._id)
   userHelpers.getWalletHistory(user._id).then((data) => {
-    console.log(data[0].transactions,"data is  here............");
-      res.render("user/wallet-history", { user ,data});
+    //console.log(data[0].transactions,"data is  here............");
+      res.render("user/wallet-history", { user ,wallet,data});
    })
    
 });
