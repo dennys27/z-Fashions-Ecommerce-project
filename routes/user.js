@@ -6,8 +6,9 @@ const productHelpers = require("../helpers/product-management");
 const cartHelpers = require("../helpers/cart-helpers");
 const paypal = require("paypal-rest-sdk");
 const offerHelpers = require("../helpers/offerHelpers");
-const { Db } = require("mongodb");
+// const { Db } = require("mongodb");
 const referralCodeGenerator = require("referral-code-generator");
+
 let walletStatus;
 let walletAmount;
 const varifyLogin = (req, res, next) => {
@@ -32,7 +33,8 @@ let guestuser = true;
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
-  let cartCount = 0;
+  try {
+     let cartCount = 0;
   let user = req.session.user;
   let U_session = req.session;
   userHelpers.isExist(U_session);
@@ -54,6 +56,10 @@ router.get("/", async function (req, res, next) {
 
     res.render("index", { guestuser, women, men, user, cartCount });
   });
+  } catch {
+    res.render("error")
+  }
+ 
 });
 
 router.get("/login", function (req, res) {
@@ -71,12 +77,17 @@ router.get("/login", function (req, res) {
 //otp section
 
 router.get("/otp-login", function (req, res) {
-  if (req.session.loggedIn) {
+  try {
+      if (req.session.loggedIn) {
     res.redirect("/");
   } else {
     res.render("user/otp");
     req.session.loginErr = false;
   }
+  } catch {
+    res.render("error")
+  }
+ 
 });
 
 router.post("/otp-verification", function (req, res) {
@@ -130,17 +141,22 @@ router.post("/otp-matching", function (req, res) {
 //signup process
 
 router.get("/signup", function (req, res) {
-  if (req.session.loggedIn) {
-    res.redirect("/");
-  } else {
-    res.render("user/signup", {
-      guestuser,
-      signerr: req.session.signErr,
-      phoneerr: req.session.phnExists,
-    });
-    req.session.signErr = false;
-    req.session.phnExists = false;
+  try {
+      if (req.session.loggedIn) {
+        res.redirect("/");
+      } else {
+        res.render("user/signup", {
+          guestuser,
+          signerr: req.session.signErr,
+          phoneerr: req.session.phnExists,
+        });
+        req.session.signErr = false;
+        req.session.phnExists = false;
+      }
+  } catch {
+    res.render("error")
   }
+  
 });
 
 router.post("/signup", (req, res) => {
@@ -165,10 +181,15 @@ router.post("/signup", (req, res) => {
 //view-product
 
 router.get("/view-product/:id", function (req, res) {
-  productHelpers.getProductData(req.params.id).then((Product) => {
+  try {
+     productHelpers.getProductData(req.params.id).then((Product) => {
    
     res.render("user/product-view", { guestuser, Product, userHead: true });
   });
+  } catch {
+    res.render("error")
+  }
+ 
 });
 
 //user address
@@ -180,8 +201,8 @@ router.get("/my-addresses/:id", varifyLogin, function (req, res) {
      res.render("user/user-addresses", {user, userData, userHead: true });
   })
    
-});
-
+}); 
+ 
 
 router.post("/make-default", varifyLogin, async(req, res)=> {
   await userHelpers.addressDefault(req.body.uId, req.session.fordel).then((data) => {
@@ -221,6 +242,7 @@ router.get("/logout", (req, res) => {
 
 // cart section
 router.get("/cart", varifyLogin, async function (req, res) {
+
   //await offerHelpers.resetCoupon(req.session.user._id);
   let coupDetails = await cartHelpers.getAppliedCoupn(req.session.user._id);
   console.log(coupDetails);
@@ -475,11 +497,15 @@ router.post("/checkout-form", varifyLogin, async (req, res) => {
         )
         .then((response) => {
           req.session.orderId = response.insertedId.toString();
-          userHelpers.setWalletHistory(
-            req.session.user._id,
-            response.insertedId.toString(),
-            walletAmount
-          );
+          if (walletAmount != null) {
+             userHelpers.setWalletHistory(
+               req.session.user._id,
+               response.insertedId.toString(),
+               walletAmount
+             );
+          }
+          
+         
           //console.log(req.body["PaymentMethod"],"PAYMENT METHOD........");
         
            if (req.body["PaymentMethod"] == "COD") {
@@ -800,6 +826,11 @@ router.post("/apply-coupons", varifyLogin, async (req, res) => {
   })
 
 });
+
+
+
+
+
 
 
 

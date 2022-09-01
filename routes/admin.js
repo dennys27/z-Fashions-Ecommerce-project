@@ -275,6 +275,7 @@ router.get("/top-users", varifyLogin, async (req, res) => {
   adminOrderHelper.fetchTopUsers().then((topUsers) => {
      res.render("admin/topUsers", { admin: true, topUsers });
   })
+ 
 });
 
 router.get("/sales-report", varifyLogin, async (req, res) => {
@@ -408,4 +409,8 @@ router.get("/dashboard", varifyLogin, async (req, res) => {
     });
   });
 }),
+  router.use(function (req, res, next) {
+    res.render("error");
+    //next(createError(404));
+  });
   (module.exports = router);
