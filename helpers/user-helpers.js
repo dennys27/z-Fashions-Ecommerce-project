@@ -9,7 +9,7 @@ require("dotenv").config();
 // const { resolve } = require("path");
 
 var instance = new Razorpay({
-  key_id: process.env.KEY_ID,
+  key_id: "rzp_test_WusE7m4kbzt470",
   key_secret: process.env.KEY_SECRET,
 });
 
