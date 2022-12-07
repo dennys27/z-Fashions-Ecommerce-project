@@ -1,7 +1,9 @@
 
 
 
-# z-fashions
+# z-fashions  
+ An Ecommerce web application for a clothing store.  
+   
 
 Features,
 
