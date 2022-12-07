@@ -36,7 +36,7 @@ morgan, bootstrap,
 #### Get HomePage
 
 ```http
-  GET /locahost:3000
+  GET /locahost:5000
 ```
 
 
