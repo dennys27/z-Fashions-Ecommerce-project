@@ -1,73 +1,48 @@
 
-# Project Title
+# Z-FASHIONS
 
-A brief description of what this project does and who it's for
-
-
-
-
-# Job-hunter(ONGOING)
-
-Job hunter is a platform for proffessionals
-to help them land on their dream job and
-for people who are seeking for talented candidates.   
-Pwa & Desktop app (ongoing)
+Z-fashions is an e-commerce platform for a clothing store
 # Features
 
 User  
 1.user signup and login  
-2.post,like and comment  
-3.otp verification  
+2.otp verification   
+3.forgot password  
 4.forgot password
-5.job post  
-6.apply for a job  
-7.report user  
-8.report post  
-9.resume upload
-10.chat
-11.live notifications
+5.cart 
+6.product view 
+7.offers 
 
 
 
 Admin  
 1.Admin login  
-2.post a job  
+2.add product
 3.suspend account  
-4.remove posts  
-5.view reported posts  
+4.remove products  
+5.view products  
 6.View users  
-7.View Job posts  
-8.profile verification  
+7.Edit products
+ 
 
 
 
 # Technologies used   
-React.js  
-Redux tookit    
-React-icons   
-React-input-imoji  
-React-Redux  
-Socket.io-client  
-React-Toastify  
-Neo-form-validations  
-Multer  
-Axios interceptors    
-Timeago.js     
-JWT -json web token  
-Material ui  
+Node.js
+Multer   
 Express.js  
-Eongodb  
-Mongoose     
-Express-Async Handler  
-Firebase - For otp verification   
-Nodemailer - For forgot password   
+mongodb  
+Mongoose      
+Razor pay  
+paypal   
+Express-Async Handler    
 Bcrypt - For password encryption    
-Socket.io  - for chattting and live notifications  
-Axios - For both client side and the communication between services  
+
+
  
  # Architecture followed
 
- Model view controller (MVC)  combined with microservices
+ Model view controller (MVC)
  
 
 
@@ -90,32 +65,13 @@ Axios - For both client side and the communication between services
 Clone the project
 
 ```bash
-https://github.com/dennys27/JOB-HUNTER.git
+https://github.com/dennys27/z-Fashions-Ecommerce-project
 ```
 
 Go to the project directory
 # Client
 ```bash
-  cd job-hunter
-```
-
-Install dependencies
-
-```bash
-  npm install
-```
-
-Start the server
-
-```bash
-  npm start
-```
-
-# Microservice  
-
-start the job service
-```bash
-  cd Job
+  cd z-fashions
 ```
 
 Install dependencies
@@ -131,43 +87,25 @@ Start the server
 ```
 
 
-# Api gateway
-
-start the api gateway
-```bash
-  cd Common
-```
-
-Install dependencies
-
-```bash
-  npm install
-```
-
-Start the server
-
-```bash
-  npm start
-```
 
 
 ## Screenshots
 
-![App Screenshot](https://drive.google.com/uc?export=view&id=11gFPeqt7JnIDy9M6cHwOnsWWTsbMrWX5)   
+![App Screenshot](https://drive.google.com/uc?export=view&id=1kVd7HeTRVExGHRz9xj0JEAaNhgw19Qsk)   
 
-![App Screenshot](https://drive.google.com/uc?export=view&id=1FeCYTMQFS_9LfhT8quncu4j1MbCGVaMk)   
+![App Screenshot](https://drive.google.com/uc?export=view&id=1zut9WNqRzyZeRmIVJG8toLE3ZH86cd2z)   
 
-![App Screenshot](https://drive.google.com/uc?export=view&id=1ULBOyYxRw5mScnaFDcAvC3Bkluht5RSO)   
+![App Screenshot](https://drive.google.com/uc?export=view&id=1egY_MfzpF13Yi0rahpo9LE6VI4RDZ01B)   
 
-![App Screenshot](https://drive.google.com/uc?export=view&id=1Yl42kgwejK5VixYqTpZIM3kaK8PSSePy)   
+![App Screenshot](https://drive.google.com/uc?export=view&id=1OrhKpcgYr2Eh8Vx6m5KB-UWCWVzZmeoi)   
 
-![App Screenshot](https://drive.google.com/uc?export=view&id=15KaKXEZTfkGHy9m0BwcseXI-hubVJDo-)   
+![App Screenshot](https://drive.google.com/uc?export=view&id=1zhUsKuuwlGTMyEWSAJttBwJS2M79mYhj)   
 
-![App Screenshot](https://drive.google.com/uc?export=view&id=1A-lLFF9ReYmL_gGa4IyyOqWKwB9mAKqH)   
+![App Screenshot](https://drive.google.com/uc?export=view&id=1J-xZHzuTkfSbrXX5itQc46TqAZ041cvm)   
 
-![App Screenshot](https://drive.google.com/uc?export=view&id=11QZ1TeepdfIYgCF2AmTeJhpqdTMn3kmh)   
+![App Screenshot](https://drive.google.com/uc?export=view&id=1YYtyc5Ku-NySMrqljVaxvpO6kgc1Eu1E)   
 
-![App Screenshot](https://drive.google.com/uc?export=view&id=1bovTUUNdEDrrr0TuqGBmyus4sNhQ3QJp)   
+ 
 
 
 
